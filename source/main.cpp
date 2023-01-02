@@ -88,7 +88,7 @@ int main(int argc, char** argv) {
         //std::cout << '\n';
     }
 
-    const auto progress_step = std::min(std::max(frame_timer.get_rate() / 2, 8.0 / double(search_log.size())), 0.2);
+    const auto progress_step = std::min(std::max(frame_timer.get_rate() / 10, 10.0 / double(search_log.size())), 0.2);
     auto progress_timer = visual::Timer(progress_step);
     progress_timer.start();
     queue.register_source(progress_timer.event_source());

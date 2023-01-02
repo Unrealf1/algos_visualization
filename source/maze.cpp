@@ -20,6 +20,24 @@ Maze::Maze(size_t width, size_t height, double wall_prob)
     rng::generate(maze, [&]{ return distr(rengine) < wall_prob 
             ? MazeObject::wall 
             : MazeObject::space; });
+
+    // clean up
+    for (size_t h = 1; h < height - 1; ++h) {
+        for (size_t w = 1; w < width - 1; ++w) {
+            if (get_cell({w, h}) != MazeObject::wall ) {
+                continue;
+            }
+            std::array nodes_to_check = {
+                Node{w + 1, h},
+                Node{w, h + 1},
+                Node{w - 1, h},
+                Node{w, h - 1}
+            };
+            if (rng::all_of(nodes_to_check, [&](const auto& node) { return get_cell(node) != MazeObject::wall; })) {
+                get_cell({w, h}) = MazeObject::space;
+            }
+        }
+    }
 }
 
 MazeObject& Maze::get_cell(const Node& node) {
