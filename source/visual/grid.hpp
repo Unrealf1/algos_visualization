@@ -54,7 +54,8 @@ namespace visual {
                     al_draw_filled_rectangle(cell_x, cell_y, cell_x + cell_width, cell_y + cell_height, m_grid[idx].color);
                 }
             }
-            for (size_t x = 0; x < m_width + 1; ++x) {
+            //draw lines
+            /*for (size_t x = 0; x < m_width + 1; ++x) {
                 const float line_x = float(x) * cell_width;
                 //al_draw_line(line_x, 0.0, line_x, m_visual_height, al_map_rgb(100, 100, 200), 2.0f);
 
@@ -63,7 +64,7 @@ namespace visual {
                     //al_draw_line(0.0, line_y, m_visual_width, line_y, al_map_rgb(100, 100, 200), 2.0f);
                     
                 }
-            }
+            }*/
         }
     };
 }

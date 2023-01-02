@@ -48,6 +48,7 @@ namespace visual {
         void start();
         void stop();
         void change_rate(double new_rate);
+        double get_rate() const;
         ALLEGRO_EVENT_SOURCE* event_source();
     };
 

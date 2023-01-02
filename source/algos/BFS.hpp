@@ -86,5 +86,45 @@ namespace algos {
         }
         return {};
     }
+
+    template<
+        std::equality_comparable Node,
+        typename Neighboors,
+        typename OnUpdate = EmptyUpdate<Node>,
+        template<typename> typename StackType = std::stack
+    >
+    requires NeighboorsGetter<Neighboors, Node>
+    static NodePath<Node> DFSFindPath(
+            const Node& from,
+            const Node& to,
+            const Neighboors& get_neighboors,
+            const OnUpdate& update_callback = OnUpdate()
+    ) {
+        std::vector<ReconstructionItem<Node>> fully_searched;
+        StackType<ReconstructionItem<Node>> stack;
+        stack.push({ from, 0 });
+        while (!stack.empty()) {
+            const auto& [current, parent] = stack.top();
+            stack.pop();
+
+            if (rng::find(fully_searched, current, &ReconstructionItem<Node>::child) != fully_searched.end()) {
+                continue;
+            }
+            
+            const auto my_index = fully_searched.size();
+            fully_searched.push_back({current, parent});
+
+            update_callback(current);
+
+            if (current == to) {
+                return reconstruct_path(current, fully_searched);
+            }
+            
+            for (const Node& child : get_neighboors(current)) {
+                stack.push({ child, my_index });
+            }
+        }
+        return {};
+    }
 }
 

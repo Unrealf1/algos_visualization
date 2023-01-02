@@ -28,6 +28,10 @@ namespace visual {
         al_set_timer_speed(al_pointer, new_rate);
     }
 
+    double Timer::get_rate() const {
+        return al_get_timer_speed(al_pointer);
+    }
+
     ALLEGRO_EVENT_SOURCE* Timer::event_source() {
         return al_get_timer_event_source(al_pointer);
     }
