@@ -2,12 +2,72 @@
 
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
+#include <stdexcept>
+#include <util.hpp>
 
 
 namespace visual {
-    void initialize() {
-        al_init();
-        al_install_keyboard();
-        al_init_primitives_addon();
-    }
+    void initialize();
+
+    struct AllegroInitException : public std::runtime_error {
+        using std::runtime_error::runtime_error;
+    };
+
+    template<typename Raw, typename Actual>
+    struct AllegroDecorator {
+    protected:
+        Raw* const al_pointer;
+
+    public:
+        template<typename... Args>
+        AllegroDecorator(const Args&... args) : al_pointer(Actual::init(args...)) {
+            if (al_pointer == nullptr) {
+                throw AllegroInitException(std::string(util::type_name<Raw>()));
+            }
+        }
+
+        ~AllegroDecorator() {
+            Actual::destroy(al_pointer);
+        }
+
+        AllegroDecorator(const AllegroDecorator&) = delete;
+
+    public:
+        Raw* get_raw() {
+            return al_pointer;
+        }
+    };
+
+    struct Timer : public AllegroDecorator<ALLEGRO_TIMER, Timer> {
+        using AllegroDecorator::AllegroDecorator;
+        using Raw = ALLEGRO_TIMER;
+
+        static Raw* init(double period);
+        static void destroy(Raw*);
+
+        void start();
+        void stop();
+        void change_rate(double new_rate);
+        ALLEGRO_EVENT_SOURCE* event_source();
+    };
+
+    struct EventQueue : public AllegroDecorator<ALLEGRO_EVENT_QUEUE, EventQueue> {
+        using AllegroDecorator::AllegroDecorator;
+        using Raw = ALLEGRO_EVENT_QUEUE;
+
+        static Raw* init();
+        static void destroy(Raw*);
+        
+        bool empty() const;
+        void register_source(ALLEGRO_EVENT_SOURCE*);
+        void unregister_source(ALLEGRO_EVENT_SOURCE*);
+        
+        void get(ALLEGRO_EVENT&);
+        void peek(ALLEGRO_EVENT&);
+        void drop_one();
+        void drop_all();
+        void wait();
+        void wait(ALLEGRO_EVENT&);
+        void wait_for(ALLEGRO_EVENT&, float seconds);
+    };
 }

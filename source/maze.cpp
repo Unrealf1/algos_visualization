@@ -1,3 +1,5 @@
+#include "util.hpp"
+#include <iterator>
 #include <maze.hpp>
 #include <random_utils.hpp>
 
@@ -21,7 +23,8 @@ Maze::Maze(size_t width, size_t height, double wall_prob)
 }
 
 MazeObject& Maze::get_cell(const Node& node) {
-    return maze[node.y * width + node.x];
+    auto idx = util::coords_to_idx(node.x, node.y, width);
+    return maze[idx];
 }
 
 std::vector<Maze::Node> Maze::get_neighboors(const Node& node) {
@@ -32,10 +35,16 @@ std::vector<Maze::Node> Maze::get_neighboors(const Node& node) {
         Node{x - 1, y},
         Node{x, y - 1}
     };
-    std::vector<Node> res(nodes_to_check.size());
+    std::vector<Node> res;
+    res.reserve(nodes_to_check.size());
 
-    rng::copy_if(nodes_to_check, res.begin(), [&](const Node& node) {
-        return node.x < width && node.y < width;
+    rng::copy_if(nodes_to_check, std::back_inserter(res), [&](const Node& node) {
+        bool valid = node.x < width && node.y < height;
+        if (valid) {
+            auto index = util::coords_to_idx(node.x, node.y, width);
+            return maze[index] != MazeObject::wall;
+        }
+        return false;
     });
 
     return res;

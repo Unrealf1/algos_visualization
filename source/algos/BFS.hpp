@@ -1,7 +1,7 @@
 #pragma once
 
-#include <bits/ranges_util.h>
 #include <queue>
+#include <stack>
 #include <ranges>
 #include <concepts>
 

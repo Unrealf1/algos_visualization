@@ -26,6 +26,7 @@ target_link_libraries(algvis PUBLIC project_options project_warnings)
 
 CPMAddPackage("gh:gabime/spdlog@1.9.2")
 CPMAddPackage("gh:liballeg/allegro5@5.2.8.0#5.2.8.0")
+CPMAddPackage("gh:g-truc/glm@0.9.9.8#0.9.9.8")
 
 # TODO: can I solve this better?
 get_target_property(allegro_includes allegro INCLUDE_DIRECTORIES)
@@ -37,4 +38,4 @@ foreach(ADDON font image color primitives)
     )
 endforeach()
 
-target_link_libraries(algvis PUBLIC spdlog allegro allegro_primitives allegro_font) 
+target_link_libraries(algvis PUBLIC spdlog allegro allegro_primitives allegro_font glm) 
