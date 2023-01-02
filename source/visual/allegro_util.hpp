@@ -1,8 +1,9 @@
 #pragma once
 
+#include <stdexcept>
+#include <functional>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
-#include <stdexcept>
 #include <util.hpp>
 
 
@@ -70,5 +71,17 @@ namespace visual {
         void wait();
         void wait(ALLEGRO_EVENT&);
         void wait_for(ALLEGRO_EVENT&, float seconds);
+    };
+
+    class EventReactor : public EventQueue {
+    public:
+        using EventQueue::EventQueue;
+        using Reaction = std::function<void(const ALLEGRO_EVENT&)>;
+
+        void add_reaction(const ALLEGRO_EVENT_SOURCE*, Reaction);
+        void wait_and_react(ALLEGRO_EVENT&);
+        void wait_and_react();
+    private:
+        std::unordered_map<const ALLEGRO_EVENT_SOURCE*, std::vector<Reaction>> m_reactions;
     };
 }

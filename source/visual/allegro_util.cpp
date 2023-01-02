@@ -85,5 +85,22 @@ namespace visual {
     void EventQueue::wait_for(ALLEGRO_EVENT& event, float seconds) {
         al_wait_for_event_timed(al_pointer, &event, seconds);
     }
+
+
+    void EventReactor::add_reaction(const ALLEGRO_EVENT_SOURCE* source, Reaction reaction) {
+        m_reactions[source].push_back(reaction);
+    }
+
+    void EventReactor::wait_and_react(ALLEGRO_EVENT& event) {
+        EventQueue::wait(event);
+        for (auto& reaction : m_reactions[event.any.source]) {
+            reaction(event);
+        }
+    }
+
+    void EventReactor::wait_and_react() {
+        ALLEGRO_EVENT event;
+        wait_and_react(event);
+    }
 }
 

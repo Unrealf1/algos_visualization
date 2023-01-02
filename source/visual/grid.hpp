@@ -1,16 +1,30 @@
 #pragma once
 
+#include <vector>
+#include <map>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
-#include <vector>
-#include <glm_include.hpp>
 #include <util.hpp>
+#include <maze.hpp>
 
 
 namespace visual {
-
     class Grid {
     public:
+        using ColorMap = std::map<MazeObject, ALLEGRO_COLOR>;
+
+        struct Style {
+            ColorMap color_map;
+            bool draw_lattice;
+            ALLEGRO_COLOR lattice_color;
+            ALLEGRO_COLOR path_color;
+            ALLEGRO_COLOR used_color;
+            ALLEGRO_COLOR last_used_color;
+        };
+
+        const static ColorMap s_default_color_map;
+        const static Style s_default_style;
+
         struct Cell {
             ALLEGRO_COLOR color;
         };
@@ -22,50 +36,17 @@ namespace visual {
         float m_visual_width;
         float m_visual_height;
         std::vector<Cell> m_grid;
+        Style m_style;
 
     public:
-        Grid(size_t width, size_t height, float vis_width, float vis_height)
-            : m_width(width)
-            , m_height(height)
-            , m_visual_width(vis_width)
-            , m_visual_height(vis_height)
-            , m_grid(width * height)
-        { }
 
-        void set_dimentions(float width, float height) {
-            m_visual_width = width;
-            m_visual_height = height;
-        }
+        Grid(const Maze& maze, float vis_width, float vis_height, Style style = s_default_style);
 
-        void set_cell(size_t w, size_t h, const Cell& cell) {
-            const auto idx = util::coords_to_idx(w, h, m_width);
-            m_grid[idx] = cell;
-        }
-            
-        void draw() {
-            const float cell_width = m_visual_width / float(m_width);
-            const float cell_height = m_visual_height / float(m_height);
-            
-            for (size_t x = 0; x < m_width; ++x) {
-                const float cell_x = float(x) * cell_width;
-                for (size_t y = 0; y < m_height; ++y) {
-                    const float cell_y = float(y) * cell_height;
-                    const auto idx = util::coords_to_idx(x, y, m_width);
-                    al_draw_filled_rectangle(cell_x, cell_y, cell_x + cell_width, cell_y + cell_height, m_grid[idx].color);
-                }
-            }
-            //draw lines
-            /*for (size_t x = 0; x < m_width + 1; ++x) {
-                const float line_x = float(x) * cell_width;
-                //al_draw_line(line_x, 0.0, line_x, m_visual_height, al_map_rgb(100, 100, 200), 2.0f);
+        const Style& style();
 
-                for (size_t y = 0; y < m_height + 1; ++y) {
-                    const float line_y = float(y) * cell_height;
-                    //al_draw_line(0.0, line_y, m_visual_width, line_y, al_map_rgb(100, 100, 200), 2.0f);
-                    
-                }
-            }*/
-        }
+        void set_dimentions(float width, float height);
+        Cell& get_cell(size_t w, size_t h);
+        void draw();
     };
 }
 

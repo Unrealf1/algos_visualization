@@ -1,60 +1,21 @@
 #pragma once
 
 #include <queue>
-#include <stack>
-#include <ranges>
-#include <concepts>
+
+#include "search_algos_util.hpp"
 
 
 namespace algos {
-    namespace rng = std::ranges;
-
-    template<typename T, typename Node>
-    concept NeighboorsGetter = requires(T getter, Node node) {
-        { getter(node) } -> std::ranges::range;
-    };
-
-    template<typename Node>
-    using NodePath = std::vector<Node>;
-
-    template<typename Node>
-    struct EmptyUpdate {
-        void operator()(const Node&) const noexcept {}
-    };
-
-    template<typename Node>
-    struct ReconstructionItem {
-        const Node child;
-        const size_t parent_index;
-    };
-
-    template<typename Node>
-    NodePath<Node> reconstruct_path(const Node& finish, const std::vector<ReconstructionItem<Node>>& parents) {
-        NodePath<Node> result = {finish};
-        auto current_iter = rng::find(parents, finish, &ReconstructionItem<Node>::child);
-        auto current_index = size_t(current_iter - parents.begin());
-        auto parent_index = current_iter->parent_index;
-        while (parent_index != current_index) {
-            const auto& parent = parents[parent_index];
-            result.push_back(parent.child);
-            current_index = parent_index;
-            parent_index = parent.parent_index;
-        }
-        return result;
-    }
-
     template<
         std::equality_comparable Node,
         typename Neighboors,
-        typename OnUpdate = EmptyUpdate<Node>,
         template<typename> typename QueueType = std::queue
     >
     requires NeighboorsGetter<Neighboors, Node>
     static NodePath<Node> BFSFindPath(
             const Node& from,
             const Node& to,
-            const Neighboors& get_neighboors,
-            const OnUpdate& update_callback = OnUpdate()
+            const Neighboors& get_neighboors
     ) {
         struct QueItem {
             const Node child;
@@ -67,8 +28,6 @@ namespace algos {
         while (!que.empty()) {
             const auto& [current, my_index] = que.front();
 
-            update_callback(current);
-
             if (current == to) {
                 return reconstruct_path(current, parents);
             }
@@ -78,51 +37,11 @@ namespace algos {
                 if (this_node != parents.end()) {
                     continue;
                 }
-                que.push({ child, size_t(this_node - parents.begin()) });
-                parents.push_back( {child, my_index} );
+                que.push({ child, parents.size() });
+                parents.push_back({ child, my_index });
             }
 
             que.pop();
-        }
-        return {};
-    }
-
-    template<
-        std::equality_comparable Node,
-        typename Neighboors,
-        typename OnUpdate = EmptyUpdate<Node>,
-        template<typename> typename StackType = std::stack
-    >
-    requires NeighboorsGetter<Neighboors, Node>
-    static NodePath<Node> DFSFindPath(
-            const Node& from,
-            const Node& to,
-            const Neighboors& get_neighboors,
-            const OnUpdate& update_callback = OnUpdate()
-    ) {
-        std::vector<ReconstructionItem<Node>> fully_searched;
-        StackType<ReconstructionItem<Node>> stack;
-        stack.push({ from, 0 });
-        while (!stack.empty()) {
-            const auto& [current, parent] = stack.top();
-            stack.pop();
-
-            if (rng::find(fully_searched, current, &ReconstructionItem<Node>::child) != fully_searched.end()) {
-                continue;
-            }
-            
-            const auto my_index = fully_searched.size();
-            fully_searched.push_back({current, parent});
-
-            update_callback(current);
-
-            if (current == to) {
-                return reconstruct_path(current, fully_searched);
-            }
-            
-            for (const Node& child : get_neighboors(current)) {
-                stack.push({ child, my_index });
-            }
         }
         return {};
     }
