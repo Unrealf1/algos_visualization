@@ -13,6 +13,11 @@ namespace algos {
         { getter(node) } -> std::ranges::range;
     };
 
+    template<typename T, typename Node>
+    concept WeightGetter = requires(T getter, Node node) {
+        { getter(node, node) } -> std::floating_point;
+    };
+
     template<typename Node>
     using NodePath = std::vector<Node>;
 

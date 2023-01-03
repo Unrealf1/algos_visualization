@@ -2,8 +2,10 @@
 
 #include "algos/BFS.hpp"
 #include "algos/DFS.hpp"
+#include "algos/dijkstra.hpp"
 #include "visual/grid.hpp"
 
+#include <stdexcept>
 #include <visual/allegro_util.hpp>
 #include <maze.hpp>
 
@@ -28,23 +30,24 @@ int main(int argc, char** argv) {
     auto [from, to] = Maze::add_start_finish(maze);
     spdlog::info("searching path to {}, {}", to.x, to.y);
     std::vector<Maze::Node> search_log;
-    auto path = algorithm == 0 
-        ? algos::BFSFindPath<Maze::Node>(
-            from, to, 
-            [&](const Maze::Node& node) {
-                search_log.push_back(node);
-                auto n = maze.get_neighboors(node);
-                return maze.get_neighboors(node);
-            }
-        )
-        : algos::DFSFindPath<Maze::Node>(
-            from, to, 
-            [&](const Maze::Node& node) {
-                search_log.push_back(node);
-                auto n = maze.get_neighboors(node);
-                return maze.get_neighboors(node);
-            }
-        );
+    auto logging_edge_getter = [&](const Maze::Node& node) {
+        search_log.push_back(node);
+        auto n = maze.get_neighboors(node);
+        return maze.get_neighboors(node);
+    };
+    auto path = [&] {
+        using namespace algos;
+        if (algorithm == 0) {
+            return BFSFindPath<Maze::Node>(from, to, logging_edge_getter);
+        } else if (algorithm == 1) {
+            return DFSFindPath<Maze::Node>(from, to, logging_edge_getter);
+        } else if (algorithm == 2) {
+            return DijkstraFindPath(from, to, logging_edge_getter, [](const auto&, const auto&) {
+                return 1.0;
+            });
+        }
+        throw std::logic_error("unknown search algorithm");
+    }();
     if (!path.empty()) {
         search_log.push_back(to);
     }
