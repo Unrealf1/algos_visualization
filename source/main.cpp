@@ -9,27 +9,19 @@
 #include <stdexcept>
 #include <visual/allegro_util.hpp>
 #include <maze.hpp>
+#include <parameters.hpp>
+#include <random_utils.hpp>
 
-namespace rng = std::ranges;
 
-
-int main(int argc, char** argv) {
-    if (argc < 4) {
-        spdlog::error("Specify grid height, width and the algorithm (0 = bfs, 1 = dfs)");
-        return 1;
-    }
-
-    auto get_arg_int = [&](size_t index) {
-        return size_t(std::stol(argv[index]));
-    };
-    const size_t height = get_arg_int(1);
-    const size_t width = get_arg_int(2);
-    const size_t algorithm = get_arg_int(3);
+int main() {
+    auto params = load_application_params("config.json");
+    spdlog::set_level(params.debug_level);
+    set_random_seed(params.fixed_seed);
 
     const auto wall_probability = 0.4;
-    Maze maze = Maze::generate_simple(width, height, wall_probability);
+    Maze maze = Maze::generate_simple(params.maze_width, params.maze_height, wall_probability);
     auto [from, to] = Maze::add_start_finish(maze);
-    // greatly increases chances for good generation
+    // increases chances for good generation
     for (const auto& node : { Maze::Node{0, 1}, { 1, 0 }, {1, 1} }) {
         maze.get_cell(node) = MazeObject::space;
     }
@@ -43,46 +35,49 @@ int main(int argc, char** argv) {
     using algos::Equals;
     auto path = [&] {
         using namespace algos;
-        if (algorithm == 0) {
-            return BFSFindPath<Maze::Node>(from, Equals{to}, logging_edge_getter);
-        } else if (algorithm == 1) {
-            return DFSFindPath<Maze::Node>(from, Equals{to}, logging_edge_getter);
-        } else if (algorithm == 2) {
-            return DijkstraFindPath(from, Equals{to}, logging_edge_getter, [](const auto&, const auto&) {
-                return 1.0;
-            });
-        } else if (algorithm == 3) {
-            return AStarFindPath(from, Equals{to}, logging_edge_getter, [](const auto&, const auto&) {
-                return 1.0;
-            }, [&](const Maze::Node& node) {
-                auto dx = node.x - to.x;
-                auto dy = node.y - to.y;
-                return std::sqrt(dx * dx + dy * dy);
-            });
+        switch (params.algorithm) {
+            case ApplicationParams::EAlgorithm::BFS: {
+                return BFSFindPath<Maze::Node>(from, Equals{to}, logging_edge_getter);
+            }
+            case ApplicationParams::EAlgorithm::DFS: {
+                return DFSFindPath<Maze::Node>(from, Equals{to}, logging_edge_getter);
+            }
+            case ApplicationParams::EAlgorithm::Dijkstra: {
+                return DijkstraFindPath(from, Equals{to}, logging_edge_getter, [](const auto&, const auto&) {
+                    return 1.0;
+                });
+            }
+            case ApplicationParams::EAlgorithm::AStar: {
+                return AStarFindPath(from, Equals{to}, logging_edge_getter, [](const auto&, const auto&) {
+                    return 1.0;
+                }, [&](const Maze::Node& node) {
+                    auto dx = node.x - to.x;
+                    auto dy = node.y - to.y;
+                    return std::sqrt(dx * dx + dy * dy);
+                });
+            }
         }
-        throw std::logic_error("unknown search algorithm");
+        // should not be reachable. Kept here for now because of gcc warning(end of non-void finction)
+        throw std::logic_error("Unknown algorithm!");
     }();
     if (!path.empty()) {
         search_log.push_back(to);
     }
 
     visual::initialize();
-    const auto display_width = 670;
-    const auto display_height = 670;
-    auto display = al_create_display(display_width, display_height);
+    auto display = al_create_display(params.display_width, params.display_height);
 
     auto queue = visual::EventReactor();
 
-    const double fps = 60.0;
-    auto frame_timer = visual::Timer(1.0 / fps);
+    auto frame_timer = visual::Timer(1.0 / params.desired_fps);
     frame_timer.start();
     queue.register_source(frame_timer.event_source());
 
     using visual::Grid;
-    Grid grid(maze, float(display_width), float(display_height));
+    Grid grid(maze, float(params.display_width), float(params.display_height));
 
     const auto progress_step = std::min(
-        std::max(frame_timer.get_rate() / 10, 10.0 / double(search_log.size())), 
+        std::max(frame_timer.get_rate() / 10, 6.0 / double(search_log.size())), 
         0.2
     );
     auto progress_timer = visual::Timer(progress_step);
@@ -91,7 +86,11 @@ int main(int argc, char** argv) {
     queue.add_reaction(progress_timer.event_source(), [&, cur_idx = size_t(0)] (const auto&) mutable {
         if (cur_idx == search_log.size()) {
             progress_timer.stop();
-            spdlog::info(path.empty() ? "No way!" : "That is all!");
+            if (path.empty()) {
+                spdlog::info("No way!");
+            } else {
+                spdlog::info("Path length: {}. Checked {} nodes", path.size(), search_log.size());
+            }
             for (const auto& node : path) {
                 grid.get_cell(node.x, node.y) = Grid::Cell{.color = grid.style().path_color};
             }

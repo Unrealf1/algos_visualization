@@ -1,0 +1,13 @@
+{
+    // BFS, DFS, Dijkstra, AStar
+    "algorithm": "AStar",
+    // debug, info, warn, err, critical, off
+    "debug_level": "info",
+    "desired_fps": 60.0,
+    "display_height": 630,
+    "display_width": 630,
+    "maze_height": 200,
+    "maze_width": 200,
+    // 0 means that seed is random
+    "fixed_seed": 0
+}
