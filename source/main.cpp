@@ -25,30 +25,32 @@ int main() {
     for (const auto& node : { Maze::Node{0, 1}, { 1, 0 }, {1, 1} }) {
         maze.get_cell(node) = MazeObject::space;
     }
-    spdlog::info("searching path to {}, {}", to.x, to.y);
+    spdlog::info("searching path from {}, {} to {}, {}", from.x, from.y, to.x, to.y);
     std::vector<Maze::Node> search_log;
-    auto logging_edge_getter = [&](const Maze::Node& node) {
-        search_log.push_back(node);
-        auto n = maze.get_neighboors(node);
-        return maze.get_neighboors(node);
-    };
-    using algos::Equals;
     auto path = [&] {
+        auto edge_getter = [&](const Maze::Node& node) {
+            return maze.get_neighboors(node);
+        };
+        auto logging_searcher = [&](const Maze::Node& node) {
+            search_log.push_back(node);
+            return node == to;
+        };
+        using algos::Equals;
         using namespace algos;
         switch (params.algorithm) {
             case ApplicationParams::EAlgorithm::BFS: {
-                return BFSFindPath<Maze::Node>(from, Equals{to}, logging_edge_getter);
+                return BFSFindPath<Maze::Node>(from, logging_searcher, edge_getter);
             }
             case ApplicationParams::EAlgorithm::DFS: {
-                return DFSFindPath<Maze::Node>(from, Equals{to}, logging_edge_getter);
+                return DFSFindPath<Maze::Node>(from, logging_searcher, edge_getter);
             }
             case ApplicationParams::EAlgorithm::Dijkstra: {
-                return DijkstraFindPath(from, Equals{to}, logging_edge_getter, [](const auto&, const auto&) {
+                return DijkstraFindPath(from, logging_searcher, edge_getter, [](const auto&, const auto&) {
                     return 1.0;
                 });
             }
             case ApplicationParams::EAlgorithm::AStar: {
-                return AStarFindPath(from, Equals{to}, logging_edge_getter, [](const auto&, const auto&) {
+                return AStarFindPath(from, logging_searcher, edge_getter, [](const auto&, const auto&) {
                     return 1.0;
                 }, [&](const Maze::Node& node) {
                     auto dx = node.x - to.x;
@@ -60,9 +62,6 @@ int main() {
         // should not be reachable. Kept here for now because of gcc warning(end of non-void finction)
         throw std::logic_error("Unknown algorithm!");
     }();
-    if (!path.empty()) {
-        search_log.push_back(to);
-    }
 
     visual::initialize();
     auto display = al_create_display(params.display_width, params.display_height);
