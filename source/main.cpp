@@ -3,6 +3,7 @@
 #include "algos/BFS.hpp"
 #include "algos/DFS.hpp"
 #include "algos/dijkstra.hpp"
+#include "algos/a_star.hpp"
 #include "visual/grid.hpp"
 
 #include <stdexcept>
@@ -49,6 +50,14 @@ int main(int argc, char** argv) {
         } else if (algorithm == 2) {
             return DijkstraFindPath(from, Equals{to}, logging_edge_getter, [](const auto&, const auto&) {
                 return 1.0;
+            });
+        } else if (algorithm == 3) {
+            return AStarFindPath(from, Equals{to}, logging_edge_getter, [](const auto&, const auto&) {
+                return 1.0;
+            }, [&](const Maze::Node& node) {
+                auto dx = node.x - to.x;
+                auto dy = node.y - to.y;
+                return std::sqrt(dx * dx + dy * dy);
             });
         }
         throw std::logic_error("unknown search algorithm");

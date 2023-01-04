@@ -14,6 +14,11 @@ namespace algos {
     };
 
     template<typename T, typename Node>
+    concept HeuristicGetter = requires(T heuristic, Node node) {
+        { heuristic(node) } -> std::floating_point;
+    };
+
+    template<typename T, typename Node>
     concept NodePredicate = requires(T predicate, Node node) {
         { predicate(node) } -> std::same_as<bool>;
     };
