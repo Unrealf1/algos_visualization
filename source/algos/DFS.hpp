@@ -9,12 +9,13 @@ namespace algos {
     template<
         std::equality_comparable Node,
         typename Neighboors,
+        typename Predicate,
         template<typename> typename StackType = std::stack
     >
-    requires NeighboorsGetter<Neighboors, Node>
+    requires NeighboorsGetter<Neighboors, Node> && NodePredicate<Predicate, Node>
     static NodePath<Node> DFSFindPath(
             const Node& from,
-            const Node& to,
+            const Predicate& is_searched,
             const Neighboors& get_neighboors
     ) {
         std::vector<ReconstructionItem<Node>> processed;
@@ -31,7 +32,7 @@ namespace algos {
             const auto my_index = processed.size();
             processed.push_back({current, parent});
 
-            if (current == to) {
+            if (is_searched(current)) {
                 return reconstruct_path(current, processed);
             }
 

@@ -11,12 +11,15 @@ namespace algos {
     template<
         std::equality_comparable Node,
         typename Neighboors,
+        typename Predicate,
         typename Weight
     >
-    requires NeighboorsGetter<Neighboors, Node> && WeightGetter<Weight, Node>
+    requires NeighboorsGetter<Neighboors, Node> 
+        && WeightGetter<Weight, Node> 
+        && NodePredicate<Predicate, Node>
     static NodePath<Node> DijkstraFindPath(
             const Node& from,
-            const Node& to,
+            const Predicate& is_searched,
             const Neighboors& get_neighboors,
             const Weight& get_weight
     ) {
@@ -41,14 +44,14 @@ namespace algos {
             );
             auto current = estimates[*current_it];
 
-            if (current.node == to) {
+            if (is_searched(current.node)) {
                 std::vector<ReconstructionItem<Node>> parents;
                 parents.reserve(estimates.size());
                 rng::transform(estimates, std::back_inserter(parents), [](const LengthEstimate& item) {
                     return ReconstructionItem{item.node, item.parent};
                 });
 
-                return reconstruct_path(to, parents);
+                return reconstruct_path(current.node, parents);
             }
 
             unvisited_indices.erase(current_it);

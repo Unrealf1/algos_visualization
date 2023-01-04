@@ -9,12 +9,13 @@ namespace algos {
     template<
         std::equality_comparable Node,
         typename Neighboors,
+        typename Predicate,
         template<typename> typename QueueType = std::queue
     >
-    requires NeighboorsGetter<Neighboors, Node>
+    requires NeighboorsGetter<Neighboors, Node> && NodePredicate<Predicate, Node>
     static NodePath<Node> BFSFindPath(
             const Node& from,
-            const Node& to,
+            const Predicate& is_searched,
             const Neighboors& get_neighboors
     ) {
         struct QueItem {
@@ -28,7 +29,7 @@ namespace algos {
         while (!que.empty()) {
             const auto& [current, my_index] = que.front();
 
-            if (current == to) {
+            if (is_searched(current)) {
                 return reconstruct_path(current, parents);
             }
             

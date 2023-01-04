@@ -14,6 +14,19 @@ namespace algos {
     };
 
     template<typename T, typename Node>
+    concept NodePredicate = requires(T predicate, Node node) {
+        { predicate(node) } -> std::same_as<bool>;
+    };
+
+    template<typename Node>
+    struct Equals {
+        Node to;
+        bool operator()(const Node& other) const {
+            return to == other;
+        }
+    };
+
+    template<typename T, typename Node>
     concept WeightGetter = requires(T getter, Node node) {
         { getter(node, node) } -> std::floating_point;
     };

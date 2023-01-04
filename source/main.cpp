@@ -28,6 +28,10 @@ int main(int argc, char** argv) {
     const auto wall_probability = 0.4;
     Maze maze = Maze::generate_simple(width, height, wall_probability);
     auto [from, to] = Maze::add_start_finish(maze);
+    // greatly increases chances for good generation
+    for (const auto& node : { Maze::Node{0, 1}, { 1, 0 }, {1, 1} }) {
+        maze.get_cell(node) = MazeObject::space;
+    }
     spdlog::info("searching path to {}, {}", to.x, to.y);
     std::vector<Maze::Node> search_log;
     auto logging_edge_getter = [&](const Maze::Node& node) {
@@ -35,14 +39,15 @@ int main(int argc, char** argv) {
         auto n = maze.get_neighboors(node);
         return maze.get_neighboors(node);
     };
+    using algos::Equals;
     auto path = [&] {
         using namespace algos;
         if (algorithm == 0) {
-            return BFSFindPath<Maze::Node>(from, to, logging_edge_getter);
+            return BFSFindPath<Maze::Node>(from, Equals{to}, logging_edge_getter);
         } else if (algorithm == 1) {
-            return DFSFindPath<Maze::Node>(from, to, logging_edge_getter);
+            return DFSFindPath<Maze::Node>(from, Equals{to}, logging_edge_getter);
         } else if (algorithm == 2) {
-            return DijkstraFindPath(from, to, logging_edge_getter, [](const auto&, const auto&) {
+            return DijkstraFindPath(from, Equals{to}, logging_edge_getter, [](const auto&, const auto&) {
                 return 1.0;
             });
         }
