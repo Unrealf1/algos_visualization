@@ -29,6 +29,11 @@ CPMAddPackage("gh:liballeg/allegro5@5.2.8.0#5.2.8.0")
 CPMAddPackage("gh:nlohmann/json@3.10.5")
 CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
 
+SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
+SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+SET(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
+
 # TODO: can I solve this better?
 get_target_property(allegro_includes allegro INCLUDE_DIRECTORIES)
 target_include_directories(algvis SYSTEM PUBLIC ${allegro_includes})
