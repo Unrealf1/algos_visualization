@@ -37,6 +37,7 @@ private:
     };
 };
 
+ApplicationParams& get_cached_application_params(const std::filesystem::path&, bool force_update = false);
 ApplicationParams load_application_params(const std::filesystem::path&);
 void save_application_parameters(const ApplicationParams&, const std::filesystem::path&);
 

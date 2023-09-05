@@ -10,6 +10,19 @@
 #include <util.hpp>
 
 
+static std::unordered_map<std::size_t, ApplicationParams> s_params_cache;
+
+ApplicationParams& get_cached_application_params(const std::filesystem::path& path, bool force_update) {
+    auto hash = std::filesystem::hash_value(path);
+    auto existing = s_params_cache.find(hash);
+    bool load = force_update || existing == s_params_cache.end();
+    if (load) {
+        auto assign_result = s_params_cache.insert_or_assign(hash, load_application_params(path));
+        return assign_result.first->second;
+    }
+    return existing->second;
+}
+
 ApplicationParams load_application_params(const std::filesystem::path& path) {
     using json = nlohmann::json;
     static_assert(
@@ -18,7 +31,7 @@ ApplicationParams load_application_params(const std::filesystem::path& path) {
     );
     std::ifstream file(path);
     json data = json::parse(file, nullptr, true, true);
-    static ApplicationParams parameters{};
+    ApplicationParams parameters{};
     boost::pfr::for_each_field(parameters, [&]<typename T>(T& field, size_t idx) {
         const auto& name = ApplicationParams::s_field_names_in_order[idx];
         if constexpr (std::is_enum_v<T>) {

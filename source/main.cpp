@@ -14,7 +14,7 @@
 
 
 int main() {
-    auto params = load_application_params("config.json");
+    auto params = get_cached_application_params("config.json");
     spdlog::set_level(params.debug_level);
     set_random_seed(params.fixed_seed);
 
