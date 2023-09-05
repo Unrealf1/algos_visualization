@@ -17,6 +17,9 @@ struct ApplicationParams {
     } algorithm;
 
     double desired_fps;
+    double min_visualization_time;
+    double max_visualization_time;
+    double desireable_time_per_step;
     spdlog::level::level_enum debug_level;
     size_t fixed_seed;
 
@@ -32,6 +35,9 @@ private:
         "algorithm",
 
         "desired_fps",
+        "min_visualization_time",
+        "max_visualization_time",
+        "desireable_time_per_step",
         "debug_level",
         "fixed_seed"
     };

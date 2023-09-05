@@ -21,7 +21,7 @@ int main() {
     const auto wall_probability = 0.4;
     Maze maze = Maze::generate_simple(params.maze_width, params.maze_height, wall_probability);
     auto [from, to] = Maze::add_start_finish(maze);
-    // increases chances for good generation
+    // increases chances for generation with existing path
     for (const auto& node : { Maze::Node{0, 1}, { 1, 0 }, {1, 1} }) {
         maze.get_cell(node) = MazeObject::space;
     }
@@ -75,10 +75,12 @@ int main() {
     using visual::Grid;
     Grid grid(maze, float(params.display_width), float(params.display_height));
 
-    const auto progress_step = std::min(
-        std::max(frame_timer.get_rate() / 10, 6.0 / double(search_log.size())), 
-        0.2
+    const double visualization_time = std::clamp(
+        double(search_log.size()) * params.desireable_time_per_step,
+        params.min_visualization_time,
+        params.max_visualization_time
     );
+    const auto progress_step = visualization_time / double(search_log.size());
     auto progress_timer = visual::Timer(progress_step);
     progress_timer.start();
     queue.register_source(progress_timer.event_source());
@@ -110,21 +112,8 @@ int main() {
         grid.draw();
         al_flip_display();
     });
-    auto system_events_queue = visual::EventReactor();
-    system_events_queue.register_source(al_get_keyboard_event_source());
-    system_events_queue.register_source(al_get_display_event_source(display));
-    while (true) {
-        queue.wait_and_react();
-        
-        if (system_events_queue.empty()) {
-            continue;
-        }
-        ALLEGRO_EVENT event;
-        system_events_queue.get(event);
-        if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-            break;
-        }
-    }
+
+    main_visual_loop(queue, display);
     al_destroy_display(display);
 }
 

@@ -4,6 +4,9 @@
     // debug, info, warn, err, critical, off
     "debug_level": "info",
     "desired_fps": 60.0,
+    "min_visualization_time": 0.2,
+    "max_visualization_time": 2.0,
+    "desireable_time_per_step": 0.2,
     "display_height": 630,
     "display_width": 630,
     "maze_height": 200,

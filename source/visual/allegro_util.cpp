@@ -8,6 +8,24 @@ namespace visual {
         al_init_primitives_addon();
     }
 
+    void main_visual_loop(visual::EventReactor& user_events, ALLEGRO_DISPLAY* display) {
+        auto system_events = visual::EventReactor();
+        system_events.register_source(al_get_keyboard_event_source());
+        system_events.register_source(al_get_display_event_source(display));
+        while (true) {
+            user_events.wait_and_react();
+
+            if (system_events.empty()) {
+                continue;
+            }
+            ALLEGRO_EVENT event;
+            system_events.get(event);
+            if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+                break;
+            }
+        }
+    }
+
     ALLEGRO_TIMER* Timer::init(double period) {
         return al_create_timer(period);   
     }

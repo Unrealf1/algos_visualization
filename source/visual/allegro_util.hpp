@@ -84,4 +84,6 @@ namespace visual {
     private:
         std::unordered_map<const ALLEGRO_EVENT_SOURCE*, std::vector<Reaction>> m_reactions;
     };
+
+    void main_visual_loop(visual::EventReactor& user_events, ALLEGRO_DISPLAY*);
 }
