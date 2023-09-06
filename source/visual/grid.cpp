@@ -5,8 +5,8 @@ namespace visual {
 const Grid::ColorMap Grid::s_default_color_map = {
     { MazeObject::wall, al_map_rgb(0, 0, 0) },
     { MazeObject::space, al_map_rgb(255, 255, 255) },
-    { MazeObject::start, al_map_rgb(20, 180, 80) },
-    { MazeObject::finish, al_map_rgb(20, 60, 180) }
+    { MazeObject::start, al_map_rgb(190, 160, 80) },
+    { MazeObject::finish, al_map_rgb(20, 200, 60) }
 };
 
 const Grid::Style Grid::s_default_style = {
@@ -14,7 +14,7 @@ const Grid::Style Grid::s_default_style = {
     .draw_lattice = false,
     .lattice_color = al_map_rgb(100, 100, 200),
     .path_color = al_map_rgb(182, 102, 142),
-    .used_color = al_map_rgb(200, 200, 0),
+    .used_color = al_map_rgb(0, 200, 200),
     .last_used_color = al_map_rgb(200, 0, 0)
 };
 

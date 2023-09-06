@@ -27,7 +27,7 @@ namespace algos {
     ) {
         struct LengthEstimate {
             Node node;
-            double estimate;
+            double estimate; // shortest path from start currently known
             size_t parent;
             size_t my_index;
         };

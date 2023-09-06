@@ -4,13 +4,13 @@
     // debug, info, warn, err, critical, off
     "debug_level": "info",
     "desired_fps": 60.0,
-    "min_visualization_time": 0.2,
-    "max_visualization_time": 2.0,
-    "desireable_time_per_step": 0.2,
+    "min_visualization_time": 0.0,
+    "max_visualization_time": 4.0,
+    "desireable_time_per_step": 0.8,
     "display_height": 630,
     "display_width": 630,
-    "maze_height": 200,
-    "maze_width": 200,
+    "maze_height": 20,
+    "maze_width": 20,
     // 0 means that seed is random
     "fixed_seed": 0
 }

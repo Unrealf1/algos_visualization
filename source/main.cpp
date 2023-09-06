@@ -65,6 +65,7 @@ int main() {
     }();
     clock_t end = clock();
     spdlog::info("Processor time taken(ms): {}", (double(end - start)) * 1000.0 / CLOCKS_PER_SEC);
+    spdlog::info("Checked {} nodes", search_log.size());
 
     visual::initialize();
     auto display = al_create_display(params.display_width, params.display_height);
