@@ -23,9 +23,9 @@ namespace algos {
         stack.push({ from, 0 });
         while (!stack.empty()) {
             const auto& [current, parent] = stack.top();
-            stack.pop();
 
             if (rng::find(processed, current, &ReconstructionItem<Node>::child) != processed.end()) {
+                stack.pop();
                 continue;
             }
             
@@ -36,7 +36,9 @@ namespace algos {
                 return reconstruct_path(current, processed);
             }
 
-            for (const Node& child : get_neighboors(current)) {
+            const auto neighboors = get_neighboors(current);
+            stack.pop();
+            for (const Node& child : neighboors) {
                 stack.push({ child, my_index });
             }
         }

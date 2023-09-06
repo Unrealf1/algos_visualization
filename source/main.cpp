@@ -27,6 +27,7 @@ int main() {
     }
     spdlog::info("searching path from {}, {} to {}, {}", from.x, from.y, to.x, to.y);
     std::vector<Maze::Node> search_log;
+    clock_t start = clock();
     auto path = [&] {
         auto edge_getter = [&](const Maze::Node& node) {
             return maze.get_neighboors(node);
@@ -62,6 +63,8 @@ int main() {
         // should not be reachable. Kept here for now because of gcc warning(end of non-void finction)
         throw std::logic_error("Unknown algorithm!");
     }();
+    clock_t end = clock();
+    spdlog::info("Processor time taken(ms): {}", (double(end - start)) * 1000.0 / CLOCKS_PER_SEC);
 
     visual::initialize();
     auto display = al_create_display(params.display_width, params.display_height);
