@@ -36,7 +36,7 @@ namespace algos {
                 return reconstruct_path(current, processed);
             }
 
-            const auto neighboors = get_neighboors(current);
+            const auto& neighboors = get_neighboors(current);
             stack.pop();
             for (const Node& child : neighboors) {
                 stack.push({ child, my_index });

@@ -34,11 +34,7 @@ namespace algos {
         std::vector<LengthEstimate> estimates = { {from, 0.0, 0, 0} };
         std::vector<size_t> unvisited_indices = { 0 };
 
-        auto exit_condition = [&] {
-            return unvisited_indices.empty();
-        };
-
-        while (!exit_condition()) {
+        while (!unvisited_indices.empty()) {
             // TODO: maybe store heuristic in the LengthEstimate?
             // Will save computation, loose some memory and weird cases
             // where heuristic can change
@@ -60,7 +56,6 @@ namespace algos {
             }
 
             unvisited_indices.erase(current_it);
-
 
             const auto& neighboors = get_neighboors(current.node);
             for (const auto& neighboor : neighboors) {
