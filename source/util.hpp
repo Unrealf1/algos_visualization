@@ -30,5 +30,9 @@ constexpr size_t coords_to_idx(size_t x, size_t y, size_t width) {
     return y * width + x;
 }
 
+constexpr std::pair<size_t, size_t> idx_to_coords(size_t index, size_t width) {
+    return { index % width, index / width };
+}
+
 } // namespace util
 

@@ -12,35 +12,47 @@
 #include <parameters.hpp>
 #include <random_utils.hpp>
 
+namespace rng = std::ranges;
+
+
+Maze create_maze(const ApplicationParams& params) {
+    if (params.load_file.empty()) {
+        const auto wall_probability = 0.4;
+        Maze maze = Maze::generate_simple(params.maze_width, params.maze_height, wall_probability);
+        Maze::add_random_start_finish(maze);
+        maze.add_slow_tiles(params.slow_tile_chance);
+        return maze;
+    } else {
+        Maze maze = Maze::load(params.load_file);
+        return maze;
+    }
+}
 
 int main() {
     auto params = get_cached_application_params("config.json");
     spdlog::set_level(params.debug_level);
     set_random_seed(params.fixed_seed);
 
-    const auto wall_probability = 0.4;
-    Maze maze = Maze::generate_simple(params.maze_width, params.maze_height, wall_probability);
-    auto [from, to] = Maze::add_start_finish(maze);
-    maze.add_slow_tiles(params.slow_tile_chance);
-    // increases chances for generation with existing path
-    for (const auto& node : { Maze::Node{0, 1}, { 1, 0 }, {1, 1} }) {
-        maze.get_cell(node) = MazeObject::space;
-    }
+    Maze maze = create_maze(params);
+    Maze::Node from {util::idx_to_coords(maze.from, maze.width)};
+    Maze::Node to {util::idx_to_coords(maze.to, maze.width)};
     spdlog::info("searching path from {}, {} to {}, {}", from.x, from.y, to.x, to.y);
+    maze.save("last.maze");
+
     std::vector<Maze::Node> search_log;
+    auto edge_getter = [&](const Maze::Node& node) {
+        return maze.get_neighboors(node);
+    };
+    auto logging_searcher = [&](const Maze::Node& node) {
+        search_log.push_back(node);
+        return node == to;
+    };
+    auto weight_getter = [&](const Maze::Node&, const Maze::Node& to) {
+        return maze.get_cell(to) == MazeObject::slow ? params.slow_tile_cost : 1.0;
+    };
+
     clock_t start = clock();
     auto path = [&] {
-        auto edge_getter = [&](const Maze::Node& node) {
-            return maze.get_neighboors(node);
-        };
-        auto logging_searcher = [&](const Maze::Node& node) {
-            search_log.push_back(node);
-            return node == to;
-        };
-        auto weight_getter = [&](const Maze::Node&, const Maze::Node& to) {
-            return maze.get_cell(to) == MazeObject::slow ? params.slow_tile_cost : 1.0;
-        };
-        using algos::Equals;
         using namespace algos;
         switch (params.algorithm) {
             case ApplicationParams::EAlgorithm::BFS: {

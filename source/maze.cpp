@@ -1,25 +1,33 @@
 #include "util.hpp"
-#include <iterator>
 #include <maze.hpp>
 #include <random_utils.hpp>
-
 #include <ranges>
 #include <algorithm>
+#include <iterator>
+#include <fstream>
 
 namespace rng = std::ranges;
 
+
+Maze::Maze(size_t width, size_t height, MazeObject default_tile)
+    : width(width)
+    , height(height)
+    , from(0)
+    , to(0)
+    , items(width * height, default_tile) { }
+
 Maze Maze::generate_simple(size_t width, size_t height, double wall_prob) {
-    Maze maze = {
-        .width = width,
-        .height = height,
-        .items = {}
-    };
-    maze.items.resize(width * height);
+    Maze maze(width, height);
     auto& rengine = get_rengine();
     std::uniform_real_distribution<double> distr(0, 1); // 0 - wall, others - empty
     rng::generate(maze.items, [&]{ return distr(rengine) < wall_prob 
             ? MazeObject::wall 
             : MazeObject::space; });
+
+    // increases chances for generation with existing path
+    for (const auto& node : { Maze::Node{0, 1}, { 1, 0 }, {1, 1} }) {
+        maze.get_cell(node) = MazeObject::space;
+    }
 
     // clean up empty spaces/walls surrounded by others for cleaner picture
     for (size_t h = 1; h < height - 1; ++h) {
@@ -38,15 +46,16 @@ Maze Maze::generate_simple(size_t width, size_t height, double wall_prob) {
     return maze;
 }
 
-std::pair<Maze::Node, Maze::Node> Maze::add_start_finish(Maze& maze) {
+void Maze::add_random_start_finish(Maze& maze) {
     Maze::Node from = {0, 0};
     Maze::Node to{};
     auto& rengine = get_rengine();
     to.x = std::uniform_int_distribution<size_t>(0, maze.width - 1)(rengine);
     to.y = std::uniform_int_distribution<size_t>(0, maze.height - 1)(rengine);
-    maze.get_cell(to) = MazeObject::finish;
-    maze.get_cell(from) = MazeObject::start;
-    return {from, to};
+    maze.from = util::coords_to_idx(from.x, from.y, maze.width);
+    maze.to = util::coords_to_idx(to.x, to.y, maze.width);
+    maze.items[maze.from] = MazeObject::start;
+    maze.items[maze.to] = MazeObject::finish;
 }
 
 void Maze::add_slow_tiles(double change_probability) {
@@ -55,6 +64,34 @@ void Maze::add_slow_tiles(double change_probability) {
             cell = MazeObject::slow;
         }
     }
+}
+
+Maze Maze::load(const std::filesystem::path& path) {
+    std::fstream file(path, std::ios::in);
+    size_t width;
+    size_t height;
+    file >> width >> height;
+    Maze maze(width, height);
+
+    using raw_t = std::underlying_type_t<MazeObject>;
+    rng::transform(std::istream_iterator<raw_t>(file), std::istream_iterator<raw_t>(), maze.items.begin(), [](raw_t v) {
+        return static_cast<MazeObject>(v);
+    });
+    auto start_it = rng::find(maze.items, MazeObject::start);
+    auto finish_it = rng::find(maze.items, MazeObject::finish);
+    // order of iterators in std::distance is relevant!
+    maze.from = static_cast<size_t>(std::distance(maze.items.begin(), start_it));
+    maze.to = static_cast<size_t>(std::distance(maze.items.begin(), finish_it));
+    return maze;
+}
+
+void Maze::save(const std::filesystem::path& path) {
+    std::ofstream file(path, std::ios::out);
+    file << width << ' ' << height << ' ';
+    using raw_t = std::underlying_type_t<MazeObject>;
+    rng::transform(items, std::ostream_iterator<raw_t>(file), [](MazeObject v) {
+        return static_cast<raw_t>(v);
+    });
 }
 
 MazeObject& Maze::get_cell(const Node& node) {
