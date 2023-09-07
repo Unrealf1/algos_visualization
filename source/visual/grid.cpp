@@ -6,7 +6,8 @@ const Grid::ColorMap Grid::s_default_color_map = {
     { MazeObject::wall, al_map_rgb(0, 0, 0) },
     { MazeObject::space, al_map_rgb(255, 255, 255) },
     { MazeObject::start, al_map_rgb(190, 160, 80) },
-    { MazeObject::finish, al_map_rgb(20, 200, 60) }
+    { MazeObject::finish, al_map_rgb(20, 200, 60) },
+    { MazeObject::slow, al_map_rgb(155, 100, 0) }
 };
 
 const Grid::Style Grid::s_default_style = {

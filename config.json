@@ -7,6 +7,8 @@
     "min_visualization_time": 0.0,
     "max_visualization_time": 4.0,
     "desireable_time_per_step": 0.8,
+    "slow_tile_chance": 0.5,
+    "slow_tile_cost": 5.0,
     "display_height": 630,
     "display_width": 630,
     "maze_height": 20,

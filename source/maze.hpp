@@ -7,7 +7,7 @@
 
 
 enum class MazeObject : uint8_t {
-    space, wall, start, finish
+    space, wall, start, finish, slow
 };
 
 struct Maze {
@@ -24,6 +24,7 @@ struct Maze {
     
     static Maze generate_simple(size_t height, size_t width, double wall_prob);
     static std::pair<Maze::Node, Maze::Node> add_start_finish(Maze&);
+    void add_slow_tiles(double change_probability);
     MazeObject& get_cell(const Node& node);
     std::vector<Node> get_neighboors(const Node& node);
 };

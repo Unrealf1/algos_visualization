@@ -20,3 +20,7 @@ std::default_random_engine& get_rengine() {
     return rengine;
 }
 
+bool chance(double probability, std::default_random_engine& rengine) {
+    static std::uniform_real_distribution<double> distr(0.0, 1.0);
+    return distr(rengine) < probability;
+}

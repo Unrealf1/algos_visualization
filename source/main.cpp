@@ -21,6 +21,7 @@ int main() {
     const auto wall_probability = 0.4;
     Maze maze = Maze::generate_simple(params.maze_width, params.maze_height, wall_probability);
     auto [from, to] = Maze::add_start_finish(maze);
+    maze.add_slow_tiles(params.slow_tile_chance);
     // increases chances for generation with existing path
     for (const auto& node : { Maze::Node{0, 1}, { 1, 0 }, {1, 1} }) {
         maze.get_cell(node) = MazeObject::space;
@@ -36,6 +37,9 @@ int main() {
             search_log.push_back(node);
             return node == to;
         };
+        auto weight_getter = [&](const Maze::Node&, const Maze::Node& to) {
+            return maze.get_cell(to) == MazeObject::slow ? params.slow_tile_cost : 1.0;
+        };
         using algos::Equals;
         using namespace algos;
         switch (params.algorithm) {
@@ -46,14 +50,10 @@ int main() {
                 return DFSFindPath<Maze::Node>(from, logging_searcher, edge_getter);
             }
             case ApplicationParams::EAlgorithm::Dijkstra: {
-                return DijkstraFindPath(from, logging_searcher, edge_getter, [](const auto&, const auto&) {
-                    return 1.0;
-                });
+                return DijkstraFindPath(from, logging_searcher, edge_getter, weight_getter);
             }
             case ApplicationParams::EAlgorithm::AStar: {
-                return AStarFindPath(from, logging_searcher, edge_getter, [](const auto&, const auto&) {
-                    return 1.0;
-                }, [&](const Maze::Node& node) {
+                return AStarFindPath(from, logging_searcher, edge_getter, weight_getter, [&](const Maze::Node& node) {
                     auto dx = node.x - to.x;
                     auto dy = node.y - to.y;
                     return std::sqrt(dx * dx + dy * dy);

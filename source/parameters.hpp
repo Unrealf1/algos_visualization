@@ -20,6 +20,8 @@ struct ApplicationParams {
     double min_visualization_time;
     double max_visualization_time;
     double desireable_time_per_step;
+    double slow_tile_chance;
+    double slow_tile_cost;
     spdlog::level::level_enum debug_level;
     size_t fixed_seed;
 
@@ -38,6 +40,8 @@ private:
         "min_visualization_time",
         "max_visualization_time",
         "desireable_time_per_step",
+        "slow_tile_chance",
+        "slow_tile_cost",
         "debug_level",
         "fixed_seed"
     };

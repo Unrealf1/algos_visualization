@@ -49,6 +49,14 @@ std::pair<Maze::Node, Maze::Node> Maze::add_start_finish(Maze& maze) {
     return {from, to};
 }
 
+void Maze::add_slow_tiles(double change_probability) {
+    for (auto& cell : items) {
+        if (cell == MazeObject::space && chance(change_probability)) {
+            cell = MazeObject::slow;
+        }
+    }
+}
+
 MazeObject& Maze::get_cell(const Node& node) {
     auto idx = util::coords_to_idx(node.x, node.y, width);
     return items[idx];
