@@ -1,6 +1,7 @@
 + Read algorithms code
 * Improve visuals
     + Change 'visited' color
+    + Add visualization of maze tiles discovered by the algorithm
     - Fix streching when maze has different proportions from display
 - Add more algorithms
     -   Add option to allow diagonals (with or without surrounding free paths)

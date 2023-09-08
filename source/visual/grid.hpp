@@ -19,6 +19,7 @@ namespace visual {
             ALLEGRO_COLOR lattice_color;
             ALLEGRO_COLOR path_color;
             ALLEGRO_COLOR used_color;
+            ALLEGRO_COLOR discovered_color;
             ALLEGRO_COLOR last_used_color;
         };
 

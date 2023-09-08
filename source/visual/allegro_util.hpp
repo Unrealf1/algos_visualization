@@ -7,6 +7,14 @@
 #include <util.hpp>
 
 
+inline bool operator==(const ALLEGRO_COLOR& lhs, const ALLEGRO_COLOR& rhs) {
+    return lhs.r == rhs.r && lhs.g == rhs.g && lhs.b == rhs.b && lhs.a == rhs.a;
+}
+
+inline bool operator!=(const ALLEGRO_COLOR& lhs, const ALLEGRO_COLOR& rhs) {
+    return !(lhs == rhs);
+}
+
 namespace visual {
     void initialize();
 

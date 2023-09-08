@@ -40,8 +40,13 @@ int main() {
     maze.save("last.maze");
 
     std::vector<Maze::Node> search_log;
-    auto edge_getter = [&](const Maze::Node& node) {
-        return maze.get_neighboors(node);
+    std::vector<std::pair<Maze::Node, size_t>> discover_log;
+    auto logging_edge_getter = [&](const Maze::Node& node) {
+        auto neighboors = maze.get_neighboors(node);
+        rng::transform(neighboors, std::back_inserter(discover_log), [&](const Maze::Node& n) {
+            return std::pair{n, search_log.size()};
+        });
+        return neighboors;
     };
     auto logging_searcher = [&](const Maze::Node& node) {
         search_log.push_back(node);
@@ -56,16 +61,16 @@ int main() {
         using namespace algos;
         switch (params.algorithm) {
             case ApplicationParams::EAlgorithm::BFS: {
-                return BFSFindPath<Maze::Node>(from, logging_searcher, edge_getter);
+                return BFSFindPath<Maze::Node>(from, logging_searcher, logging_edge_getter);
             }
             case ApplicationParams::EAlgorithm::DFS: {
-                return DFSFindPath<Maze::Node>(from, logging_searcher, edge_getter);
+                return DFSFindPath<Maze::Node>(from, logging_searcher, logging_edge_getter);
             }
             case ApplicationParams::EAlgorithm::Dijkstra: {
-                return DijkstraFindPath(from, logging_searcher, edge_getter, weight_getter);
+                return DijkstraFindPath(from, logging_searcher, logging_edge_getter, weight_getter);
             }
             case ApplicationParams::EAlgorithm::AStar: {
-                return AStarFindPath(from, logging_searcher, edge_getter, weight_getter, [&](const Maze::Node& node) {
+                return AStarFindPath(from, logging_searcher, logging_edge_getter, weight_getter, [&](const Maze::Node& node) {
                     auto dx = node.x - to.x;
                     auto dy = node.y - to.y;
                     return std::sqrt(dx * dx + dy * dy);
@@ -100,7 +105,7 @@ int main() {
     auto progress_timer = visual::Timer(progress_step);
     progress_timer.start();
     queue.register_source(progress_timer.event_source());
-    queue.add_reaction(progress_timer.event_source(), [&, cur_idx = size_t(0)] (const auto&) mutable {
+    queue.add_reaction(progress_timer.event_source(), [&, cur_idx = size_t(0), discover_idx = size_t(0)] (const auto&) mutable {
         if (cur_idx == search_log.size()) {
             progress_timer.stop();
             if (path.empty()) {
@@ -117,6 +122,13 @@ int main() {
         if (cur_idx > 0) {
             auto last = search_log[cur_idx - 1];
             grid.get_cell(last.x, last.y) = Grid::Cell{.color = grid.style().used_color};
+            for (; discover_idx < discover_log.size() && discover_log[discover_idx].second <= cur_idx + 1; ++discover_idx) {
+                const auto& discovered = discover_log[discover_idx].first;
+                auto& cell = grid.get_cell(discovered.x, discovered.y);
+                if (cell.color != grid.style().used_color) {
+                    cell.color = grid.style().discovered_color;
+                }
+            }
         }
         auto checked_cell = search_log[cur_idx];
         grid.get_cell(checked_cell.x, checked_cell.y) = Grid::Cell {.color = grid.style().last_used_color};
