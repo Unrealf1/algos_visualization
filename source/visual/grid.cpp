@@ -16,7 +16,7 @@ const Grid::Style Grid::s_default_style = {
     .lattice_color = al_map_rgb(100, 100, 200),
     .path_color = al_map_rgb(182, 102, 142),
     .used_color = al_map_rgb(0, 200, 200),
-    .discovered_color = al_map_rgb(150, 150, 20),
+    .discovered_color = al_map_rgb(0, 100, 100),
     .last_used_color = al_map_rgb(200, 0, 0)
 };
 
