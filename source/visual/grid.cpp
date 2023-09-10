@@ -1,4 +1,5 @@
 #include "grid.hpp"
+#include <algorithm>
 
 namespace visual {
 
@@ -50,13 +51,18 @@ Grid::Cell& Grid::get_cell(size_t w, size_t h) {
 void Grid::draw() {
     const float cell_width = m_visual_width / float(m_width);
     const float cell_height = m_visual_height / float(m_height);
+    const float cell_dimention = std::min(cell_width, cell_height);
+    const float grid_width = cell_dimention * float(m_width);
+    const float grid_height = cell_dimention * float(m_height);
+    const float grid_offset_x = (m_visual_width - grid_width) / 2;
+    const float grid_offset_y = (m_visual_height - grid_height) / 2;
     
     for (size_t x = 0; x < m_width; ++x) {
-        const float cell_x = float(x) * cell_width;
+        const float cell_x = grid_offset_x + float(x) * cell_dimention;
         for (size_t y = 0; y < m_height; ++y) {
-            const float cell_y = float(y) * cell_height;
+            const float cell_y = grid_offset_y + float(y) * cell_dimention;
             const auto idx = util::coords_to_idx(x, y, m_width);
-            al_draw_filled_rectangle(cell_x, cell_y, cell_x + cell_width, cell_y + cell_height, m_grid[idx].color);
+            al_draw_filled_rectangle(cell_x, cell_y, cell_x + cell_dimention, cell_y + cell_dimention, m_grid[idx].color);
         }
     }
 
