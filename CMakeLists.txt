@@ -46,3 +46,20 @@ endforeach()
 
 target_link_libraries(algvis PUBLIC spdlog allegro allegro_primitives allegro_font nlohmann_json::nlohmann_json magic_enum) 
 
+if (WIN32)
+    if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
+        set(ALLEGRO_DLL_FILE_SUFFIX "-debug-5.2.dll")
+    else()
+        set(ALLEGRO_DLL_FILE_SUFFIX "-5.2.dll")
+    endif()
+    foreach(DLLFILE allegro_primitives allegro_font allegro)
+        add_custom_command(TARGET algvis POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_if_different
+            "${CMAKE_BINARY_DIR}/_deps/allegro5-build/lib/${CMAKE_BUILD_TYPE}/${DLLFILE}${ALLEGRO_DLL_FILE_SUFFIX}"
+            "${CMAKE_SOURCE_DIR}/package")
+    endforeach()
+    add_custom_command(TARGET algvis POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+        "${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}/algvis.exe"
+        "${CMAKE_SOURCE_DIR}/package")
+endif()
