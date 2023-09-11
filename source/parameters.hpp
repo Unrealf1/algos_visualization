@@ -25,6 +25,7 @@ struct ApplicationParams {
     spdlog::level::level_enum debug_level;
     size_t fixed_seed;
     std::string load_file;
+    std::string save_file;
 
 private:
     friend ApplicationParams load_application_params(const std::filesystem::path&);
@@ -45,7 +46,8 @@ private:
         "slow_tile_cost",
         "debug_level",
         "fixed_seed",
-        "load_file"
+        "load_file",
+        "save_file"
     };
 };
 

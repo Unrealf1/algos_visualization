@@ -15,5 +15,6 @@
     "maze_width": 20,
     // 0 means that seed is random
     "fixed_seed": 0,
-    "load_file": ""
+    "load_file": "",
+    "save_file": "last.maze"
 }

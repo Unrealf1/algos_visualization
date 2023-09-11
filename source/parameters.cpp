@@ -1,6 +1,7 @@
 #include "parameters.hpp"
 #include <spdlog/fmt/bundled/core.h>
 #include <spdlog/fmt/bundled/ranges.h>
+#include <spdlog/spdlog.h>
 
 #include <fstream>
 
@@ -41,17 +42,27 @@ ApplicationParams load_application_params(const std::filesystem::path& path) {
         std::size(ApplicationParams::s_field_names_in_order) == boost::pfr::tuple_size<ApplicationParams>::value,
         "field names have to correspond to fields 1 to 1"
     );
+    if (!std::filesystem::exists(path)) {
+        auto message = fmt::format("configuration file \"{}\" does not exist", path.string());
+        throw std::logic_error(message);
+    }
     std::ifstream file(path);
     json data = json::parse(file, nullptr, true, true);
     ApplicationParams parameters{};
     boost::pfr::for_each_field(parameters, [&]<typename T>(T& field, size_t idx) {
         const auto& name = ApplicationParams::s_field_names_in_order[idx];
+        if (!data.contains(name)) {
+            auto errmsg = fmt::format("{} does not contain {} parameter", path.string(), name);
+            spdlog::error(errmsg);
+            throw std::logic_error(errmsg);
+        }
         if constexpr (std::is_enum_v<T>) {
             auto value_name = data[name].get<std::string>();
             auto opt = magic_enum::enum_cast<T>(value_name);
             if (!opt.has_value()) {
                 auto message = fmt::format("{} is not a valid option for \"{}\". Acceptable: {}",
                         value_name, name, magic_enum::enum_names<T>());
+                spdlog::error(message);
                 throw std::logic_error(message);
             }
             field = opt.value();

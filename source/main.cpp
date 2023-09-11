@@ -37,7 +37,9 @@ int main() {
     Maze::Node from {util::idx_to_coords(maze.from, maze.width)};
     Maze::Node to {util::idx_to_coords(maze.to, maze.width)};
     spdlog::info("searching path from {}, {} to {}, {}", from.x, from.y, to.x, to.y);
-    maze.save("last.maze");
+    if (!params.save_file.empty()) {
+        maze.save(params.save_file);
+    }
 
     std::vector<Maze::Node> search_log;
     std::vector<std::pair<Maze::Node, size_t>> discover_log;

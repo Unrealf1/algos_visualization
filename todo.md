@@ -13,7 +13,7 @@
 
     *   Load premade maze
         +   save/load functions
-        -   extract save file to config parameter
+        +   extract save file to config parameter
         -   Interface to create maze?
 - Prove all the algorithms
 - Compile a video(s) / posts
