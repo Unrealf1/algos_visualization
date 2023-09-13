@@ -11,6 +11,7 @@
     "desireable_time_per_step": 0.8,
     "slow_tile_chance": 0.3,
     "slow_tile_cost": 5.0,
+    "wait_seconds": 0.0,
     "display_height": 630,
     "display_width": 630,
     "maze_height": 20,

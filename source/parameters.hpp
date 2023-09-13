@@ -20,6 +20,7 @@ struct ApplicationParams {
         noise, random_dfs
     } generation_algorithm;
 
+    double wait_seconds;
     double desired_fps;
     double min_visualization_time;
     double max_visualization_time;
@@ -43,6 +44,7 @@ private:
         "algorithm",
         "generation_algorithm",
 
+        "wait_seconds",
         "desired_fps",
         "min_visualization_time",
         "max_visualization_time",

@@ -11,6 +11,8 @@
 #include <maze/maze.hpp>
 #include <parameters.hpp>
 #include <random_utils.hpp>
+#include <thread>
+#include <chrono>
 
 namespace rng = std::ranges;
 
@@ -36,6 +38,7 @@ Maze create_maze(const ApplicationParams& params) {
 }
 
 int main() {
+    auto startup_time = std::chrono::steady_clock::now();
     auto params = get_cached_application_params("config.json");
     spdlog::set_level(params.debug_level);
     set_random_seed(params.fixed_seed);
@@ -95,6 +98,9 @@ int main() {
 
     visual::initialize();
     auto display = al_create_display(params.display_width, params.display_height);
+
+    auto visual_start = std::chrono::steady_clock::now() + std::chrono::milliseconds(int64_t(1000.0 * params.wait_seconds));
+    std::this_thread::sleep_until(visual_start);
 
     auto queue = visual::EventReactor();
 
