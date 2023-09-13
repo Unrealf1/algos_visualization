@@ -12,3 +12,5 @@ Repository of some graph traversal algorithms and their iterative visualization.
 #### Options
 
 See `config.json` for configuration options
+
+![Example](maze_traversal.GIF)
