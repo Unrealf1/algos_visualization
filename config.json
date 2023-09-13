@@ -1,6 +1,8 @@
 {
     // BFS, DFS, Dijkstra, AStar
     "algorithm": "AStar",
+    // noise, random_dfs
+    "generation_algorithm": "noise",
     // debug, info, warn, err, critical, off
     "debug_level": "info",
     "desired_fps": 60.0,

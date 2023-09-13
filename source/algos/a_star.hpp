@@ -12,7 +12,8 @@ namespace algos {
         typename Neighboors,
         typename Predicate,
         typename Weight,
-        typename Heuristic
+        typename Heuristic,
+        typename Reconstructor = decltype(reconstruct_path<Node>)
     >
     requires NeighboorsGetter<Neighboors, Node> 
         && WeightGetter<Weight, Node> 
@@ -23,7 +24,8 @@ namespace algos {
             const Predicate& is_searched,
             const Neighboors& get_neighboors,
             const Weight& get_weight,
-            const Heuristic& get_heuristic
+            const Heuristic& get_heuristic,
+            const Reconstructor& reconstructor = reconstruct_path<Node>
     ) {
         struct LengthEstimate {
             Node node;
@@ -52,7 +54,7 @@ namespace algos {
                     return ReconstructionItem{item.node, item.parent};
                 });
 
-                return reconstruct_path(current.node, parents);
+                return reconstructor(current.node, parents);
             }
 
             unvisited_indices.erase(current_it);

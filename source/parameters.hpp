@@ -16,6 +16,10 @@ struct ApplicationParams {
         BFS, DFS, Dijkstra, AStar
     } algorithm;
 
+    enum class EGenerationAlgorithm {
+        noise, random_dfs
+    } generation_algorithm;
+
     double desired_fps;
     double min_visualization_time;
     double max_visualization_time;
@@ -37,6 +41,7 @@ private:
         "display_width",
         "display_height",
         "algorithm",
+        "generation_algorithm",
 
         "desired_fps",
         "min_visualization_time",

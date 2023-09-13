@@ -10,13 +10,15 @@ namespace algos {
         std::equality_comparable Node,
         typename Neighboors,
         typename Predicate,
+        typename Reconstructor = decltype(reconstruct_path<Node>),
         template<typename> typename QueueType = std::queue
     >
     requires NeighboorsGetter<Neighboors, Node> && NodePredicate<Predicate, Node>
     static NodePath<Node> BFSFindPath(
             const Node& from,
             const Predicate& is_searched,
-            const Neighboors& get_neighboors
+            const Neighboors& get_neighboors,
+            const Reconstructor& reconstructor = reconstruct_path<Node>
     ) {
         struct QueItem {
             const Node child;
@@ -30,7 +32,7 @@ namespace algos {
             const auto& [current, my_index] = que.front();
 
             if (is_searched(current)) {
-                return reconstruct_path(current, parents);
+                return reconstructor(current, parents);
             }
             
             for (const Node& child : get_neighboors(current)) {

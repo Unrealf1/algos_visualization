@@ -1,5 +1,6 @@
+#include "maze.hpp"
+
 #include "util.hpp"
-#include <maze.hpp>
 #include <random_utils.hpp>
 #include <ranges>
 #include <algorithm>
@@ -99,13 +100,17 @@ MazeObject& Maze::get_cell(const Node& node) {
     return items[idx];
 }
 
-std::vector<Maze::Node> Maze::get_neighboors(const Node& node) {
+std::vector<Maze::Node> Maze::get_neighboors(const Node& node) const {
+    return get_cross_neighboors(node);
+}
+
+std::vector<Maze::Node> Maze::get_cross_neighboors(const Node& node, size_t distance) const {
     auto [x, y] = node;
     std::array nodes_to_check = {
-        Node{x + 1, y},
-        Node{x, y + 1},
-        Node{x - 1, y},
-        Node{x, y - 1}
+        Node{x + distance, y},
+        Node{x, y + distance},
+        Node{x - distance, y},
+        Node{x, y - distance}
     };
     std::vector<Node> res;
     res.reserve(nodes_to_check.size());

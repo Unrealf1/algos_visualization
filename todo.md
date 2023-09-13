@@ -5,11 +5,14 @@
     + Fix streching when maze has different proportions from display
 - Add more algorithms
     -   Add option to allow diagonals (with or without surrounding free paths)
+    -   Random DFS
     -   ARA
     -   Another one from AI :)
 * Add more maze generation options
     +   Add "slower" tiles - to show difference between Dijkstra and BFS
-    -   Research
+    *   Research
+        * https://en.wikipedia.org/wiki/Maze_generation_algorithm
+            + random dfs
 
     *   Load premade maze
         +   save/load functions

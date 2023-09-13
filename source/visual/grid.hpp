@@ -5,7 +5,7 @@
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 #include <util.hpp>
-#include <maze.hpp>
+#include <maze/maze.hpp>
 
 
 namespace visual {
