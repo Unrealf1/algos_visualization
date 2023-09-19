@@ -1,8 +1,8 @@
 #include "maze.hpp"
 
 #include <algos/DFS.hpp>
-#include <util.hpp>
-#include <random_utils.hpp>
+#include <util/util.hpp>
+#include <util/random_utils.hpp>
 #include <algorithm>
 
 #include <spdlog/spdlog.h>

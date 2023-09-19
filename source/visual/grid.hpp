@@ -4,7 +4,7 @@
 #include <map>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
-#include <util.hpp>
+#include <util/util.hpp>
 #include <maze/maze.hpp>
 
 

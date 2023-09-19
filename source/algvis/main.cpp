@@ -9,8 +9,8 @@
 #include <stdexcept>
 #include <visual/allegro_util.hpp>
 #include <maze/maze.hpp>
-#include <parameters.hpp>
-#include <random_utils.hpp>
+#include "parameters.hpp"
+#include <util/random_utils.hpp>
 #include <thread>
 #include <chrono>
 

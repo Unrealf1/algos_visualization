@@ -19,10 +19,14 @@ set_project_warnings(project_warnings)
 include(cmake/Sanitizers.cmake)
 enable_sanitizers(project_options)
 
-file(GLOB_RECURSE SOURCES . source/*.[ch]pp)
-add_executable(algvis ${SOURCES})
-target_include_directories(algvis PUBLIC source external)
-target_link_libraries(algvis PUBLIC project_options project_warnings)
+foreach(SRC_DIR algos maze util visual)
+    file(GLOB_RECURSE COMMON_SOURCES_${SRC_DIR} . source/${SRC_DIR}/*.[ch]pp)
+    set(COMMON_SOURCES ${COMMON_SOURCES} ${COMMON_SOURCES_${SRC_DIR}})
+endforeach()
+
+add_library(commonlib STATIC ${COMMON_SOURCES})
+target_include_directories(commonlib PUBLIC source external)
+target_link_libraries(commonlib PUBLIC project_options project_warnings)
 
 CPMAddPackage("gh:gabime/spdlog@1.9.2")
 CPMAddPackage("gh:liballeg/allegro5@5.2.8.0#5.2.8.0")
@@ -36,7 +40,7 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 
 # TODO: can I solve this better?
 get_target_property(allegro_includes allegro INCLUDE_DIRECTORIES)
-target_include_directories(algvis SYSTEM PUBLIC ${allegro_includes})
+target_include_directories(commonlib SYSTEM PUBLIC ${allegro_includes})
 
 foreach(ADDON font image color primitives)
     target_include_directories("allegro_${ADDON}" INTERFACE
@@ -44,7 +48,12 @@ foreach(ADDON font image color primitives)
     )
 endforeach()
 
-target_link_libraries(algvis PUBLIC spdlog allegro allegro_primitives allegro_font nlohmann_json::nlohmann_json magic_enum) 
+target_link_libraries(commonlib PUBLIC spdlog allegro allegro_primitives allegro_font nlohmann_json::nlohmann_json magic_enum) 
+
+file(GLOB_RECURSE ALGVIS_SOURCES . source/algvis/*.[ch]pp)
+add_executable(algvis ${ALGVIS_SOURCES})
+target_link_libraries(algvis PUBLIC commonlib)
+
 
 if (WIN32)
     if (${CMAKE_BUILD_TYPE} MATCHES "Debug")

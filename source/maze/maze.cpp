@@ -1,7 +1,7 @@
 #include "maze.hpp"
 
-#include "util.hpp"
-#include <random_utils.hpp>
+#include <util/util.hpp>
+#include <util/random_utils.hpp>
 #include <ranges>
 #include <algorithm>
 #include <iterator>

@@ -20,7 +20,7 @@
 #endif // __GNUC__
 
 
-#include <util.hpp>
+#include <util/util.hpp>
 
 
 static std::unordered_map<std::size_t, ApplicationParams> s_params_cache;

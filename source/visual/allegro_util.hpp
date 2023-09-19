@@ -4,7 +4,7 @@
 #include <functional>
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
-#include <util.hpp>
+#include <util/util.hpp>
 
 
 inline bool operator==(const ALLEGRO_COLOR& lhs, const ALLEGRO_COLOR& rhs) {
