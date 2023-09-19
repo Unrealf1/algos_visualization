@@ -42,14 +42,14 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 get_target_property(allegro_includes allegro INCLUDE_DIRECTORIES)
 target_include_directories(commonlib SYSTEM PUBLIC ${allegro_includes})
 
-install(TARGETS  DESTINATION package)
+install(TARGETS RUNTIME DESTINATION package)
 foreach(ADDON font image color primitives)
     target_include_directories("allegro_${ADDON}" INTERFACE
         "${allegro5_SOURCE_DIR}/addons/${ADDON}"
     )
 endforeach()
 install(TARGETS allegro allegro_font allegro_primitives
-    LIBRARY DESTINATION package)
+    RUNTIME DESTINATION package)
 
 target_link_libraries(commonlib PUBLIC spdlog allegro allegro_primitives allegro_font nlohmann_json::nlohmann_json magic_enum) 
 
