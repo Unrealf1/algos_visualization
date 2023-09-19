@@ -6,7 +6,7 @@ Repository of some graph traversal algorithms and their iterative visualization.
 
 `cmake -B build -DCMAKE_BUILD_TYPE=Debug` // One may also use `Release` option here, but there are problems with MSVS builds on windows
 
-`cmake --build build`
+`cmake --install build` // Libraries, executables and configuration files will appear in `package` subfolder of the project
 
 
 #### Options

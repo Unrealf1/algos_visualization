@@ -42,33 +42,23 @@ SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 get_target_property(allegro_includes allegro INCLUDE_DIRECTORIES)
 target_include_directories(commonlib SYSTEM PUBLIC ${allegro_includes})
 
+install(TARGETS  DESTINATION package)
 foreach(ADDON font image color primitives)
     target_include_directories("allegro_${ADDON}" INTERFACE
         "${allegro5_SOURCE_DIR}/addons/${ADDON}"
     )
 endforeach()
+install(TARGETS allegro allegro_font allegro_primitives
+    LIBRARY DESTINATION package)
 
 target_link_libraries(commonlib PUBLIC spdlog allegro allegro_primitives allegro_font nlohmann_json::nlohmann_json magic_enum) 
+
+set(CMAKE_INSTALL_PREFIX .)
+list(APPEND CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX})
 
 file(GLOB_RECURSE ALGVIS_SOURCES . source/algvis/*.[ch]pp)
 add_executable(algvis ${ALGVIS_SOURCES})
 target_link_libraries(algvis PUBLIC commonlib)
 
-
-if (WIN32)
-    if (${CMAKE_BUILD_TYPE} MATCHES "Debug")
-        set(ALLEGRO_DLL_FILE_SUFFIX "-debug-5.2.dll")
-    else()
-        set(ALLEGRO_DLL_FILE_SUFFIX "-5.2.dll")
-    endif()
-    foreach(DLLFILE allegro_primitives allegro_font allegro)
-        add_custom_command(TARGET algvis POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_if_different
-            "${CMAKE_BINARY_DIR}/_deps/allegro5-build/lib/${CMAKE_BUILD_TYPE}/${DLLFILE}${ALLEGRO_DLL_FILE_SUFFIX}"
-            "${CMAKE_SOURCE_DIR}/package")
-    endforeach()
-    add_custom_command(TARGET algvis POST_BUILD
-    COMMAND ${CMAKE_COMMAND} -E copy_if_different
-        "${CMAKE_BINARY_DIR}/bin/${CMAKE_BUILD_TYPE}/algvis.exe"
-        "${CMAKE_SOURCE_DIR}/package")
-endif()
+install(TARGETS algvis DESTINATION package)
+install(FILES config.json DESTINATION package)
