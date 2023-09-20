@@ -1,5 +1,5 @@
 {
-    // BFS, DFS, Dijkstra, AStar
+    // BFS, DFS, RandomDFS, Dijkstra, AStar
     "algorithm": "AStar",
     // noise, random_dfs
     "generation_algorithm": "noise",

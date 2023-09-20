@@ -60,6 +60,12 @@ int main() {
         });
         return neighboors;
     };
+    auto random_logging_edge_getter = [&](const Maze::Node& node) {
+        auto neighboors = logging_edge_getter(node);
+        auto& rengine = get_rengine();
+        std::shuffle(neighboors.begin(), neighboors.end(), rengine);
+        return neighboors;
+    };
     auto logging_searcher = [&](const Maze::Node& node) {
         search_log.push_back(node);
         return node == to;
@@ -77,6 +83,9 @@ int main() {
             }
             case ApplicationParams::EAlgorithm::DFS: {
                 return DFSFindPath<Maze::Node>(from, logging_searcher, logging_edge_getter);
+            }
+            case ApplicationParams::EAlgorithm::RandomDFS: {
+                return DFSFindPath<Maze::Node>(from, logging_searcher, random_logging_edge_getter);
             }
             case ApplicationParams::EAlgorithm::Dijkstra: {
                 return DijkstraFindPath(from, logging_searcher, logging_edge_getter, weight_getter);

@@ -13,7 +13,7 @@ struct ApplicationParams {
     int display_height;
 
     enum class EAlgorithm {
-        BFS, DFS, Dijkstra, AStar
+        BFS, DFS, RandomDFS, Dijkstra, AStar
     } algorithm;
 
     enum class EGenerationAlgorithm {
