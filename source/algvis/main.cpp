@@ -38,7 +38,6 @@ Maze create_maze(const ApplicationParams& params) {
 }
 
 int main() {
-    auto startup_time = std::chrono::steady_clock::now();
     auto params = get_cached_application_params("config.json");
     spdlog::set_level(params.debug_level);
     set_random_seed(params.fixed_seed);
