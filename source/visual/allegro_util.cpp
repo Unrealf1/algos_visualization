@@ -1,11 +1,15 @@
 #include <visual/allegro_util.hpp>
+#include "imgui_inc.hpp"
 
 namespace visual {
 
     void initialize() {
         al_init();
         al_install_keyboard();
+        al_install_mouse();
         al_init_primitives_addon();
+        IMGUI_CHECKVERSION();
+        ImGui::CreateContext();
     }
 
     void main_visual_loop(visual::EventReactor& user_events, ALLEGRO_DISPLAY* display) {

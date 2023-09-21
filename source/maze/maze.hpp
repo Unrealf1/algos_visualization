@@ -29,8 +29,8 @@ struct Maze {
 
     Maze(size_t width, size_t height, MazeObject default_tile = MazeObject::space);
 
-    const size_t width;
-    const size_t height;
+    size_t width;
+    size_t height;
     size_t from;
     size_t to;
     std::vector<MazeObject> items;

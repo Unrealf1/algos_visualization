@@ -30,23 +30,26 @@ namespace visual {
             ALLEGRO_COLOR color;
         };
 
+        std::vector<Cell> m_grid;
     private:
         size_t m_width;
         size_t m_height;
 
         float m_visual_width;
         float m_visual_height;
-        std::vector<Cell> m_grid;
         Style m_style;
 
     public:
 
         Grid(const Maze& maze, float vis_width, float vis_height, Style style = s_default_style);
 
-        const Style& style();
+        const Style& style() const;
+        Style& style();
 
         void set_dimentions(float width, float height);
         Cell& get_cell(size_t w, size_t h);
+        Cell* cell_under_cursor(int mouse_x, int mouse_y);
+        const std::vector<Cell>& get_cells() const;
         void draw();
     };
 }

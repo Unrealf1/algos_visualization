@@ -22,11 +22,11 @@ const Grid::Style Grid::s_default_style = {
 };
 
 Grid::Grid(const Maze& maze, float vis_width, float vis_height, Style style)
-    : m_width(maze.width)
+    : m_grid(maze.items.size())
+    , m_width(maze.width)
     , m_height(maze.height)
     , m_visual_width(vis_width)
     , m_visual_height(vis_height)
-    , m_grid(maze.items.size())
     , m_style(std::move(style))
 { 
     for (size_t i = 0; i < m_grid.size(); ++i) {
@@ -34,7 +34,11 @@ Grid::Grid(const Maze& maze, float vis_width, float vis_height, Style style)
     }
 }
 
-const Grid::Style& Grid::style() {
+const Grid::Style& Grid::style() const {
+    return m_style;
+}
+
+Grid::Style& Grid::style() {
     return m_style;
 }
 
@@ -68,11 +72,11 @@ void Grid::draw() {
 
     if (m_style.draw_lattice) {
         for (size_t x = 0; x < m_width + 1; ++x) {
-            const float line_x = float(x) * cell_width;
-            al_draw_line(line_x, 0.0, line_x, m_visual_height, m_style.lattice_color, 2);
+            const float line_x = grid_offset_x + float(x) * cell_dimention;
+            al_draw_line(line_x, grid_offset_y, line_x, m_visual_height - grid_offset_y, m_style.lattice_color, 2);
             for (size_t y = 0; y < m_height + 1; ++y) {
-                const float line_y = float(y) * cell_height;
-                al_draw_line(0.0, line_y, m_visual_width, line_y, m_style.lattice_color, 2);
+                const float line_y = grid_offset_y + float(y) * cell_dimention;
+                al_draw_line(grid_offset_x, line_y, m_visual_width - grid_offset_x, line_y, m_style.lattice_color, 2);
             }
         }
     }

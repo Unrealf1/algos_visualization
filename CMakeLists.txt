@@ -54,14 +54,28 @@ install(TARGETS allegro allegro_font allegro_primitives
     RUNTIME DESTINATION package
     LIBRARY DESTINATION package)
 
-target_link_libraries(commonlib PUBLIC spdlog allegro allegro_primitives allegro_font nlohmann_json::nlohmann_json magic_enum) 
+file(GLOB SOURCES_IMGUI external/imgui/*.[ch]pp)
+add_library(imgui STATIC ${SOURCES_IMGUI} external/imgui/backends/imgui_impl_allegro5.cpp)
+target_include_directories(imgui PUBLIC external/imgui)
+target_include_directories(imgui SYSTEM PUBLIC ${allegro_includes})
+target_link_libraries(imgui PUBLIC allegro allegro_font allegro_image allegro_color allegro_primitives)
+
+target_link_libraries(commonlib PUBLIC spdlog allegro allegro_primitives allegro_font nlohmann_json::nlohmann_json magic_enum imgui)
 
 set(CMAKE_INSTALL_PREFIX .)
 list(APPEND CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX})
 
 file(GLOB_RECURSE ALGVIS_SOURCES . source/algvis/*.[ch]pp)
 add_executable(algvis ${ALGVIS_SOURCES})
+target_include_directories(algvis PUBLIC source/algvis)
 target_link_libraries(algvis PUBLIC commonlib)
 
 install(TARGETS algvis DESTINATION package)
 install(FILES config.json DESTINATION package)
+
+file(GLOB_RECURSE DESIGNER_SOURCES . source/designer/*.[ch]pp)
+add_executable(designer ${DESIGNER_SOURCES})
+target_include_directories(designer PUBLIC source/designer)
+target_link_libraries(designer PUBLIC commonlib)
+
+install(TARGETS designer DESTINATION package)
