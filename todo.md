@@ -17,7 +17,10 @@
     *   Load premade maze
         +   save/load functions
         +   extract save file to config parameter
-        -   Interface to create maze?
+        *   Interface to create maze?
+            *   Save dialog
+            -   Parameters for generation algorithms
+            -   Load existing maze to editor
 - Prove all the algorithms
 - Compile a video(s) / posts
 - Turn this into a screensaver!
