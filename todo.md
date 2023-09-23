@@ -8,6 +8,7 @@
     +   Random DFS
     -   ARA
     -   Another one from AI :)
+    -   https://en.wikipedia.org/wiki/Poisson%27s_equation
 * Add more maze generation options
     +   Add "slower" tiles - to show difference between Dijkstra and BFS
     *   Research
