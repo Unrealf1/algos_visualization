@@ -35,8 +35,14 @@ namespace visual {
         size_t m_width;
         size_t m_height;
 
-        float m_visual_width;
-        float m_visual_height;
+        float m_visual_screen_width;
+        float m_visual_screen_height;
+        float m_visual_offset_x;
+        float m_visual_offset_y;
+        float m_visual_grid_width;
+        float m_visual_grid_height;
+        float m_visual_cell_dimention;
+
         Style m_style;
 
     public:
@@ -53,6 +59,9 @@ namespace visual {
         Cell* cell_under_cursor(int mouse_x, int mouse_y);
         const std::vector<Cell>& get_cells() const;
         void draw();
+        std::pair<size_t, size_t> get_cell_under_cursor_coords(int mouse_x, int mouse_y) const;
+    private:
+        void recalculate_visual_parameters();
     };
 }
 

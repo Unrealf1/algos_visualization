@@ -25,20 +25,32 @@ Grid::Grid(const Maze& maze, float vis_width, float vis_height, Style style)
     : m_grid(maze.items.size())
     , m_width(maze.width)
     , m_height(maze.height)
-    , m_visual_width(vis_width)
-    , m_visual_height(vis_height)
+    , m_visual_screen_width(vis_width)
+    , m_visual_screen_height(vis_height)
     , m_style(std::move(style))
 { 
     for (size_t i = 0; i < m_grid.size(); ++i) {
         m_grid[i].color = m_style.color_map[maze.items[i]];
     }
+    recalculate_visual_parameters();
+}
+
+void Grid::recalculate_visual_parameters() {
+    const float cell_width = m_visual_screen_width / float(m_width);
+    const float cell_height = m_visual_screen_height / float(m_height);
+    m_visual_cell_dimention = std::min(cell_width, cell_height);
+    m_visual_grid_width = m_visual_cell_dimention * float(m_width);
+    m_visual_grid_height = m_visual_cell_dimention * float(m_height);
+    m_visual_offset_x = (m_visual_screen_width - m_visual_grid_width) / 2;
+    m_visual_offset_y = (m_visual_screen_height - m_visual_grid_height) / 2;
 }
 
 void Grid::update(const Maze& maze) {
-    auto temp = Grid(maze, m_visual_width, m_visual_height);
+    auto temp = Grid(maze, m_visual_screen_width, m_visual_screen_height);
     m_grid = std::move(temp.m_grid);
     m_width = temp.m_width;
     m_height = temp.m_height;
+    recalculate_visual_parameters();
 }
 
 const Grid::Style& Grid::style() const {
@@ -50,8 +62,9 @@ Grid::Style& Grid::style() {
 }
 
 void Grid::set_dimentions(float width, float height) {
-    m_visual_width = width;
-    m_visual_height = height;
+    m_visual_screen_width = width;
+    m_visual_screen_height = height;
+    recalculate_visual_parameters();
 }
 
 Grid::Cell& Grid::get_cell(size_t w, size_t h) {
@@ -60,33 +73,31 @@ Grid::Cell& Grid::get_cell(size_t w, size_t h) {
 }
 
 void Grid::draw() {
-    const float cell_width = m_visual_width / float(m_width);
-    const float cell_height = m_visual_height / float(m_height);
-    const float cell_dimention = std::min(cell_width, cell_height);
-    const float grid_width = cell_dimention * float(m_width);
-    const float grid_height = cell_dimention * float(m_height);
-    const float grid_offset_x = (m_visual_width - grid_width) / 2;
-    const float grid_offset_y = (m_visual_height - grid_height) / 2;
-    
     for (size_t x = 0; x < m_width; ++x) {
-        const float cell_x = grid_offset_x + float(x) * cell_dimention;
+        const float cell_x = m_visual_offset_x + float(x) * m_visual_cell_dimention;
         for (size_t y = 0; y < m_height; ++y) {
-            const float cell_y = grid_offset_y + float(y) * cell_dimention;
+            const float cell_y = m_visual_offset_y + float(y) * m_visual_cell_dimention;
             const auto idx = util::coords_to_idx(x, y, m_width);
-            al_draw_filled_rectangle(cell_x, cell_y, cell_x + cell_dimention, cell_y + cell_dimention, m_grid[idx].color);
+            al_draw_filled_rectangle(cell_x, cell_y, cell_x + m_visual_cell_dimention, cell_y + m_visual_cell_dimention, m_grid[idx].color);
         }
     }
 
     if (m_style.draw_lattice) {
         for (size_t x = 0; x < m_width + 1; ++x) {
-            const float line_x = grid_offset_x + float(x) * cell_dimention;
-            al_draw_line(line_x, grid_offset_y, line_x, m_visual_height - grid_offset_y, m_style.lattice_color, 2);
+            const float line_x = m_visual_offset_x + float(x) * m_visual_cell_dimention;
+            al_draw_line(line_x, m_visual_offset_y, line_x, m_visual_screen_height - m_visual_offset_y, m_style.lattice_color, 2);
             for (size_t y = 0; y < m_height + 1; ++y) {
-                const float line_y = grid_offset_y + float(y) * cell_dimention;
-                al_draw_line(grid_offset_x, line_y, m_visual_width - grid_offset_x, line_y, m_style.lattice_color, 2);
+                const float line_y = m_visual_offset_y + float(y) * m_visual_cell_dimention;
+                al_draw_line(m_visual_offset_x, line_y, m_visual_screen_width - m_visual_offset_x, line_y, m_style.lattice_color, 2);
             }
         }
     }
+}
+
+std::pair<size_t, size_t> Grid::get_cell_under_cursor_coords(int mouse_x, int mouse_y) const {
+    const auto x = std::min(size_t((float(mouse_x) - m_visual_offset_x) * float(m_width) / m_visual_grid_width), m_width - 1);
+    const auto y = std::min(size_t((float(mouse_y) - m_visual_offset_y) * float(m_height) / m_visual_grid_height), m_height - 1);
+    return { x, y };
 }
 
 }

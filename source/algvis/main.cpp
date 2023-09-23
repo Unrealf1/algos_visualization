@@ -43,6 +43,19 @@ int main() {
     set_random_seed(params.fixed_seed);
 
     Maze maze = create_maze(params);
+
+    if (maze.from >= maze.items.size())
+    {
+        spdlog::error("Maze does not have a start!");
+        return 1;
+    }
+
+    if (maze.to >= maze.items.size())
+    {
+        spdlog::error("Maze does not have a finish!");
+        return 2;
+    }
+
     Maze::Node from {util::idx_to_coords(maze.from, maze.width)};
     Maze::Node to {util::idx_to_coords(maze.to, maze.width)};
     spdlog::info("searching path from {}, {} to {}, {}", from.x, from.y, to.x, to.y);

@@ -82,16 +82,7 @@ int main() {
             return;
         }
         
-        const float cell_width = display_dim / float(maze.width);
-        const float cell_height = display_dim / float(maze.height);
-        const float cell_dimention = std::min(cell_width, cell_height);
-        const float grid_width = cell_dimention * float(maze.width);
-        const float grid_height = cell_dimention * float(maze.height);
-        const float grid_offset_x = (display_dim - grid_width) / 2;
-        const float grid_offset_y = (display_dim - grid_height) / 2;
-
-        const auto coords_x = std::min(size_t((float(state.x) - grid_offset_x) * float(maze.width) / grid_width), size_t(maze.width - 1));
-        const auto coords_y = std::min(size_t((float(state.y) - grid_offset_y) * float(maze.height) / grid_height), size_t(maze.height - 1));
+        auto [coords_x, coords_y] = grid.get_cell_under_cursor_coords(state.x, state.y);
         auto& maze_cell = maze.get_cell({coords_x, coords_y});
         maze_cell = type_to_set;
         grid.get_cell(coords_x, coords_y).color = grid.style().color_map[maze_cell];
