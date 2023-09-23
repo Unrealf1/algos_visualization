@@ -28,7 +28,7 @@ Maze Maze::generate_random_dfs(size_t height, size_t width) {
     maze.get_cell(from) = MazeObject::start;
     maze.get_cell(to) = MazeObject::finish;
 
-    auto searcher = [&to, &maze](const Maze::Node& node) {
+    auto searcher = [&to](const Maze::Node& node) {
         return node == to;
     };
 

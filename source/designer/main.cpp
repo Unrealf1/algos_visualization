@@ -77,7 +77,7 @@ int main() {
     
     queue.register_source(al_get_mouse_event_source());
 
-    queue.add_reaction(al_get_mouse_event_source(), [&, last_mouse_pos = std::pair{-1, -1}, last_z = 0](auto event) mutable {
+    queue.add_reaction(al_get_mouse_event_source(), [&, last_mouse_pos = std::pair{-1, -1}](auto event) mutable {
         ImGui_ImplAllegro5_ProcessEvent(&event);
         if (ImGui::GetIO().WantCaptureMouse) {
             return;
