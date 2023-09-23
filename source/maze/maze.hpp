@@ -11,6 +11,10 @@ enum class MazeObject : uint8_t {
     space, wall, start, finish, slow
 };
 
+enum class EMazeGenerationAlgorithm {
+    noise, random_dfs
+};
+
 struct Maze {
     struct Node { 
         size_t x;

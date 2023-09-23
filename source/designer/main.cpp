@@ -8,6 +8,21 @@
 
 namespace rng = std::ranges;
 
+Maze create_maze(EMazeGenerationAlgorithm algorithm, size_t width, size_t height) {
+    switch (algorithm) {
+        case EMazeGenerationAlgorithm::noise: {
+            const auto wall_probability = 0.4;
+            Maze maze = Maze::generate_simple(width, height, wall_probability);
+            Maze::add_random_start_finish(maze);
+            maze.add_slow_tiles(0.2);
+            return maze;
+        }
+        case EMazeGenerationAlgorithm::random_dfs: {
+            return Maze::generate_random_dfs(width, height);
+        }
+    }
+    throw std::logic_error("Unknown maze generation algorithm!");
+}
 
 int main() {
     visual::initialize();
@@ -41,6 +56,11 @@ int main() {
         if (gui_data.fill_maze) {
             gui_data.fill_maze = false;
             rng::fill(maze.items, gui_data.draw_object);
+            grid.update(maze);
+        }
+        if (gui_data.generate_maze) {
+            gui_data.generate_maze = false;
+            maze = create_maze(gui_data.generation_algorithm, size_t(gui_data.maze_width), size_t(gui_data.maze_height));
             grid.update(maze);
         }
     };

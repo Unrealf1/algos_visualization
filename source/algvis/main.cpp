@@ -23,14 +23,14 @@ Maze create_maze(const ApplicationParams& params) {
     }
 
     switch (params.generation_algorithm) {
-        case ApplicationParams::EGenerationAlgorithm::noise: {
+        case EMazeGenerationAlgorithm::noise: {
             const auto wall_probability = 0.4;
             Maze maze = Maze::generate_simple(params.maze_width, params.maze_height, wall_probability);
             Maze::add_random_start_finish(maze);
             maze.add_slow_tiles(params.slow_tile_chance);
             return maze;
         }
-        case ApplicationParams::EGenerationAlgorithm::random_dfs: {
+        case EMazeGenerationAlgorithm::random_dfs: {
             return Maze::generate_random_dfs(params.maze_width, params.maze_height);
         }
     }

@@ -3,6 +3,7 @@
 #include <cstddef>
 #include <filesystem>
 #include <spdlog/common.h>
+#include <maze/maze.hpp>
 
 
 struct ApplicationParams {
@@ -16,9 +17,7 @@ struct ApplicationParams {
         BFS, DFS, RandomDFS, Dijkstra, AStar
     } algorithm;
 
-    enum class EGenerationAlgorithm {
-        noise, random_dfs
-    } generation_algorithm;
+    EMazeGenerationAlgorithm generation_algorithm;
 
     double wait_seconds;
     double desired_fps;

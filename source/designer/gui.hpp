@@ -8,7 +8,9 @@ struct GuiData{
     int maze_width = 20;
     int maze_height = 20;
 
+    EMazeGenerationAlgorithm generation_algorithm = EMazeGenerationAlgorithm::noise;
     bool fill_maze = false;
+    bool generate_maze = false;
 };
 
 GuiData& get_gui_data();
