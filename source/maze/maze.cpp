@@ -67,6 +67,16 @@ void Maze::add_slow_tiles(double change_probability) {
     }
 }
 
+void Maze::resize(size_t new_width, size_t new_height) {
+    Maze new_maze(new_width, new_height);
+    for (size_t x = 0; x < std::min(new_width, width); ++x) {
+        for (size_t y = 0; y < std::min(new_height, height); ++y) {
+            new_maze.get_cell({x, y}) = get_cell({x, y});
+        }
+    }
+    *this = std::move(new_maze);
+}
+
 Maze Maze::load(const std::filesystem::path& path) {
     std::fstream file(path, std::ios::in);
     size_t width;
@@ -86,7 +96,7 @@ Maze Maze::load(const std::filesystem::path& path) {
     return maze;
 }
 
-void Maze::save(const std::filesystem::path& path) {
+void Maze::save(const std::filesystem::path& path) const {
     std::ofstream file(path, std::ios::out);
     file << width << ' ' << height << ' ';
     using raw_t = std::underlying_type_t<MazeObject>;

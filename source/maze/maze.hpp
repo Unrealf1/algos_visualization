@@ -38,9 +38,11 @@ struct Maze {
     static Maze generate_simple(size_t height, size_t width, double wall_prob);
     static Maze generate_random_dfs(size_t height, size_t width);
     static Maze load(const std::filesystem::path&);
-    void save(const std::filesystem::path&);
     static void add_random_start_finish(Maze&);
     void add_slow_tiles(double change_probability);
+    void resize(size_t new_width, size_t new_height);
+
+    void save(const std::filesystem::path&) const;
     MazeObject& get_cell(const Node& node);
     std::vector<Node> get_neighboors(const Node& node) const;
     std::vector<Node> get_cross_neighboors(const Node& node, size_t distance = 1) const;

@@ -30,8 +30,8 @@ namespace visual {
             ALLEGRO_COLOR color;
         };
 
-        std::vector<Cell> m_grid;
     private:
+        std::vector<Cell> m_grid;
         size_t m_width;
         size_t m_height;
 
@@ -42,6 +42,8 @@ namespace visual {
     public:
 
         Grid(const Maze& maze, float vis_width, float vis_height, Style style = s_default_style);
+
+        void update(const Maze& maze);
 
         const Style& style() const;
         Style& style();

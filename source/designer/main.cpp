@@ -4,6 +4,9 @@
 #include <gui.hpp>
 #include <spdlog/spdlog.h>
 #include <visual/imgui_inc.hpp>
+#include <algorithm>
+
+namespace rng = std::ranges;
 
 
 int main() {
@@ -30,28 +33,15 @@ int main() {
 
     auto process_gui_changes = [&] {
         auto& gui_data = get_gui_data();
-        if (gui_data.maze_width != maze.width || gui_data.maze_height != maze.height) {
-            Maze new_maze(gui_data.maze_width, gui_data.maze_height);
-            for (size_t x = 0; x < maze.width; ++x) {
-                for (size_t y = 0; y < maze.height; ++y) {
-                    if (x >= new_maze.width || y >= new_maze.height) {
-                        continue;
-                    }
-                    new_maze.get_cell({x, y}) = maze.get_cell({x, y});
-                }
-            }
-            maze = std::move(new_maze);
-            grid = visual::Grid(maze, display_dim, display_dim);
-            grid.style().draw_lattice = true;
+        if (gui_data.maze_width != int(maze.width) || gui_data.maze_height != int(maze.height)) {
+            maze.resize(size_t(gui_data.maze_width), size_t(gui_data.maze_height));
+            grid.update(maze);
         }
 
         if (gui_data.fill_maze) {
             gui_data.fill_maze = false;
-            for (auto& item : maze.items) {
-                item = gui_data.draw_object;
-            }
-            grid = visual::Grid(maze, display_dim, display_dim);
-            grid.style().draw_lattice = true;
+            rng::fill(maze.items, gui_data.draw_object);
+            grid.update(maze);
         }
     };
 
@@ -100,8 +90,8 @@ int main() {
         const float grid_offset_x = (display_dim - grid_width) / 2;
         const float grid_offset_y = (display_dim - grid_height) / 2;
 
-        const auto coords_x = std::min(size_t((state.x - grid_offset_x) * maze.width / grid_width), size_t(maze.width - 1)); 
-        const auto coords_y = std::min(size_t((state.y - grid_offset_y) * maze.height / grid_height), size_t(maze.height - 1)); 
+        const auto coords_x = std::min(size_t((float(state.x) - grid_offset_x) * float(maze.width) / grid_width), size_t(maze.width - 1));
+        const auto coords_y = std::min(size_t((float(state.y) - grid_offset_y) * float(maze.height) / grid_height), size_t(maze.height - 1));
         auto& maze_cell = maze.get_cell({coords_x, coords_y});
         maze_cell = type_to_set;
         grid.get_cell(coords_x, coords_y).color = grid.style().color_map[maze_cell];

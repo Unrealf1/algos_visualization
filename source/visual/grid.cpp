@@ -34,6 +34,13 @@ Grid::Grid(const Maze& maze, float vis_width, float vis_height, Style style)
     }
 }
 
+void Grid::update(const Maze& maze) {
+    auto temp = Grid(maze, m_visual_width, m_visual_height);
+    m_grid = std::move(temp.m_grid);
+    m_width = temp.m_width;
+    m_height = temp.m_height;
+}
+
 const Grid::Style& Grid::style() const {
     return m_style;
 }

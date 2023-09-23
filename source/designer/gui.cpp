@@ -16,9 +16,11 @@ void draw_gui() {
     ImGui::NewFrame();
 
     if (ImGui::Begin("Brush", nullptr, ImGuiWindowFlags_MenuBar)) {
+        int draw_object_selector = static_cast<std::underlying_type_t<MazeObject>>(s_data.draw_object);
         for (auto obj : magic_enum::enum_values<MazeObject>()) {
-            ImGui::RadioButton(magic_enum::enum_name(obj).data(), (int*)&(s_data.draw_object), (int)obj);
+            ImGui::RadioButton(magic_enum::enum_name(obj).data(), &draw_object_selector, int(obj));
         }
+        s_data.draw_object = static_cast<MazeObject>(draw_object_selector);
         ImGui::InputInt("Maze width", &s_data.maze_width);
         ImGui::InputInt("Maze height", &s_data.maze_height);
     }
