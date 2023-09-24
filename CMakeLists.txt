@@ -30,6 +30,23 @@ target_link_libraries(commonlib PUBLIC project_options project_warnings)
 
 CPMAddPackage("gh:gabime/spdlog@1.9.2")
 CPMAddPackage("gh:liballeg/allegro5@5.2.8.0#5.2.8.0")
+CPMAddPackage(
+  NAME allegro5
+  VERSION 5.2.8.0
+  GITHUB_REPOSITORY liballeg/allegro5
+  GIT_TAG 5.2.8.0
+  OPTIONS
+  "WANT_PHYSFS OFF"
+  "WANT_VIDEO OFF"
+  "WANT_DOCS OFF"
+  "WANT_DOCS_HTML OFF"
+  "WANT_DOCS_MAN OFF"
+  "WANT_DEMO OFF"
+  "WANT_EXAMPLES OFF"
+  "WANT_POPUP_EXAMPLES OFF"
+  "WANT_TESTS OFF"
+  "WANT_NATIVE_DIALOG"
+)
 CPMAddPackage("gh:nlohmann/json@3.10.5")
 CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
 
@@ -45,7 +62,7 @@ target_include_directories(commonlib SYSTEM PUBLIC ${allegro_includes})
 install(TARGETS
     RUNTIME DESTINATION package
     LIBRARY DESTINATION package)
-foreach(ADDON font image color primitives)
+foreach(ADDON font image color primitives dialog)
     target_include_directories("allegro_${ADDON}" INTERFACE
         "${allegro5_SOURCE_DIR}/addons/${ADDON}"
     )
@@ -60,7 +77,7 @@ target_include_directories(imgui PUBLIC external/imgui)
 target_include_directories(imgui SYSTEM PUBLIC ${allegro_includes})
 target_link_libraries(imgui PUBLIC allegro allegro_font allegro_image allegro_color allegro_primitives)
 
-target_link_libraries(commonlib PUBLIC spdlog allegro allegro_primitives allegro_font nlohmann_json::nlohmann_json magic_enum imgui)
+target_link_libraries(commonlib PUBLIC spdlog allegro allegro_primitives allegro_font allegro_dialog nlohmann_json::nlohmann_json magic_enum imgui)
 
 set(CMAKE_INSTALL_PREFIX .)
 list(APPEND CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX})
