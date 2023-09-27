@@ -49,6 +49,10 @@ CPMAddPackage(
 )
 CPMAddPackage("gh:nlohmann/json@3.10.5")
 CPMAddPackage("gh:Neargye/magic_enum@0.8.2")
+CPMAddPackage("gh:aiekick/ImGuiFileDialog@0.6.5")
+target_compile_definitions(ImGuiFileDialog PRIVATE USE_STD_FILESYSTEM=1)
+
+target_link_libraries(ImGuiFileDialog PUBLIC imgui)
 
 SET(EXECUTABLE_OUTPUT_PATH ${CMAKE_BINARY_DIR}/bin)
 SET(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
@@ -77,7 +81,7 @@ target_include_directories(imgui PUBLIC external/imgui)
 target_include_directories(imgui SYSTEM PUBLIC ${allegro_includes})
 target_link_libraries(imgui PUBLIC allegro allegro_font allegro_image allegro_color allegro_primitives)
 
-target_link_libraries(commonlib PUBLIC spdlog allegro allegro_primitives allegro_font allegro_dialog nlohmann_json::nlohmann_json magic_enum imgui)
+target_link_libraries(commonlib PUBLIC spdlog allegro allegro_primitives allegro_font allegro_dialog nlohmann_json::nlohmann_json magic_enum imgui ImGuiFileDialog)
 
 set(CMAKE_INSTALL_PREFIX .)
 list(APPEND CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX})

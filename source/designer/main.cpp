@@ -58,10 +58,17 @@ int main() {
             rng::fill(maze.items, gui_data.draw_object);
             grid.update(maze);
         }
+
         if (gui_data.generate_maze) {
             gui_data.generate_maze = false;
             maze = create_maze(gui_data.generation_algorithm, size_t(gui_data.maze_width), size_t(gui_data.maze_height));
             grid.update(maze);
+        }
+
+        if (gui_data.save_data.do_save) {
+            gui_data.save_data.do_save = false;
+            maze.save(gui_data.save_data.file_path_name);
+            spdlog::info("Saved maze to \"{}\"", gui_data.save_data.file_path_name);
         }
     };
 
@@ -76,6 +83,7 @@ int main() {
     });
     
     queue.register_source(al_get_mouse_event_source());
+    queue.register_source(al_get_keyboard_event_source());
 
     queue.add_reaction(al_get_mouse_event_source(), [&, last_mouse_pos = std::pair{-1, -1}](auto event) mutable {
         ImGui_ImplAllegro5_ProcessEvent(&event);
@@ -109,9 +117,14 @@ int main() {
         last_mouse_pos = std::pair{state.x, state.y};
     });
 
-    main_visual_loop(queue, display);
+    queue.add_reaction(al_get_keyboard_event_source(), [&](auto event) mutable {
+        ImGui_ImplAllegro5_ProcessEvent(&event);
+        if (ImGui::GetIO().WantCaptureKeyboard) {
+            return;
+        }
+    });
 
-    maze.save("designed.maze");
+    main_visual_loop(queue, display);
 
     al_destroy_display(display);
 }

@@ -2,6 +2,7 @@
 
 #include <visual/imgui_inc.hpp>
 #include <util/magic_enum_inc.h>
+#include <ImGuiFileDialog.h>
 
 
 static GuiData s_data{};
@@ -40,6 +41,27 @@ void draw_brush_window() {
     ImGui::End();
 }
 
+void draw_save_dialog() {
+    const char* const key = "designer_draw_save_dialog";
+    if (ImGui::Button("Save maze")) {
+        ImGuiFileDialog::Instance()->OpenDialog(key, "Choose File", ".maze", ".", 1, nullptr, ImGuiFileDialogFlags_Modal | ImGuiFileDialogFlags_ConfirmOverwrite);
+    }
+
+    // display
+    if (ImGuiFileDialog::Instance()->Display(key)) 
+    {
+        // action if OK
+        if (ImGuiFileDialog::Instance()->IsOk())
+        {
+            s_data.save_data.file_path_name = ImGuiFileDialog::Instance()->GetFilePathName();
+            s_data.save_data.do_save = true;
+        }
+
+        // close
+        ImGuiFileDialog::Instance()->Close();
+    }
+}
+
 void draw_generation_window() {
     if (ImGui::Begin("Generation", nullptr, ImGuiWindowFlags_MenuBar)) {
         if (ImGui::Button("Fill with chosen brush tile")) {
@@ -51,6 +73,8 @@ void draw_generation_window() {
         if (ImGui::Button("Generate")) {
             s_data.generate_maze = true;
         }
+
+        draw_save_dialog();
     }
 }
 
