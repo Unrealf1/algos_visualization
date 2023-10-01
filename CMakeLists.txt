@@ -66,12 +66,15 @@ target_include_directories(commonlib SYSTEM PUBLIC ${allegro_includes})
 install(TARGETS
     RUNTIME DESTINATION package
     LIBRARY DESTINATION package)
-foreach(ADDON font image color primitives dialog)
+foreach(ADDON font image color primitives)
     target_include_directories("allegro_${ADDON}" INTERFACE
         "${allegro5_SOURCE_DIR}/addons/${ADDON}"
     )
+    install(TARGETS "allegro_${ADDON}"
+        RUNTIME DESTINATION package
+        LIBRARY DESTINATION package)
 endforeach()
-install(TARGETS allegro allegro_font allegro_primitives
+install(TARGETS allegro
     RUNTIME DESTINATION package
     LIBRARY DESTINATION package)
 
@@ -81,7 +84,7 @@ target_include_directories(imgui PUBLIC external/imgui)
 target_include_directories(imgui SYSTEM PUBLIC ${allegro_includes})
 target_link_libraries(imgui PUBLIC allegro allegro_font allegro_image allegro_color allegro_primitives)
 
-target_link_libraries(commonlib PUBLIC spdlog allegro allegro_primitives allegro_font allegro_dialog nlohmann_json::nlohmann_json magic_enum imgui ImGuiFileDialog)
+target_link_libraries(commonlib PUBLIC spdlog allegro allegro_primitives allegro_font nlohmann_json::nlohmann_json magic_enum imgui ImGuiFileDialog)
 
 set(CMAKE_INSTALL_PREFIX .)
 list(APPEND CMAKE_INSTALL_RPATH ${CMAKE_INSTALL_PREFIX})
