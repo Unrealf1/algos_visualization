@@ -32,13 +32,16 @@ void draw_enum_radio_buttons(Enum& value, int max_in_line = -1) {
 }
 
 void draw_brush_window() {
-    if (ImGui::Begin("Brush", nullptr, ImGuiWindowFlags_MenuBar)) {
+    if (ImGui::CollapsingHeader("Brush")) {
         draw_enum_radio_buttons<MazeObject>(s_data.draw_object, 3);
+    }
+}
 
+void draw_maze_parameters() {
+    if (ImGui::CollapsingHeader("Maze parameters")) {
         ImGui::InputInt("Maze width", &s_data.maze_width);
         ImGui::InputInt("Maze height", &s_data.maze_height);
     }
-    ImGui::End();
 }
 
 void draw_save_dialog() {
@@ -63,7 +66,7 @@ void draw_save_dialog() {
 }
 
 void draw_generation_window() {
-    if (ImGui::Begin("Generation", nullptr, ImGuiWindowFlags_MenuBar)) {
+    if (ImGui::CollapsingHeader("Generation")) {
         if (ImGui::Button("Fill with chosen brush tile")) {
             s_data.fill_maze = true;
         }
@@ -73,8 +76,6 @@ void draw_generation_window() {
         if (ImGui::Button("Generate")) {
             s_data.generate_maze = true;
         }
-
-        draw_save_dialog();
     }
 }
 
@@ -82,8 +83,13 @@ void draw_gui() {
     ImGui_ImplAllegro5_NewFrame();
     ImGui::NewFrame();
 
+    ImGui::Begin("Menu");
+
     draw_brush_window();
     draw_generation_window();
+    draw_maze_parameters();
+    draw_save_dialog();
+
     ImGui::End();
 
     ImGui::Render();
