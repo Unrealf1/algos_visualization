@@ -67,6 +67,10 @@ void Grid::set_dimentions(float width, float height) {
     recalculate_visual_parameters();
 }
 
+std::pair<float, float> Grid::get_dimentions() const {
+    return {m_visual_screen_width, m_visual_screen_height};
+}
+
 Grid::Cell& Grid::get_cell(size_t w, size_t h) {
     const auto idx = util::coords_to_idx(w, h, m_width);
     return m_grid[idx];

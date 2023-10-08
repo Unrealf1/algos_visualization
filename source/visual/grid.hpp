@@ -55,6 +55,7 @@ namespace visual {
         Style& style();
 
         void set_dimentions(float width, float height);
+        std::pair<float, float> get_dimentions() const;
         Cell& get_cell(size_t w, size_t h);
         Cell* cell_under_cursor(int mouse_x, int mouse_y);
         const std::vector<Cell>& get_cells() const;

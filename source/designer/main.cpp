@@ -33,6 +33,7 @@ int main() {
     gui_data.maze_height = maze_dim;
     gui_data.maze_height = maze_dim;
 
+    al_set_new_display_flags(ALLEGRO_RESIZABLE);
     auto display = al_create_display(display_dim, display_dim);
     ImGui_ImplAllegro5_Init(display);
 
@@ -84,6 +85,7 @@ int main() {
     
     queue.register_source(al_get_mouse_event_source());
     queue.register_source(al_get_keyboard_event_source());
+    queue.register_source(al_get_display_event_source(display));
 
     queue.add_reaction(al_get_mouse_event_source(), [&, last_mouse_pos = std::pair{-1, -1}](auto event) mutable {
         ImGui_ImplAllegro5_ProcessEvent(&event);
@@ -92,7 +94,8 @@ int main() {
         }
         ALLEGRO_MOUSE_STATE state;
         al_get_mouse_state(&state);
-        if (state.x < 0 || state.y < 0 || state.x > display_dim || state.y > display_dim) {
+        const auto [screen_width, screen_height] = grid.get_dimentions();
+        if (state.x < 0 || state.y < 0 || float(state.x) > screen_width || float(state.y) > screen_height) {
             return;
         }
         bool shouldChangeMaze = true;
@@ -121,6 +124,12 @@ int main() {
         ImGui_ImplAllegro5_ProcessEvent(&event);
         if (ImGui::GetIO().WantCaptureKeyboard) {
             return;
+        }
+    });
+
+    queue.add_reaction(al_get_display_event_source(display), [&](auto event) {
+        if (event.type == ALLEGRO_EVENT_DISPLAY_RESIZE) {
+            grid.set_dimentions(float(event.display.width), float(event.display.height));
         }
     });
 

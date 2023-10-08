@@ -26,6 +26,10 @@ namespace visual {
             system_events.get(event);
             if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
                 break;
+            } else if (event.type == ALLEGRO_EVENT_DISPLAY_RESIZE) {
+                ImGui_ImplAllegro5_InvalidateDeviceObjects();
+                al_acknowledge_resize(event.display.source);
+                ImGui_ImplAllegro5_CreateDeviceObjects();
             }
         }
     }
