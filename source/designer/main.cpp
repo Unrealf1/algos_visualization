@@ -71,6 +71,13 @@ int main() {
             maze.save(gui_data.save_data.file_path_name);
             spdlog::info("Saved maze to \"{}\"", gui_data.save_data.file_path_name);
         }
+
+        if (gui_data.load_data.do_load) {
+            gui_data.load_data.do_load = false;
+            maze = Maze::load(gui_data.load_data.file_path_name);
+            grid.update(maze);
+            spdlog::info("Loaded maze from \"{}\"", gui_data.load_data.file_path_name);
+        }
     };
 
     queue.add_reaction(gui_update_timer.event_source(), [&] (const auto&) {

@@ -16,6 +16,10 @@ struct GuiData{
         bool do_save = false;
         std::string file_path_name;
     } save_data;
+    struct LoadData {
+        bool do_load = false;
+        std::string file_path_name;
+    } load_data;
 };
 
 GuiData& get_gui_data();

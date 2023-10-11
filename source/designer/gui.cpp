@@ -67,6 +67,24 @@ void draw_save_dialog() {
     }
 }
 
+void draw_load_dialog() {
+    const char* const key = "designer_draw_load_dialog";
+    if (ImGui::Button("Load maze")) {
+        ImGuiFileDialog::Instance()->OpenDialog(key, "Choose File", ".maze", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
+    }
+
+    if (ImGuiFileDialog::Instance()->Display(key))
+    {
+        if (ImGuiFileDialog::Instance()->IsOk())
+        {
+            s_data.load_data.file_path_name = ImGuiFileDialog::Instance()->GetFilePathName();
+            s_data.load_data.do_load = true;
+        }
+
+        ImGuiFileDialog::Instance()->Close();
+    }
+}
+
 void draw_generation_window() {
     if (ImGui::CollapsingHeader("Generation")) {
         if (ImGui::Button("Fill with chosen brush tile")) {
@@ -90,6 +108,8 @@ void draw_gui() {
     draw_brush_window();
     draw_generation_window();
     draw_maze_parameters();
+    draw_load_dialog();
+    ImGui::SameLine();
     draw_save_dialog();
 
     ImGui::End();
