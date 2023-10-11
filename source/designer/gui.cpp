@@ -34,6 +34,8 @@ void draw_enum_radio_buttons(Enum& value, int max_in_line = -1) {
 void draw_brush_window() {
     if (ImGui::CollapsingHeader("Brush")) {
         draw_enum_radio_buttons<MazeObject>(s_data.draw_object, 3);
+        ImGui::InputInt("Brush size", &s_data.brush_size);
+        s_data.brush_size = std::clamp(s_data.brush_size, 1, 20);
     }
 }
 

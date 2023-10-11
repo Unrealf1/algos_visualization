@@ -114,9 +114,27 @@ int main() {
         }
         
         auto [coords_x, coords_y] = grid.get_cell_under_cursor_coords(state.x, state.y);
-        auto& maze_cell = maze.get_cell({coords_x, coords_y});
-        maze_cell = type_to_set;
-        grid.get_cell(coords_x, coords_y).color = grid.style().color_map[maze_cell];
+        const auto brush_size = get_gui_data().brush_size;
+        const auto offset = -brush_size / 2;
+        const int base_x = offset + int(coords_x);
+        const int base_y = offset + int(coords_y);
+        for (int dx = 0; dx < brush_size; ++dx) {
+            for (int dy = 0; dy < brush_size; ++dy) {
+                int x = base_x + dx;
+                int y = base_y + dy;
+                if (x < 0 || x > int(maze.width)) {
+                    continue;
+                }
+                if (y < 0 || y > int(maze.height)) {
+                    continue;
+                }
+                const auto xsz = size_t(x);
+                const auto ysz = size_t(y);
+                auto& maze_cell = maze.get_cell({xsz, ysz});
+                maze_cell = type_to_set;
+                grid.get_cell(xsz, ysz).color = grid.style().color_map[maze_cell];
+            }
+        }
         last_mouse_pos = std::pair{state.x, state.y};
     });
 

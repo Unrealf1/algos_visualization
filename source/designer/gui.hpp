@@ -5,6 +5,7 @@
 
 struct GuiData{
     MazeObject draw_object = MazeObject::wall; 
+    int brush_size = 1;
     int maze_width = 20;
     int maze_height = 20;
 
