@@ -1,6 +1,7 @@
 #pragma once
 
 #include <maze/maze.hpp>
+#include <maze/generation_parameters.hpp>
 
 
 struct GuiData{
@@ -20,8 +21,12 @@ struct GuiData{
         bool do_load = false;
         std::string file_path_name;
     } load_data;
+
+    maze_generation::RandomDfsParameters randomDfsGenerationParameters;
+    maze_generation::WhiteNoiseParameters whiteNoseGenerationParameters;
 };
 
 GuiData& get_gui_data();
 
 void draw_gui();
+

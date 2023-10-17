@@ -8,17 +8,22 @@
 
 namespace rng = std::ranges;
 
-Maze create_maze(EMazeGenerationAlgorithm algorithm, size_t width, size_t height) {
-    switch (algorithm) {
+Maze create_maze(const GuiData& gui_data) {
+    const size_t width = size_t(gui_data.maze_width);
+    const size_t height = size_t(gui_data.maze_height);
+    switch (gui_data.generation_algorithm) {
         case EMazeGenerationAlgorithm::noise: {
-            const auto wall_probability = 0.4;
-            Maze maze = Maze::generate_simple(width, height, wall_probability);
+            const auto& params = gui_data.whiteNoseGenerationParameters;
+            Maze maze = Maze::generate_simple(width, height, double(params.wall_prob.value));
             Maze::add_random_start_finish(maze);
-            maze.add_slow_tiles(0.2);
+            maze.add_slow_tiles(double(params.slow_prob.value));
             return maze;
         }
         case EMazeGenerationAlgorithm::random_dfs: {
-            return Maze::generate_random_dfs(width, height);
+            const auto& params = gui_data.randomDfsGenerationParameters;
+            Maze maze = Maze::generate_random_dfs(width, height);
+            maze.add_slow_tiles(double(params.slow_prob.value));
+            return maze;
         }
     }
     throw std::logic_error("Unknown maze generation algorithm!");
@@ -62,7 +67,7 @@ int main() {
 
         if (gui_data.generate_maze) {
             gui_data.generate_maze = false;
-            maze = create_maze(gui_data.generation_algorithm, size_t(gui_data.maze_width), size_t(gui_data.maze_height));
+            maze = create_maze(gui_data);
             grid.update(maze);
         }
 

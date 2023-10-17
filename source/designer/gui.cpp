@@ -1,8 +1,8 @@
 #include "gui.hpp"
 
 #include <visual/imgui_inc.hpp>
-#include <util/magic_enum_inc.h>
 #include <ImGuiFileDialog.h>
+#include <visual/imgui_widgets.hpp>
 
 
 static GuiData s_data{};
@@ -12,28 +12,9 @@ GuiData& get_gui_data() {
     return s_data;
 }
 
-template<typename Enum>
-void draw_enum_radio_buttons(Enum& value, int max_in_line = -1) {
-    // If enum has type with sizeof less than int as underlying
-    // selector will shield us from corrupting memory
-    int selector = static_cast<std::underlying_type_t<Enum>>(value);
-    const auto values = magic_enum::enum_values<Enum>();
-    int current_line_size = 0;
-    for (auto v : values) {
-        ImGui::RadioButton(magic_enum::enum_name(v).data(), &selector, int(v)); ImGui::SameLine();
-        ++current_line_size;
-        if (current_line_size == max_in_line) {
-            ImGui::NewLine();
-            current_line_size = 0;
-        }
-    }
-    ImGui::NewLine();
-    value = static_cast<Enum>(selector);
-}
-
 void draw_brush_window() {
     if (ImGui::CollapsingHeader("Brush")) {
-        draw_enum_radio_buttons<MazeObject>(s_data.draw_object, 3);
+        visual::imgui::draw_enum_radio_buttons<MazeObject>(s_data.draw_object, 3);
         ImGui::InputInt("Brush size", &s_data.brush_size);
         s_data.brush_size = std::clamp(s_data.brush_size, 1, 20);
     }
@@ -91,7 +72,13 @@ void draw_generation_window() {
             s_data.fill_maze = true;
         }
 
-        draw_enum_radio_buttons<EMazeGenerationAlgorithm>(s_data.generation_algorithm, 3);
+        visual::imgui::draw_enum_radio_buttons<EMazeGenerationAlgorithm>(s_data.generation_algorithm, 3);
+
+        if (s_data.generation_algorithm == EMazeGenerationAlgorithm::noise) {
+            visual::imgui::InputParameters(s_data.whiteNoseGenerationParameters);
+        } else if (s_data.generation_algorithm == EMazeGenerationAlgorithm::random_dfs) {
+            visual::imgui::InputParameters(s_data.randomDfsGenerationParameters);
+        }
 
         if (ImGui::Button("Generate")) {
             s_data.generate_maze = true;

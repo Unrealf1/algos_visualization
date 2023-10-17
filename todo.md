@@ -21,7 +21,9 @@
         *   Interface to create maze?
             +   Save dialog
             +   Load existing maze to editor
-            -   Parameters for generation algorithms
+            *   Parameters for generation algorithms
+                +   In designer
+                -   In config for algvis
 - Prove all the algorithms
 - Compile a video(s) / posts
 - Turn this into a screensaver!
