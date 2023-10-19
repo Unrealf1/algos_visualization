@@ -24,6 +24,9 @@ void draw_maze_parameters() {
     if (ImGui::CollapsingHeader("Maze parameters")) {
         ImGui::InputInt("Maze width", &s_data.maze_width);
         ImGui::InputInt("Maze height", &s_data.maze_height);
+
+        s_data.maze_width = std::max(s_data.maze_width, 1);
+        s_data.maze_height = std::max(s_data.maze_height, 1);
     }
 }
 
