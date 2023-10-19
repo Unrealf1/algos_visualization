@@ -25,7 +25,7 @@ namespace visual {
     template<typename Raw, typename Actual>
     struct AllegroDecorator {
     protected:
-        Raw* const al_pointer;
+        Raw* al_pointer;
 
     public:
         template<typename... Args>
@@ -40,11 +40,28 @@ namespace visual {
         }
 
         AllegroDecorator(const AllegroDecorator&) = delete;
-
+        AllegroDecorator& operator=(const AllegroDecorator&) = delete;
+        AllegroDecorator& operator=(AllegroDecorator&& other) {
+            Actual::destroy(al_pointer);
+            al_pointer = other.al_pointer;
+            other.al_pointer = nullptr;
+            return *this;
+        }
     public:
         Raw* get_raw() {
             return al_pointer;
         }
+    };
+
+    struct Bitmap : public AllegroDecorator<ALLEGRO_BITMAP, Bitmap> {
+        using AllegroDecorator::AllegroDecorator;
+        using Raw = ALLEGRO_BITMAP;
+
+        static Raw* init(int w, int h);
+        static void destroy(Raw*);
+
+        int height();
+        int width();
     };
 
     struct Timer : public AllegroDecorator<ALLEGRO_TIMER, Timer> {

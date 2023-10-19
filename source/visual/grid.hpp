@@ -1,11 +1,13 @@
 #pragma once
 
 #include <vector>
+#include <set>
 #include <map>
 #include <allegro5/allegro.h>
 #include <allegro5/allegro_primitives.h>
 #include <util/util.hpp>
 #include <maze/maze.hpp>
+#include <visual/allegro_util.hpp>
 
 
 namespace visual {
@@ -35,6 +37,11 @@ namespace visual {
         size_t m_width;
         size_t m_height;
 
+        Bitmap m_bitmap;
+
+        std::set<size_t> m_dirty_cells;
+        bool m_need_full_redraw;
+
         float m_visual_screen_width;
         float m_visual_screen_height;
         float m_visual_offset_x;
@@ -56,10 +63,11 @@ namespace visual {
 
         void set_dimentions(float width, float height);
         std::pair<float, float> get_dimentions() const;
-        Cell& get_cell(size_t w, size_t h);
+        const Cell& get_cell(size_t w, size_t h) const;
+        void set_cell(size_t w, size_t h, Cell new_value);
         Cell* cell_under_cursor(int mouse_x, int mouse_y);
         const std::vector<Cell>& get_cells() const;
-        void draw();
+        void draw(ALLEGRO_DISPLAY* display);
         std::pair<size_t, size_t> get_cell_under_cursor_coords(int mouse_x, int mouse_y) const;
     private:
         void recalculate_visual_parameters();

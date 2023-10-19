@@ -34,6 +34,22 @@ namespace visual {
         }
     }
 
+    ALLEGRO_BITMAP* Bitmap::init(int w, int h) {
+        return al_create_bitmap(w, h);
+    }
+
+    void Bitmap::destroy(ALLEGRO_BITMAP* bitmap) {
+        al_destroy_bitmap(bitmap);
+    }
+
+    int Bitmap::height() {
+        return al_get_bitmap_height(al_pointer);
+    }
+
+    int Bitmap::width() {
+        return al_get_bitmap_width(al_pointer);
+    }
+
     ALLEGRO_TIMER* Timer::init(double period) {
         return al_create_timer(period);   
     }

@@ -87,7 +87,7 @@ int main() {
 
     queue.add_reaction(gui_update_timer.event_source(), [&] (const auto&) {
         al_clear_to_color(al_map_rgb(0, 0, 0));
-        grid.draw();
+        grid.draw(display);
         draw_gui();
 
         process_gui_changes();
@@ -144,7 +144,7 @@ int main() {
                 const auto ysz = size_t(y);
                 auto& maze_cell = maze.get_cell({xsz, ysz});
                 maze_cell = type_to_set;
-                grid.get_cell(xsz, ysz).color = grid.style().color_map[maze_cell];
+                grid.set_cell(xsz, ysz, {.color = grid.style().color_map[maze_cell]});
             }
         }
         last_mouse_pos = std::pair{state.x, state.y};

@@ -150,30 +150,30 @@ int main() {
                 spdlog::info("Path length: {}. Checked {} nodes", path.size(), search_log.size());
             }
             for (const auto& node : path) {
-                grid.get_cell(node.x, node.y) = Grid::Cell{.color = grid.style().path_color};
+                grid.set_cell(node.x, node.y, {.color = grid.style().path_color});
             }
             queue.drop_all();
             return;
         }
         if (cur_idx > 0) {
             auto last = search_log[cur_idx - 1];
-            grid.get_cell(last.x, last.y) = Grid::Cell{.color = grid.style().used_color};
+            grid.set_cell(last.x, last.y, {.color = grid.style().used_color});
             for (; discover_idx < discover_log.size() && discover_log[discover_idx].second <= cur_idx + 1; ++discover_idx) {
                 const auto& discovered = discover_log[discover_idx].first;
-                auto& cell = grid.get_cell(discovered.x, discovered.y);
+                const auto& cell = grid.get_cell(discovered.x, discovered.y);
                 if (cell.color != grid.style().used_color) {
-                    cell.color = grid.style().discovered_color;
+                    grid.set_cell(discovered.x, discovered.y, {.color = grid.style().discovered_color});
                 }
             }
         }
         auto checked_cell = search_log[cur_idx];
-        grid.get_cell(checked_cell.x, checked_cell.y) = Grid::Cell {.color = grid.style().last_used_color};
+        grid.set_cell(checked_cell.x, checked_cell.y, {.color = grid.style().last_used_color});
 
         ++cur_idx;
     });
     queue.add_reaction(frame_timer.event_source(), [&](const auto&){
         al_clear_to_color(al_map_rgb(0, 0, 0));
-        grid.draw();
+        grid.draw(display);
         al_flip_display();
     });
 

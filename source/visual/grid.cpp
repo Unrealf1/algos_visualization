@@ -1,4 +1,5 @@
 #include "grid.hpp"
+#include <util/util.hpp>
 #include <algorithm>
 
 namespace visual {
@@ -25,6 +26,7 @@ Grid::Grid(const Maze& maze, float vis_width, float vis_height, Style style)
     : m_grid(maze.items.size())
     , m_width(maze.width)
     , m_height(maze.height)
+    , m_bitmap(int(vis_height), int(vis_width))
     , m_visual_screen_width(vis_width)
     , m_visual_screen_height(vis_height)
     , m_style(std::move(style))
@@ -43,6 +45,13 @@ void Grid::recalculate_visual_parameters() {
     m_visual_grid_height = m_visual_cell_dimention * float(m_height);
     m_visual_offset_x = (m_visual_screen_width - m_visual_grid_width) / 2;
     m_visual_offset_y = (m_visual_screen_height - m_visual_grid_height) / 2;
+    m_need_full_redraw = true;
+
+    const auto w = int(m_visual_screen_width);
+    const auto h = int(m_visual_screen_height);
+    if (m_bitmap.height() != h || m_bitmap.width() != w) {
+        m_bitmap = visual::Bitmap(w, h);
+    }
 }
 
 void Grid::update(const Maze& maze) {
@@ -71,22 +80,39 @@ std::pair<float, float> Grid::get_dimentions() const {
     return {m_visual_screen_width, m_visual_screen_height};
 }
 
-Grid::Cell& Grid::get_cell(size_t w, size_t h) {
+const Grid::Cell& Grid::get_cell(size_t w, size_t h) const {
     const auto idx = util::coords_to_idx(w, h, m_width);
     return m_grid[idx];
 }
 
-void Grid::draw() {
-    for (size_t x = 0; x < m_width; ++x) {
-        const float cell_x = m_visual_offset_x + float(x) * m_visual_cell_dimention;
-        for (size_t y = 0; y < m_height; ++y) {
+void Grid::set_cell(size_t w, size_t h, Cell new_value) {
+    const auto idx = util::coords_to_idx(w, h, m_width);
+    m_grid[idx] = new_value;
+    m_dirty_cells.insert(idx);
+}
+
+void Grid::draw(ALLEGRO_DISPLAY* display) {
+    al_set_target_bitmap(m_bitmap.get_raw());
+    if (m_need_full_redraw) {
+        al_clear_to_color(al_map_rgb(0, 0, 0));
+        for (size_t x = 0; x < m_width; ++x) {
+            const float cell_x = m_visual_offset_x + float(x) * m_visual_cell_dimention;
+            for (size_t y = 0; y < m_height; ++y) {
+                const float cell_y = m_visual_offset_y + float(y) * m_visual_cell_dimention;
+                const auto idx = util::coords_to_idx(x, y, m_width);
+                al_draw_filled_rectangle(cell_x, cell_y, cell_x + m_visual_cell_dimention, cell_y + m_visual_cell_dimention, m_grid[idx].color);
+            }
+        }
+    } else {
+        for (auto idx : m_dirty_cells) {
+            const auto [x, y] = util::idx_to_coords(idx, m_width);
+            const float cell_x = m_visual_offset_x + float(x) * m_visual_cell_dimention;
             const float cell_y = m_visual_offset_y + float(y) * m_visual_cell_dimention;
-            const auto idx = util::coords_to_idx(x, y, m_width);
             al_draw_filled_rectangle(cell_x, cell_y, cell_x + m_visual_cell_dimention, cell_y + m_visual_cell_dimention, m_grid[idx].color);
         }
     }
 
-    if (m_style.draw_lattice) {
+    if (m_style.draw_lattice && (m_need_full_redraw || !m_dirty_cells.empty())) {
         for (size_t x = 0; x < m_width + 1; ++x) {
             const float line_x = m_visual_offset_x + float(x) * m_visual_cell_dimention;
             al_draw_line(line_x, m_visual_offset_y, line_x, m_visual_screen_height - m_visual_offset_y, m_style.lattice_color, 2);
@@ -96,6 +122,10 @@ void Grid::draw() {
             }
         }
     }
+    m_dirty_cells.clear();
+    m_need_full_redraw = false;
+    al_set_target_bitmap(al_get_backbuffer(display));
+    al_draw_bitmap(m_bitmap.get_raw(), 0, 0, 0);
 }
 
 std::pair<size_t, size_t> Grid::get_cell_under_cursor_coords(int mouse_x, int mouse_y) const {
