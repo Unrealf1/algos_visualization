@@ -18,8 +18,8 @@ namespace rng = std::ranges;
 
 
 Maze create_maze(const ApplicationParams& params) {
-    if (!params.load_file.empty()) {
-        return Maze::load(params.load_file);
+    if (!params.load_file.value.empty()) {
+        return Maze::load(params.load_file.value);
     }
 
     switch (params.generation_algorithm) {
@@ -59,8 +59,8 @@ int main() {
     Maze::Node from {util::idx_to_coords(maze.from, maze.width)};
     Maze::Node to {util::idx_to_coords(maze.to, maze.width)};
     spdlog::info("searching path from {}, {} to {}, {}", from.x, from.y, to.x, to.y);
-    if (!params.save_file.empty()) {
-        maze.save(params.save_file);
+    if (!params.save_file.value.empty()) {
+        maze.save(params.save_file.value);
     }
 
     std::vector<Maze::Node> search_log;
@@ -134,8 +134,8 @@ int main() {
 
     const double visualization_time = std::clamp(
         double(search_log.size()) * params.desireable_time_per_step,
-        params.min_visualization_time,
-        params.max_visualization_time
+        params.min_visualization_time.value,
+        params.max_visualization_time.value
     );
     const auto progress_step = visualization_time / double(search_log.size());
     auto progress_timer = visual::Timer(progress_step);
