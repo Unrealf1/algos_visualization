@@ -1,7 +1,7 @@
 {
     // BFS, DFS, RandomDFS, Dijkstra, AStar
     "algorithm": "AStar",
-    // noise, random_dfs
+    // noise, random_dfs, binary_tree
     "generation_algorithm": "noise",
     // debug, info, warn, err, critical, off
     "debug_level": "info",

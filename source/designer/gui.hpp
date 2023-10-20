@@ -24,6 +24,7 @@ struct GuiData{
 
     maze_generation::RandomDfsParameters randomDfsGenerationParameters;
     maze_generation::WhiteNoiseParameters whiteNoseGenerationParameters;
+    maze_generation::BinaryTreeParameters binaryTreeParameters;
 };
 
 GuiData& get_gui_data();

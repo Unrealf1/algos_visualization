@@ -31,7 +31,14 @@ Maze create_maze(const ApplicationParams& params) {
             return maze;
         }
         case EMazeGenerationAlgorithm::random_dfs: {
-            return Maze::generate_random_dfs(params.maze_width, params.maze_height);
+            auto maze = Maze::generate_random_dfs(params.maze_width, params.maze_height);
+            maze.add_slow_tiles(params.slow_tile_chance);
+            return maze;
+        }
+        case EMazeGenerationAlgorithm::binary_tree: {
+            auto maze = Maze::generate_binary_tree(params.maze_width, params.maze_height);
+            maze.add_slow_tiles(params.slow_tile_chance);
+            return maze;
         }
     }
     throw std::logic_error("Unknown maze generation algorithm!");

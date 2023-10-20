@@ -16,13 +16,19 @@ Maze create_maze(const GuiData& gui_data) {
             const auto& params = gui_data.whiteNoseGenerationParameters;
             Maze maze = Maze::generate_simple(width, height, double(params.wall_prob.value));
             Maze::add_random_start_finish(maze);
-            maze.add_slow_tiles(double(params.slow_prob.value));
+            maze.add_slow_tiles(double(params.slow_prob));
             return maze;
         }
         case EMazeGenerationAlgorithm::random_dfs: {
             const auto& params = gui_data.randomDfsGenerationParameters;
             Maze maze = Maze::generate_random_dfs(width, height);
-            maze.add_slow_tiles(double(params.slow_prob.value));
+            maze.add_slow_tiles(double(params.slow_prob));
+            return maze;
+        }
+        case EMazeGenerationAlgorithm::binary_tree: {
+            const auto& params = gui_data.binaryTreeParameters;
+            Maze maze = Maze::generate_binary_tree(height, width);
+            maze.add_slow_tiles(double(params.slow_prob));
             return maze;
         }
     }

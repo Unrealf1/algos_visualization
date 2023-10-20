@@ -81,6 +81,8 @@ void draw_generation_window() {
             visual::imgui::InputParameters(s_data.whiteNoseGenerationParameters);
         } else if (s_data.generation_algorithm == EMazeGenerationAlgorithm::random_dfs) {
             visual::imgui::InputParameters(s_data.randomDfsGenerationParameters);
+        } else if (s_data.generation_algorithm == EMazeGenerationAlgorithm::binary_tree) {
+            visual::imgui::InputParameters(s_data.binaryTreeParameters);
         }
 
         if (ImGui::Button("Generate")) {
