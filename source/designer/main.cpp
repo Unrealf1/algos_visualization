@@ -134,10 +134,10 @@ int main() {
             for (int dy = 0; dy < brush_size; ++dy) {
                 int x = base_x + dx;
                 int y = base_y + dy;
-                if (x < 0 || x > int(maze.width)) {
+                if (x < 0 || x >= int(maze.width)) {
                     continue;
                 }
-                if (y < 0 || y > int(maze.height)) {
+                if (y < 0 || y >= int(maze.height)) {
                     continue;
                 }
                 const auto xsz = size_t(x);
