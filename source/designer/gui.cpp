@@ -91,6 +91,14 @@ void draw_generation_window() {
     }
 }
 
+void draw_visual_params() {
+    if (ImGui::CollapsingHeader("visual")) {
+        const auto prev = s_data.visual_parameters;
+        visual::imgui::InputParameters(s_data.visual_parameters);
+        s_data.update_visuals = prev != s_data.visual_parameters;
+    }
+}
+
 void draw_gui() {
     ImGui_ImplAllegro5_NewFrame();
     ImGui::NewFrame();
@@ -100,6 +108,7 @@ void draw_gui() {
     draw_brush_window();
     draw_generation_window();
     draw_maze_parameters();
+    draw_visual_params();
     draw_load_dialog();
     ImGui::SameLine();
     draw_save_dialog();

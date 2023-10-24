@@ -91,6 +91,10 @@ void Grid::set_cell(size_t w, size_t h, Cell new_value) {
     m_dirty_cells.insert(idx);
 }
 
+void Grid::request_full_redraw() {
+    m_need_full_redraw = true;
+}
+
 void Grid::draw(ALLEGRO_DISPLAY* display) {
     al_set_target_bitmap(m_bitmap.get_raw());
     if (m_need_full_redraw) {

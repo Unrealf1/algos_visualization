@@ -8,9 +8,21 @@ namespace util {
     template<typename T, const char* const Name>
     struct Parameter {
         T value{};
+
         using Type = T;
+
         operator T() const {
             return value;
+        }
+
+        Parameter& operator=(const T& t) {
+            value = t;
+            return *this;
+        }
+
+        Parameter& operator=(T&& t) {
+            value = std::move(t);
+            return *this;
         }
     };
 

@@ -43,6 +43,7 @@ int main() {
     auto& gui_data = get_gui_data();
     gui_data.maze_height = maze_dim;
     gui_data.maze_height = maze_dim;
+    gui_data.visual_parameters.draw_grid = true;
 
     al_set_new_display_flags(ALLEGRO_RESIZABLE);
     auto display = al_create_display(display_dim, display_dim);
@@ -50,7 +51,7 @@ int main() {
 
     Maze maze(maze_dim, maze_dim);
     visual::Grid grid(maze, display_dim, display_dim);
-    grid.style().draw_lattice = true;
+    grid.style().draw_lattice = gui_data.visual_parameters.draw_grid;
 
     auto queue = visual::EventReactor();
 
@@ -88,6 +89,12 @@ int main() {
             maze = Maze::load(gui_data.load_data.file_path_name);
             grid.update(maze);
             spdlog::info("Loaded maze from \"{}\"", gui_data.load_data.file_path_name);
+        }
+
+        if (gui_data.update_visuals) {
+            gui_data.update_visuals = false;
+            grid.style().draw_lattice = gui_data.visual_parameters.draw_grid;
+            grid.request_full_redraw();
         }
     };
 

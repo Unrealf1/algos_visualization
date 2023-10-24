@@ -25,6 +25,12 @@ struct GuiData{
     maze_generation::RandomDfsParameters randomDfsGenerationParameters;
     maze_generation::WhiteNoiseParameters whiteNoseGenerationParameters;
     maze_generation::BinaryTreeParameters binaryTreeParameters;
+
+    struct VisualParameters {
+        bool operator==(const VisualParameters&) const = default;
+        PARAMETER(bool, draw_grid);
+    } visual_parameters;
+    bool update_visuals = false;
 };
 
 GuiData& get_gui_data();
