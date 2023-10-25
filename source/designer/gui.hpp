@@ -28,7 +28,7 @@ struct GuiData{
 
     struct VisualParameters {
         bool operator==(const VisualParameters&) const = default;
-        PARAMETER(bool, draw_grid);
+        PARAMETER(bool, draw_grid, true);
     } visual_parameters;
     bool update_visuals = false;
 };

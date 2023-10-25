@@ -43,7 +43,6 @@ int main() {
     auto& gui_data = get_gui_data();
     gui_data.maze_height = maze_dim;
     gui_data.maze_height = maze_dim;
-    gui_data.visual_parameters.draw_grid = true;
 
     al_set_new_display_flags(ALLEGRO_RESIZABLE);
     auto display = al_create_display(display_dim, display_dim);

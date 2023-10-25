@@ -1,0 +1,10 @@
+#pragma once
+
+
+#define OVERLOAD_CAT( A, B ) A##B
+#define OVERLOAD_SELECT( NAME, NUM ) OVERLOAD_CAT( NAME ## _, NUM )
+#define OVERLOAD_GET_COUNT( _1, _2, _3, _4, _5, _6, COUNT, ... ) COUNT
+
+#define OVERLOAD_VA_SIZE( ... ) OVERLOAD_GET_COUNT( __VA_ARGS__, 6, 5, 4, 3, 2, 1 )
+#define OVERLOAD_VA_SELECT( NAME, ... ) OVERLOAD_SELECT( NAME, OVERLOAD_VA_SIZE(__VA_ARGS__) )(__VA_ARGS__)
+

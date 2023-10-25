@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <type_traits>
+#include <util/overload_macros.h>
 
 
 namespace util {
@@ -56,9 +57,19 @@ namespace util {
 
 // For use INSIDE of structs and classes
 
-#define PARAMETER(Type, Name) static inline const char util_parameter_name_##Name[] = #Name; \
+#define PARAMETER( ... ) OVERLOAD_VA_SELECT( PARAMETER, __VA_ARGS__ )
+
+#define PARAMETER_2(Type, Name) static inline const char util_parameter_name_##Name[] = #Name; \
 util::Parameter< Type, util_parameter_name_##Name > Name
 
-#define RESTRAINED_PARAMETER(Type, Name, Min, Max) static inline const char util_parameter_name_##Name[] = #Name; \
+#define PARAMETER_3(Type, Name, Default) static inline const char util_parameter_name_##Name[] = #Name; \
+util::Parameter< Type, util_parameter_name_##Name > Name{Default}
+
+#define RESTRAINED_PARAMETER( ... ) OVERLOAD_VA_SELECT( RESTRAINED_PARAMETER, __VA_ARGS__ )
+
+#define RESTRAINED_PARAMETER_4(Type, Name, Min, Max) static inline const char util_parameter_name_##Name[] = #Name; \
 util::RestrainedParameter< Type, util_parameter_name_##Name > Name { {} , Min, Max}
+
+#define RESTRAINED_PARAMETER_5(Type, Name, Default, Min, Max) static inline const char util_parameter_name_##Name[] = #Name; \
+util::RestrainedParameter< Type, util_parameter_name_##Name > Name { { Default } , Min, Max}
 
