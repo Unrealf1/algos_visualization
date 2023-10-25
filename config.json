@@ -1,8 +1,8 @@
 {
     // BFS, DFS, RandomDFS, Dijkstra, AStar
     "algorithm": "AStar",
-    // noise, random_dfs, binary_tree
-    "generation_algorithm": "noise",
+    // noise, random_dfs, binary_tree, sidewinder
+    "generation_algorithm": "sidewinder",
     // debug, info, warn, err, critical, off
     "debug_level": "info",
     "desired_fps": 60.0,

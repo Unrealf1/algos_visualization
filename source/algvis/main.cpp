@@ -40,6 +40,11 @@ Maze create_maze(const ApplicationParams& params) {
             maze.add_slow_tiles(params.slow_tile_chance);
             return maze;
         }
+        case EMazeGenerationAlgorithm::sidewinder: {
+            auto maze = generate_sidewinder(params.maze_width, params.maze_height);
+            maze.add_slow_tiles(params.slow_tile_chance);
+            return maze;
+        }
     }
     throw std::logic_error("Unknown maze generation algorithm!");
 }

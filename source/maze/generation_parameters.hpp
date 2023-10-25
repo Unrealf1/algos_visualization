@@ -20,5 +20,10 @@ namespace maze_generation {
         RESTRAINED_PARAMETER(float, slow_prob, 0.0f, 1.0f);
         RESTRAINED_PARAMETER(float, horizontal_prob, 0.5f, 0.0f, 1.0f);
     };
+
+    struct SidewinderParameters {
+        RESTRAINED_PARAMETER(float, slow_prob, 0.0f, 1.0f);
+        RESTRAINED_PARAMETER(float, group_prob, 0.5f, 0.0f, 1.0f);
+    };
 }
 
