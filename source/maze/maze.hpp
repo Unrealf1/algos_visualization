@@ -11,10 +11,6 @@ enum class MazeObject : uint8_t {
     space, wall, start, finish, slow
 };
 
-enum class EMazeGenerationAlgorithm {
-    noise, random_dfs, binary_tree
-};
-
 struct Maze {
     struct Node { 
         size_t x;
@@ -39,9 +35,6 @@ struct Maze {
     size_t to;
     std::vector<MazeObject> items;
     
-    static Maze generate_simple(size_t height, size_t width, double wall_prob);
-    static Maze generate_random_dfs(size_t height, size_t width);
-    static Maze generate_binary_tree(size_t height, size_t width);
     static Maze load(const std::filesystem::path&);
     static void add_random_start_finish(Maze&);
     void add_slow_tiles(double change_probability);

@@ -1,4 +1,4 @@
-#include "maze.hpp"
+#include "maze_generation.hpp"
 
 #include <algos/DFS.hpp>
 #include <util/util.hpp>
@@ -10,7 +10,9 @@
 
 namespace rng = std::ranges;
 
-Maze Maze::generate_random_dfs(size_t height, size_t width) {
+using Node = Maze::Node;
+
+Maze generate_random_dfs(size_t height, size_t width) {
     Maze maze(width, height);
 
     Node from(0, 0);

@@ -3,7 +3,7 @@
 #include <cstddef>
 #include <filesystem>
 #include <spdlog/common.h>
-#include <maze/maze.hpp>
+#include <maze/maze_generation.hpp>
 #include <util/parameter.hpp>
 
 

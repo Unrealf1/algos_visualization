@@ -1,11 +1,12 @@
-#include "maze.hpp"
+#include "maze_generation.hpp"
 
 #include <random>
 #include <util/util.hpp>
 #include <util/random_utils.hpp>
 
+using Node = Maze::Node;
 
-Maze Maze::generate_binary_tree(size_t height, size_t width) {
+Maze generate_binary_tree(size_t height, size_t width, float horizontal_prob) {
     Maze maze(width, height, MazeObject::wall);
 
     Node from(0, 0);
@@ -29,7 +30,7 @@ Maze Maze::generate_binary_tree(size_t height, size_t width) {
                 } else if (h == height - 1) {
                     return true;
                 } else {
-                    return chance(0.5);
+                    return chance(horizontal_prob);
                 }
             }();
             if (go_right) {

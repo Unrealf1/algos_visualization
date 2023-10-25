@@ -24,3 +24,9 @@ bool chance(double probability, std::default_random_engine& rengine) {
     static std::uniform_real_distribution<double> distr(0.0, 1.0);
     return distr(rengine) < probability;
 }
+
+bool chance(float probability, std::default_random_engine& rengine) {
+    static std::uniform_real_distribution<float> distr(0.0, 1.0);
+    return distr(rengine) < probability;
+}
+

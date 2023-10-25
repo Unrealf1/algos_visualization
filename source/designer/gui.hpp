@@ -1,6 +1,6 @@
 #pragma once
 
-#include <maze/maze.hpp>
+#include <maze/maze_generation.hpp>
 #include <maze/generation_parameters.hpp>
 
 

@@ -18,6 +18,7 @@ namespace maze_generation {
 
     struct BinaryTreeParameters {
         RESTRAINED_PARAMETER(float, slow_prob, 0.0f, 1.0f);
+        RESTRAINED_PARAMETER(float, horizontal_prob, 0.5f, 0.0f, 1.0f);
     };
 }
 

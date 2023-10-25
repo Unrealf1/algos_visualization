@@ -8,7 +8,7 @@
 
 #include <stdexcept>
 #include <visual/allegro_util.hpp>
-#include <maze/maze.hpp>
+#include <maze/maze_generation.hpp>
 #include "parameters.hpp"
 #include <util/random_utils.hpp>
 #include <thread>
@@ -25,18 +25,18 @@ Maze create_maze(const ApplicationParams& params) {
     switch (params.generation_algorithm) {
         case EMazeGenerationAlgorithm::noise: {
             const auto wall_probability = 0.4;
-            Maze maze = Maze::generate_simple(params.maze_width, params.maze_height, wall_probability);
+            Maze maze = generate_white_noise(params.maze_width, params.maze_height, wall_probability);
             Maze::add_random_start_finish(maze);
             maze.add_slow_tiles(params.slow_tile_chance);
             return maze;
         }
         case EMazeGenerationAlgorithm::random_dfs: {
-            auto maze = Maze::generate_random_dfs(params.maze_width, params.maze_height);
+            auto maze = generate_random_dfs(params.maze_width, params.maze_height);
             maze.add_slow_tiles(params.slow_tile_chance);
             return maze;
         }
         case EMazeGenerationAlgorithm::binary_tree: {
-            auto maze = Maze::generate_binary_tree(params.maze_width, params.maze_height);
+            auto maze = generate_binary_tree(params.maze_width, params.maze_height);
             maze.add_slow_tiles(params.slow_tile_chance);
             return maze;
         }
