@@ -52,7 +52,9 @@ Maze generate_sidewinder(size_t width, size_t height, float group_prob) {
                 cur = MazeObject::space;
             }
         }
-
+        if (h == height - 1) {
+            continue;
+        }
         const size_t break_offset = std::uniform_int_distribution<size_t>(
             0,
             (width + (width % 2) - group_start) / 2
