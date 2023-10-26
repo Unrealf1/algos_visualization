@@ -27,13 +27,13 @@ Maze create_maze(const GuiData& gui_data) {
         }
         case EMazeGenerationAlgorithm::binary_tree: {
             const auto& params = gui_data.binaryTreeParameters;
-            Maze maze = generate_binary_tree(height, width, params.horizontal_prob);
+            Maze maze = generate_binary_tree(width, height, params.horizontal_prob);
             maze.add_slow_tiles(double(params.slow_prob));
             return maze;
         }
         case EMazeGenerationAlgorithm::sidewinder: {
             const auto& params = gui_data.sidewinderParameters;
-            Maze maze = generate_sidewinder(height, width, params.group_prob);
+            Maze maze = generate_sidewinder(width, height, params.group_prob);
             maze.add_slow_tiles(double(params.slow_prob));
             return maze;
         }

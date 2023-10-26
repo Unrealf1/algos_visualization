@@ -6,7 +6,7 @@
 
 using Node = Maze::Node;
 
-Maze generate_sidewinder(size_t height, size_t width, float group_prob) {
+Maze generate_sidewinder(size_t width, size_t height, float group_prob) {
     Maze maze(width, height, MazeObject::wall);
 
     Node from(0, 0);

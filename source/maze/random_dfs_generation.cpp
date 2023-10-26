@@ -12,7 +12,7 @@ namespace rng = std::ranges;
 
 using Node = Maze::Node;
 
-Maze generate_random_dfs(size_t height, size_t width) {
+Maze generate_random_dfs(size_t width, size_t height) {
     Maze maze(width, height);
 
     Node from(0, 0);

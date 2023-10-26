@@ -6,7 +6,7 @@
 
 using Node = Maze::Node;
 
-Maze generate_binary_tree(size_t height, size_t width, float horizontal_prob) {
+Maze generate_binary_tree(size_t width, size_t height, float horizontal_prob) {
     Maze maze(width, height, MazeObject::wall);
 
     Node from(0, 0);
