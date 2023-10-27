@@ -93,8 +93,8 @@ int main() {
             gui_data.load_data.do_load = false;
             maze = Maze::load(gui_data.load_data.file_path_name);
             grid.update(maze);
-            gui_data.maze_width = maze.width;
-            gui_data.maze_height = maze.height;
+            gui_data.maze_width = int(maze.width);
+            gui_data.maze_height = int(maze.height);
             spdlog::info("Loaded maze from \"{}\"", gui_data.load_data.file_path_name);
         }
 
