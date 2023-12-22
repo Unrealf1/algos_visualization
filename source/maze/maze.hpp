@@ -44,5 +44,8 @@ struct Maze {
     MazeObject& get_cell(const Node& node);
     std::vector<Node> get_neighboors(const Node& node) const;
     std::vector<Node> get_cross_neighboors(const Node& node, size_t distance = 1) const;
+    std::vector<Node> get_sides_and_corners(const Node& node, bool corners_require_adjacent, size_t distance = 1) const;
+
+    bool is_valid(const Node& node) const;
 };
 

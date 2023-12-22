@@ -21,6 +21,9 @@ struct ApplicationParams {
 
     PARAMETER(EMazeGenerationAlgorithm, generation_algorithm);
 
+    PARAMETER(bool, allow_diagonals);
+    PARAMETER(bool, require_adjacent_for_diagonals);
+
     PARAMETER(double, wait_seconds);
     PARAMETER(double, desired_fps);
     PARAMETER(double, min_visualization_time);

@@ -81,6 +81,10 @@ MazeObject& Maze::get_cell(const Node& node) {
     return items[idx];
 }
 
+bool Maze::is_valid(const Node& node) const {
+    return node.x < width && node.y < height;
+}
+
 std::vector<Maze::Node> Maze::get_neighboors(const Node& node) const {
     return get_cross_neighboors(node);
 }
@@ -97,13 +101,60 @@ std::vector<Maze::Node> Maze::get_cross_neighboors(const Node& node, size_t dist
     res.reserve(nodes_to_check.size());
 
     rng::copy_if(nodes_to_check, std::back_inserter(res), [&](const Node& node) {
-        bool valid = node.x < width && node.y < height;
-        if (valid) {
+        if (is_valid(node)) {
             auto index = util::coords_to_idx(node.x, node.y, width);
             return items[index] != MazeObject::wall;
         }
         return false;
     });
 
+    return res;
+}
+
+std::vector<Maze::Node> Maze::get_sides_and_corners(const Node& node, bool corners_require_adjacent, size_t distance) const {
+    auto [x, y] = node;
+    /*
+     * 7 -- 0 -- 1
+     * |         |
+     * 6         2
+     * |         |
+     * 5 -- 4 -- 3
+     */
+    std::array nodes_to_check = {
+        Node{x, y - distance},
+        Node{x + distance, y - distance},
+        Node{x + distance, y},
+        Node{x + distance, y + distance},
+        Node{x, y + distance},
+        Node{x - distance, y + distance},
+        Node{x - distance, y},
+        Node{x - distance, y - distance}
+    };
+
+    std::vector<Node> res;
+    res.reserve(nodes_to_check.size());
+
+    for (size_t i = 0; i < nodes_to_check.size(); ++i) {
+        const auto& node = nodes_to_check[i];
+        const auto node_index = util::coords_to_idx(node.x, node.y, width);
+        if (!is_valid(node) || items[node_index] == MazeObject::wall) {
+            continue;
+        }
+        const bool is_corner = i % 2 == 1;
+        if (is_corner && corners_require_adjacent) {
+            // check adjacent
+            const auto prev_index_to_check = i - 1; // first corner has index 1, so no negative values
+            const auto prev_node = nodes_to_check[prev_index_to_check];
+            const auto prev_index = util::coords_to_idx(prev_node.x, prev_node.y, width);
+            const auto next_index_to_check = (i + 1) % nodes_to_check.size();
+            const auto next_node = nodes_to_check[next_index_to_check];
+            const auto next_index = util::coords_to_idx(next_node.x, next_node.y, width);
+            if (!is_valid(prev_node) || items[prev_index] == MazeObject::wall
+                || !is_valid(next_node) || items[next_index] == MazeObject::wall) {
+                continue;
+            }
+        }
+        res.push_back(node);
+    }
     return res;
 }

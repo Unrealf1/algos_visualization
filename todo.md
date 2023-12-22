@@ -4,7 +4,7 @@
     + Add visualization of maze tiles discovered by the algorithm
     + Fix streching when maze has different proportions from display
 * Add more algorithms
-    -   Add option to allow diagonals (with or without surrounding free paths)
+    +   Add option to allow diagonals (with or without surrounding free paths)
     +   Random DFS
     -   ARA
     -   Another one from AI :)

@@ -3,6 +3,8 @@
     "algorithm": "AStar",
     // noise, random_dfs, binary_tree, sidewinder
     "generation_algorithm": "sidewinder",
+    "allow_diagonals": false,
+    "require_adjacent_for_diagonals": true,
     // debug, info, warn, err, critical, off
     "debug_level": "info",
     "desired_fps": 60.0,

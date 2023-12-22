@@ -10,6 +10,7 @@
 #include <visual/allegro_util.hpp>
 #include <maze/maze_generation.hpp>
 #include "parameters.hpp"
+#include "customization.hpp"
 #include <util/random_utils.hpp>
 #include <thread>
 #include <chrono>
@@ -77,8 +78,9 @@ int main() {
 
     std::vector<Maze::Node> search_log;
     std::vector<std::pair<Maze::Node, size_t>> discover_log;
+    auto edge_getter = create_edge_getter(params);
     auto logging_edge_getter = [&](const Maze::Node& node) {
-        auto neighboors = maze.get_neighboors(node);
+        auto neighboors = edge_getter(maze, node);
         rng::transform(neighboors, std::back_inserter(discover_log), [&](const Maze::Node& n) {
             return std::pair{n, search_log.size()};
         });
