@@ -55,9 +55,13 @@ Maze generate_sidewinder(size_t width, size_t height, float group_prob) {
         if (h == height - 1) {
             continue;
         }
+
+        if (group_start >= width) {
+            continue;
+        }
         const size_t break_offset = std::uniform_int_distribution<size_t>(
             0,
-            (width + (width % 2) - group_start) / 2
+            width / 2 - group_start / 2 - 1
         )(rengine);
         const size_t break_point = group_start + break_offset * 2;
         maze.get_cell({break_point, h + 1}) = MazeObject::space;
