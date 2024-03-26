@@ -37,7 +37,9 @@ void draw_save_dialog() {
     }
 
     // display
-    if (ImGuiFileDialog::Instance()->Display(key)) 
+    const ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse;
+    const ImVec2 windowMinSize = ImVec2(300, 200);
+    if (ImGuiFileDialog::Instance()->Display(key, windowFlags, windowMinSize))
     {
         // action if OK
         if (ImGuiFileDialog::Instance()->IsOk())
@@ -57,7 +59,9 @@ void draw_load_dialog() {
         ImGuiFileDialog::Instance()->OpenDialog(key, "Choose File", ".maze", ".", 1, nullptr, ImGuiFileDialogFlags_Modal);
     }
 
-    if (ImGuiFileDialog::Instance()->Display(key))
+    const ImGuiWindowFlags windowFlags = ImGuiWindowFlags_NoCollapse;
+    const ImVec2 windowMinSize = ImVec2(300, 200);
+    if (ImGuiFileDialog::Instance()->Display(key, windowFlags, windowMinSize))
     {
         if (ImGuiFileDialog::Instance()->IsOk())
         {
