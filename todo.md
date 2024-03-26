@@ -25,6 +25,7 @@
                 +   In designer
                 -   In config for algvis
 * fix leaks on application close
+    ?  Leaks are in allegro and various cleanup functions do nothing, abandon this for now
 - Prove all the algorithms
 - Compile a video(s) / posts
 - Turn this into a screensaver!
