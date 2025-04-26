@@ -8,8 +8,8 @@
     // debug, info, warn, err, critical, off
     "debug_level": "info",
     "desired_fps": 60.0,
-    "min_visualization_time": 0.0,
-    "max_visualization_time": 4.0,
+    "min_visualization_time": 10.0,
+    "max_visualization_time": 10.0,
     "desireable_time_per_step": 0.4,
     "slow_tile_chance": 0.3,
     "slow_tile_cost": 5.0,
@@ -20,6 +20,6 @@
     "maze_width": 20,
     // 0 means that seed is random
     "fixed_seed": 0,
-    "load_file": "",
+    "load_file": "smile.maze",
     "save_file": "last.maze"
 }

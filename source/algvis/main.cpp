@@ -76,6 +76,7 @@ int main() {
         maze.save(params.save_file.value);
     }
 
+    std::vector<std::pair<Maze::Node, float>> estimates_log;
     std::vector<Maze::Node> search_log;
     std::vector<std::pair<Maze::Node, size_t>> discover_log;
     auto edge_getter = create_edge_getter(params);
@@ -100,6 +101,14 @@ int main() {
         return maze.get_cell(to) == MazeObject::slow ? params.slow_tile_cost : 1.0;
     };
 
+    auto logging_estimate_getter = [&](const Maze::Node& node) {
+        auto dx = node.x - to.x;
+        auto dy = node.y - to.y;
+        auto estimate = std::sqrt(dx * dx + dy * dy);
+        estimates_log.push_back({node, estimate});
+        return estimate;
+    };
+
     clock_t start = clock();
     auto path = [&] {
         using namespace algos;
@@ -117,11 +126,7 @@ int main() {
                 return DijkstraFindPath(from, logging_searcher, logging_edge_getter, weight_getter);
             }
             case ApplicationParams::EAlgorithm::AStar: {
-                return AStarFindPath(from, logging_searcher, logging_edge_getter, weight_getter, [&](const Maze::Node& node) {
-                    auto dx = node.x - to.x;
-                    auto dy = node.y - to.y;
-                    return std::sqrt(dx * dx + dy * dy);
-                });
+                return AStarFindPath(from, logging_searcher, logging_edge_getter, weight_getter, logging_estimate_getter);
             }
         }
         // should not be reachable. Kept here for now because of gcc warning(end of non-void finction)
