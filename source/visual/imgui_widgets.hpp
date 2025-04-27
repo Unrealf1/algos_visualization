@@ -48,6 +48,8 @@ namespace visual { namespace imgui {
                 ImGui::InputFloat(Name, &proxy);
                 parameter.value = static_cast<T>(proxy);
             }
+        } else if constexpr (magic_enum::is_unscoped_enum_v<T> || magic_enum::is_scoped_enum_v<T>) {
+          draw_enum_radio_buttons(parameter.value);
         }
     }
 
@@ -68,7 +70,7 @@ namespace visual { namespace imgui {
                 ImGui::SliderFloat(Name, &parameter.value, parameter.min, parameter.max);
             } else {
                 float proxy = static_cast<float>(parameter.value);
-                ImGui::SliderFloat(Name, &parameter.value, parameter.min, parameter.max);
+                ImGui::SliderFloat(Name, &proxy, static_cast<float>(parameter.min), static_cast<float>(parameter.max));
                 parameter.value = static_cast<T>(proxy);
             }
         }
@@ -77,7 +79,9 @@ namespace visual { namespace imgui {
     template<typename T>
     void InputParameters(T& parameters) {
         boost::pfr::for_each_field(parameters, [&]<typename U>(U& field, size_t) {
-            InputParameter(field);
+            if constexpr(util::is_parameter<U>::value) {
+              InputParameter(field);
+            }
         });
     }
 

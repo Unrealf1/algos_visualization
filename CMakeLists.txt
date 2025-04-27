@@ -105,5 +105,11 @@ file(GLOB_RECURSE DESIGNER_SOURCES . source/designer/*.[ch]pp)
 add_executable(designer ${DESIGNER_SOURCES})
 target_include_directories(designer PUBLIC source/designer)
 target_link_libraries(designer PUBLIC commonlib)
-
 install(TARGETS designer DESTINATION package)
+
+file(GLOB_RECURSE COMBOAPP_SOURCES . source/combo_app/*.[ch]pp)
+add_executable(combo_app ${COMBOAPP_SOURCES})
+target_include_directories(combo_app PUBLIC source/combo_app)
+target_link_libraries(combo_app PUBLIC commonlib)
+
+install(TARGETS combo_app DESTINATION package)
