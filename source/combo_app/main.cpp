@@ -83,7 +83,7 @@ int main() {
 
   auto& config = combo_app_gui::get_data();
   
-  Maze maze(config.m_creation_data.maze_width, config.m_creation_data.maze_height);
+  Maze maze(config.creation_data.maze_width, config.creation_data.maze_height);
 
   auto displayWidth = al_get_display_width(display);
   auto displayHeight = al_get_display_height(display);
@@ -99,38 +99,38 @@ int main() {
   queue.register_source(progress_timer.event_source());
 
   auto react_to_gui = [&] {
-    if (grid.style().draw_lattice != config.m_creation_data.draw_grid) {
-      grid.style().draw_lattice = config.m_creation_data.draw_grid;
+    if (grid.style().draw_lattice != config.creation_data.draw_grid) {
+      grid.style().draw_lattice = config.creation_data.draw_grid;
       grid.request_full_redraw();
     }
-    if (config.m_creation_data.maze_width != int(maze.width) || config.m_creation_data.maze_height != int(maze.height)) {
-      maze.resize(size_t(config.m_creation_data.maze_width), size_t(config.m_creation_data.maze_height));
+    if (config.creation_data.maze_width != int(maze.width) || config.creation_data.maze_height != int(maze.height)) {
+      maze.resize(size_t(config.creation_data.maze_width), size_t(config.creation_data.maze_height));
       grid.update(maze);
     }
 
-    if (config.m_creation_data.fill_maze) {
-      config.m_creation_data.fill_maze = false;
-      rng::fill(maze.items, config.m_creation_data.draw_object);
+    if (config.creation_data.fill_maze) {
+      config.creation_data.fill_maze = false;
+      rng::fill(maze.items, config.creation_data.draw_object);
       grid.update(maze);
     }
 
-    if (config.m_creation_data.generate_maze) {
-      config.m_creation_data.generate_maze = false;
+    if (config.creation_data.generate_maze) {
+      config.creation_data.generate_maze = false;
       progress_timer.stop();
-      maze = create_maze(config.m_creation_data);
+      maze = create_maze(config.creation_data);
       grid.update(maze);
     }
 
-    if (config.m_visualization_data.runPathfinding) {
-      config.m_visualization_data.runPathfinding = false;
+    if (config.visualization_data.runPathfinding) {
+      config.visualization_data.runPathfinding = false;
       clear_visualization();
       grid.update(maze);
       Maze::Node from {util::idx_to_coords(maze.from, maze.width)};
       Maze::Node to {util::idx_to_coords(maze.to, maze.width)};
 
       auto edge_getter = create_edge_getter(
-          config.m_visualization_data.allow_diagonals.value,
-          config.m_visualization_data.require_adjacent_for_diagonals.value
+          config.visualization_data.allow_diagonals.value,
+          config.visualization_data.require_adjacent_for_diagonals.value
       );
       auto logging_edge_getter = [&](const Maze::Node& node) {
           auto neighboors = edge_getter(maze, node);
@@ -150,7 +150,7 @@ int main() {
           return node == to;
       };
       auto weight_getter = [&](const Maze::Node&, const Maze::Node& to) {
-          return maze.get_cell(to) == MazeObject::slow ? config.m_creation_data.slow_tile_cost.value : 1.0;
+          return maze.get_cell(to) == MazeObject::slow ? config.creation_data.slow_tile_cost.value : 1.0;
       };
 
       auto logging_estimate_getter = [&](const Maze::Node& node) {
@@ -164,7 +164,7 @@ int main() {
       clock_t start = clock();
       path = [&] {
           using namespace algos;
-          switch (config.m_visualization_data.algorithm.value) {
+          switch (config.visualization_data.algorithm.value) {
               case combo_app_gui::EAlgorithm::BFS: {
                   return BFSFindPath<Maze::Node>(from, logging_searcher, logging_edge_getter);
               }
@@ -187,7 +187,7 @@ int main() {
       clock_t end = clock();
       spdlog::info("Processor time taken(ms): {}", (double(end - start)) * 1000.0 / CLOCKS_PER_SEC);
 
-      auto timePerStep = config.m_visualization_data.desireable_time_per_step <= 0.0 ? 0.0001 : config.m_visualization_data.desireable_time_per_step;
+      auto timePerStep = config.visualization_data.desireable_time_per_step <= 0.0 ? 0.0001 : config.visualization_data.desireable_time_per_step;
       progress_timer.change_rate(timePerStep);
       progress_timer.start();
     }
@@ -237,7 +237,7 @@ int main() {
     bool shouldChangeMaze = true;
     MazeObject type_to_set = [&] {
       if (al_mouse_button_down(&state, 1)) {
-        return config.m_creation_data.draw_object.value;
+        return config.creation_data.draw_object.value;
       }
       if (al_mouse_button_down(&state, 2)) {
         return MazeObject::space;

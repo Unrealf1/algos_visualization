@@ -12,7 +12,7 @@ void apply_brush_to_grid(const ALLEGRO_MOUSE_STATE& state,
   auto& config = combo_app_gui::get_data();
 
   auto [coords_x, coords_y] = grid.get_cell_under_cursor_coords(state.x, state.y);
-  const auto brush_size = config.m_creation_data.brush_size;
+  const auto brush_size = config.creation_data.brush_size;
   const auto offset = -brush_size / 2;
   const int base_x = offset + int(coords_x);
   const int base_y = offset + int(coords_y);

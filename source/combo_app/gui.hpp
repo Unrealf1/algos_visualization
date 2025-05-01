@@ -57,8 +57,8 @@ namespace combo_app_gui{
 
   struct Data {
     AppMode m_mode = AppMode::Creation;
-    CreationData m_creation_data{}; 
-    VisualizationData m_visualization_data{};
+    CreationData creation_data{}; 
+    VisualizationData visualization_data{};
   };
 
   Data& get_data();

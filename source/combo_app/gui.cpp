@@ -13,26 +13,26 @@ namespace combo_app_gui {
   }
 
   static void draw_creation_gui() {
-    visual::imgui::InputParameters(s_data.m_creation_data);
+    visual::imgui::InputParameters(s_data.creation_data);
     ImGui::Text("Generation algorithm parameters");
-    switch (s_data.m_creation_data.generation_algorithm) {
+    switch (s_data.creation_data.generation_algorithm) {
         case EMazeGenerationAlgorithm::noise: {
-            auto& params = s_data.m_creation_data.whiteNoseGenerationParameters;
+            auto& params = s_data.creation_data.whiteNoseGenerationParameters;
             visual::imgui::InputParameters(params);
             break;
         }
         case EMazeGenerationAlgorithm::random_dfs: {
-            auto& params = s_data.m_creation_data.randomDfsGenerationParameters;
+            auto& params = s_data.creation_data.randomDfsGenerationParameters;
             visual::imgui::InputParameters(params);
             break;
         }
         case EMazeGenerationAlgorithm::binary_tree: {
-            auto& params = s_data.m_creation_data.binaryTreeParameters;
+            auto& params = s_data.creation_data.binaryTreeParameters;
             visual::imgui::InputParameters(params);
             break;
         }
         case EMazeGenerationAlgorithm::sidewinder: {
-            auto& params = s_data.m_creation_data.binaryTreeParameters;
+            auto& params = s_data.creation_data.binaryTreeParameters;
             visual::imgui::InputParameters(params);
             break;
         }
@@ -40,19 +40,19 @@ namespace combo_app_gui {
           throw std::logic_error("Unknown maze generation algorithm!");
     }
     if (ImGui::Button("Generate")) {
-      s_data.m_creation_data.generate_maze = true;
+      s_data.creation_data.generate_maze = true;
     }
     if (ImGui::Button("Fill with chosen brush tile")) {
-      s_data.m_creation_data.fill_maze = true;
+      s_data.creation_data.fill_maze = true;
     }
     // TODO: 'SAVE' button
     // TODO: 'LOAD' button
   }
 
   static void draw_visualization_gui() {
-    visual::imgui::InputParameters(s_data.m_visualization_data);
+    visual::imgui::InputParameters(s_data.visualization_data);
     if (ImGui::Button("Pathfind")) {
-      s_data.m_visualization_data.runPathfinding = true;
+      s_data.visualization_data.runPathfinding = true;
     }
   }
 
