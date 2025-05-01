@@ -60,6 +60,7 @@ namespace combo_app_gui {
     ImGui_ImplAllegro5_NewFrame();
     ImGui::NewFrame();
 
+    ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
     ImGui::Begin("Menu");
 
     visual::imgui::draw_enum_radio_buttons(s_data.m_mode);
