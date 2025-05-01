@@ -31,7 +31,7 @@ namespace combo_app_gui{
     maze_generation::WhiteNoiseParameters whiteNoseGenerationParameters;
     maze_generation::BinaryTreeParameters binaryTreeParameters;
     maze_generation::SidewinderParameters sidewinderParameters;
-    RESTRAINED_PARAMETER(double, slow_tile_cost, 0.0, 1.0);
+    RESTRAINED_PARAMETER(double, slow_tile_cost, 2.0, 0.0, 10.0);
 
     bool update_visuals = false;
   };
@@ -51,6 +51,16 @@ namespace combo_app_gui{
     bool runPathfinding = false;
   };
 
+  struct VisualizationProgress {
+    bool path_found = false;
+    bool finished = false;
+    bool display = false;
+    uint64_t nodes_checked;
+    uint64_t path_length;
+    double processor_time_ms;
+    double path_cost;
+  };
+
   enum class AppMode{
     Creation, PathFinding
   };
@@ -59,6 +69,7 @@ namespace combo_app_gui{
     AppMode m_mode = AppMode::Creation;
     CreationData creation_data{}; 
     VisualizationData visualization_data{};
+    VisualizationProgress visualization_progress{};
   };
 
   Data& get_data();

@@ -149,8 +149,12 @@ int main() {
           search_log.push_back(node);
           return node == to;
       };
-      auto weight_getter = [&](const Maze::Node&, const Maze::Node& to) {
-          return maze.get_cell(to) == MazeObject::slow ? config.creation_data.slow_tile_cost.value : 1.0;
+      auto weight_getter = [&](const Maze::Node& from, const Maze::Node& to) {
+          float distance = 1.0f;
+          if (from.x != to.x && from.y != to.y) {
+            distance = 1.4142135623730951; // sqrt(2) == diagonal path
+          }
+          return distance * (maze.get_cell(to) == MazeObject::slow ? config.creation_data.slow_tile_cost.value : 1.0);
       };
 
       auto logging_estimate_getter = [&](const Maze::Node& node) {
@@ -185,7 +189,11 @@ int main() {
           throw std::logic_error("Unknown algorithm!");
       }();
       clock_t end = clock();
-      spdlog::info("Processor time taken(ms): {}", (double(end - start)) * 1000.0 / CLOCKS_PER_SEC);
+      const auto timeMs = (double(end - start)) * 1000.0 / CLOCKS_PER_SEC;
+      spdlog::info("Processor time taken(ms): {}", timeMs);
+      config.visualization_progress.processor_time_ms = timeMs;
+      config.visualization_progress.finished = false;
+      config.visualization_progress.display = true;
 
       auto timePerStep = config.visualization_data.desireable_time_per_step <= 0.0 ? 0.0001 : config.visualization_data.desireable_time_per_step;
       progress_timer.change_rate(timePerStep);
@@ -254,11 +262,28 @@ int main() {
   });
 
   queue.add_reaction(progress_timer.event_source(), [&] (const auto&) mutable {
+
+      config.visualization_progress.nodes_checked = cur_idx;
       if (cur_idx == search_log.size()) {
+          config.visualization_progress.finished = true;
+          config.visualization_progress.path_found = !path.empty();
+          config.visualization_progress.path_length = path.size();
+          auto& cost = config.visualization_progress.path_cost;
+          cost = 0.0;
           progress_timer.stop();
           if (path.empty()) {
               spdlog::info("No way!. Checked {} nodes", search_log.size());
           } else {
+              auto weight_getter = [&](const Maze::Node& from, const Maze::Node& to) {
+                  float distance = 1.0f;
+                  if (from.x != to.x && from.y != to.y) {
+                    distance = 1.4142135623730951; // sqrt(2) == diagonal path
+                  }
+                  return distance * (maze.get_cell(to) == MazeObject::slow ? config.creation_data.slow_tile_cost.value : 1.0);
+              };
+              for (size_t i = 1; i < path.size(); ++i) {
+                cost += weight_getter(path[i-1], path[i]);
+              }
               spdlog::info("Path length: {}. Checked {} nodes", path.size(), search_log.size());
           }
           for (const auto& node : path) {

@@ -49,10 +49,32 @@ namespace combo_app_gui {
     // TODO: 'LOAD' button
   }
 
+  static void draw_visualization_progress() {
+    ImGui::Text("Nodes checked: %lu", s_data.visualization_progress.nodes_checked);
+
+    if (s_data.visualization_progress.finished) {
+      if (s_data.visualization_progress.path_found) {
+        ImGui::Text("Path found! Length = %lu. Cost = %.2f",
+                    s_data.visualization_progress.path_length,
+                    s_data.visualization_progress.path_cost);
+      } else {
+        ImGui::Text("Path not found.");
+      }
+    } else {
+      ImGui::Text("Searching...");
+    }
+
+    ImGui::Text("Algorithm took %.1fms to run.", s_data.visualization_progress.processor_time_ms);
+  }
+
   static void draw_visualization_gui() {
     visual::imgui::InputParameters(s_data.visualization_data);
     if (ImGui::Button("Pathfind")) {
       s_data.visualization_data.runPathfinding = true;
+    }
+
+    if (s_data.visualization_progress.display) {
+      draw_visualization_progress();
     }
   }
 
