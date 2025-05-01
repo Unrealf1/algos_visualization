@@ -9,8 +9,8 @@ namespace combo_app_gui{
   struct CreationData {
     PARAMETER(size_t, fixed_seed, 0);
     PARAMETER(bool, draw_grid, true);
-    PARAMETER(int, maze_width, 20);
-    PARAMETER(int, maze_height, 20);
+    PARAMETER(int, maze_width, 50);
+    PARAMETER(int, maze_height, 50);
     PARAMETER(MazeObject, draw_object, MazeObject::wall);
     
     RESTRAINED_PARAMETER(int, brush_size, 1, 1, 100);
@@ -36,10 +36,12 @@ namespace combo_app_gui{
     bool update_visuals = false;
   };
 
+  enum class EAlgorithm {
+      BFS, DFS, RandomDFS, Dijkstra, AStar
+  };
+
   struct VisualizationData {
-    enum class EAlgorithm {
-        BFS, DFS, RandomDFS, Dijkstra, AStar
-    } algorithm;
+    PARAMETER(EAlgorithm, algorithm);
 
     PARAMETER(bool, allow_diagonals);
     PARAMETER(bool, require_adjacent_for_diagonals);
@@ -49,6 +51,8 @@ namespace combo_app_gui{
     PARAMETER(double, min_visualization_time);
     PARAMETER(double, max_visualization_time);
     PARAMETER(double, desireable_time_per_step);
+
+    bool runPathfinding = false;
   };
 
   enum class AppMode{

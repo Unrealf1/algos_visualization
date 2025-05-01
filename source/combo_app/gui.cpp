@@ -51,6 +51,9 @@ namespace combo_app_gui {
 
   static void draw_visualization_gui() {
     visual::imgui::InputParameters(s_data.m_visualization_data);
+    if (ImGui::Button("Pathfind")) {
+      s_data.m_visualization_data.runPathfinding = true;
+    }
   }
 
   void draw() {
