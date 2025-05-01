@@ -116,6 +116,7 @@ int main() {
 
     if (config.m_creation_data.generate_maze) {
       config.m_creation_data.generate_maze = false;
+      progress_timer.stop();
       maze = create_maze(config.m_creation_data);
       grid.update(maze);
     }
@@ -186,8 +187,8 @@ int main() {
       clock_t end = clock();
       spdlog::info("Processor time taken(ms): {}", (double(end - start)) * 1000.0 / CLOCKS_PER_SEC);
 
-      const auto progress_step = 10.0 / double(search_log.size());
-      progress_timer.change_rate(progress_step);
+      auto timePerStep = config.m_visualization_data.desireable_time_per_step <= 0.0 ? 0.0001 : config.m_visualization_data.desireable_time_per_step;
+      progress_timer.change_rate(timePerStep);
       progress_timer.start();
     }
   };

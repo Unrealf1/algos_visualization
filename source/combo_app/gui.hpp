@@ -46,11 +46,7 @@ namespace combo_app_gui{
     PARAMETER(bool, allow_diagonals);
     PARAMETER(bool, require_adjacent_for_diagonals);
 
-    PARAMETER(double, wait_seconds);
-    PARAMETER(double, desired_fps);
-    PARAMETER(double, min_visualization_time);
-    PARAMETER(double, max_visualization_time);
-    PARAMETER(double, desireable_time_per_step);
+    RESTRAINED_PARAMETER(double, desireable_time_per_step, 0.0001, 1.0);
 
     bool runPathfinding = false;
   };
