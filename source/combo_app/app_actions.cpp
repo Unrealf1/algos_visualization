@@ -33,6 +33,12 @@ void apply_brush_to_grid(const ALLEGRO_MOUSE_STATE& state,
       grid.set_cell(xsz, ysz, {.color = grid.style().color_map[maze_cell]});
     }
   }
+
+  if (type_to_set == MazeObject::start) {
+    maze.from = util::coords_to_idx(base_x, base_y, maze.width);
+  } else if (type_to_set == MazeObject::finish) {
+    maze.to = util::coords_to_idx(base_x, base_y, maze.width);
+  }
 }
 
 Maze create_maze(const combo_app_gui::CreationData& gui_data) {
