@@ -8,16 +8,16 @@
 namespace combo_app_gui{
   struct CreationData {
     PARAMETER(size_t, fixed_seed, 0);
-    PARAMETER(bool, draw_grid, true);
+    PARAMETER(bool, draw_grid, false);
     PARAMETER(int, maze_width, 50);
     PARAMETER(int, maze_height, 50);
     PARAMETER(MazeObject, draw_object, MazeObject::wall);
     
     RESTRAINED_PARAMETER(int, brush_size, 1, 1, 100);
 
-    PARAMETER(EMazeGenerationAlgorithm, generation_algorithm, EMazeGenerationAlgorithm::noise);
+    PARAMETER(EMazeGenerationAlgorithm, generation_algorithm, EMazeGenerationAlgorithm::random_dfs);
     bool fill_maze = false;
-    bool generate_maze = false;
+    bool generate_maze = true;
     struct SaveData {
         bool do_save = false;
         std::string file_path_name;
@@ -46,7 +46,7 @@ namespace combo_app_gui{
     PARAMETER(bool, allow_diagonals);
     PARAMETER(bool, require_adjacent_for_diagonals);
 
-    RESTRAINED_PARAMETER(double, desireable_time_per_step, 0.0001, 1.0);
+    RESTRAINED_PARAMETER(double, desireable_time_per_step, 0.005, 0.0001, 1.0);
 
     bool runPathfinding = false;
   };
