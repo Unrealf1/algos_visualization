@@ -265,7 +265,10 @@ int main() {
   });
 
   queue.add_reaction(progress_timer.event_source(), [&] (const auto&) mutable {
-
+      if (config.m_mode != combo_app_gui::AppMode::PathFinding) {
+        progress_timer.stop();
+        return;
+      }
       config.visualization_progress.nodes_checked = cur_idx;
       if (cur_idx == search_log.size()) {
           config.visualization_progress.finished = true;
