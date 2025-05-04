@@ -22,7 +22,9 @@ namespace visual {
         system_events.register_source(al_get_keyboard_event_source());
         system_events.register_source(al_get_display_event_source(display));
         while (true) {
-            user_events.wait_and_react();
+            while(!user_events.empty()) {
+              user_events.wait_and_react();
+            }
 
             if (system_events.empty()) {
                 continue;
@@ -36,6 +38,7 @@ namespace visual {
                 al_acknowledge_resize(event.display.source);
                 ImGui_ImplAllegro5_CreateDeviceObjects();
             }
+            user_events.wait_and_react();
         }
     }
 
