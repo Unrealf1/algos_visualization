@@ -65,6 +65,8 @@ int main() {
     queue.register_source(gui_update_timer.event_source());
 
     auto process_gui_changes = [&] {
+        // many potentially slow operations below, so pausing timer while here
+        gui_update_timer.stop();
         auto& gui_data = get_gui_data();
         if (gui_data.maze_width != int(maze.width) || gui_data.maze_height != int(maze.height)) {
             maze.resize(size_t(gui_data.maze_width), size_t(gui_data.maze_height));
@@ -103,6 +105,7 @@ int main() {
             grid.style().draw_lattice = gui_data.visual_parameters.draw_grid;
             grid.request_full_redraw();
         }
+        gui_update_timer.start();
     };
 
     queue.add_reaction(gui_update_timer.event_source(), [&] (const auto&) {

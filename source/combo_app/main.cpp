@@ -99,6 +99,8 @@ int main() {
   queue.register_source(progress_timer.event_source());
 
   auto react_to_gui = [&] {
+    // many potentially slow operations below, so pausing draw timer while here
+    gui_update_timer.stop();
     if (grid.style().draw_lattice != config.creation_data.draw_grid) {
       grid.style().draw_lattice = config.creation_data.draw_grid;
       grid.request_full_redraw();
@@ -199,6 +201,7 @@ int main() {
       progress_timer.change_rate(timePerStep);
       progress_timer.start();
     }
+    gui_update_timer.start();
   };
 
   queue.add_reaction(gui_update_timer.event_source(), [&] (const auto&) {
