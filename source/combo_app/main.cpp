@@ -16,6 +16,14 @@ namespace rng = std::ranges;
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
+#include <emscripten/html5.h>
+template<typename frame_process_t>
+struct LoopArgs{
+    visual::EventReactor& user_events;
+    visual::EventReactor& system_events;
+    frame_process_t* frame_processor;
+};
+
 #endif
 
 
@@ -91,16 +99,20 @@ int main() {
 
   auto queue = visual::EventReactor();
 
+#ifndef __EMSCRIPTEN__
   auto gui_update_timer = visual::Timer(1.0 / 60.0);
   gui_update_timer.start();
   queue.register_source(gui_update_timer.event_source());
+#endif
 
   auto progress_timer = visual::Timer(1.0);
   queue.register_source(progress_timer.event_source());
 
   auto react_to_gui = [&] {
+#ifndef __EMSCRIPTEN__
     // many potentially slow operations below, so pausing draw timer while here
     gui_update_timer.stop();
+#endif
     if (grid.style().draw_lattice != config.creation_data.draw_grid) {
       grid.style().draw_lattice = config.creation_data.draw_grid;
       grid.request_full_redraw();
@@ -201,10 +213,11 @@ int main() {
       progress_timer.change_rate(timePerStep);
       progress_timer.start();
     }
+#ifndef __EMSCRIPTEN__
     gui_update_timer.start();
+#endif
   };
-
-  queue.add_reaction(gui_update_timer.event_source(), [&] (const auto&) {
+  auto process_frame = [&] (const auto&) {
     react_to_gui();
 
     al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -212,7 +225,10 @@ int main() {
     combo_app_gui::draw();
 
     al_flip_display();
-  });
+  };
+#ifndef __EMSCRIPTEN__
+  queue.add_reaction(gui_update_timer.event_source(), process_frame);
+#endif
 
   queue.register_source(al_get_mouse_event_source());
   queue.register_source(al_get_keyboard_event_source());
@@ -315,7 +331,33 @@ int main() {
       ++cur_idx;
   });
 
+#ifdef __EMSCRIPTEN__
+        auto system_events = visual::EventReactor();
+        system_events.register_source(al_get_keyboard_event_source());
+        system_events.register_source(al_get_display_event_source(display));
+
+        using process_frame_t = decltype(process_frame);
+        LoopArgs<process_frame_t> args{queue, system_events, &process_frame};
+        emscripten_set_main_loop_arg([](void* void_arg){
+            auto* arg = static_cast<LoopArgs<process_frame_t>*>(void_arg);
+            while (!(*arg).user_events.empty()) {
+                (*arg).user_events.wait_and_react();
+            }
+            (*((*arg).frame_processor))(0);
+
+
+            if ((*arg).system_events.empty()) {
+                return;
+            }
+            ALLEGRO_EVENT event;
+            (*arg).system_events.get(event);
+            if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+                emscripten_cancel_main_loop();
+            }
+        }, &args, 0, 1);
+#else
   main_visual_loop(queue, display);
+#endif
 
   al_destroy_display(display);
 }

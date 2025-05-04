@@ -26,6 +26,11 @@
                 -   In config for algvis
 * fix leaks on application close
     ?  Leaks are in allegro and various cleanup functions do nothing, abandon this for now
+* Publish to web
+  +   Combo app to design and pathfind in one place
+  -   Sensible defaults(interesting maze, big but not huge field)
+  -   Pan & zoom
+  -   Support saving and loading in the browser
 - Prove all the algorithms
 - Compile a video(s) / posts
 - Turn this into a screensaver!
