@@ -49,6 +49,7 @@ namespace visual { namespace imgui {
                 parameter.value = static_cast<T>(proxy);
             }
         } else if constexpr (magic_enum::is_unscoped_enum_v<T> || magic_enum::is_scoped_enum_v<T>) {
+          ImGui::Text("%s", magic_enum::enum_type_name<T>().data());
           draw_enum_radio_buttons(parameter.value);
         }
     }
