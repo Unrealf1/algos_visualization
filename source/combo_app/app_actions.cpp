@@ -35,9 +35,9 @@ void apply_brush_to_grid(const ALLEGRO_MOUSE_STATE& state,
   }
 
   if (type_to_set == MazeObject::start) {
-    maze.from = util::coords_to_idx(base_x, base_y, maze.width);
+    maze.from = util::coords_to_idx(size_t(base_x), size_t(base_y), maze.width);
   } else if (type_to_set == MazeObject::finish) {
-    maze.to = util::coords_to_idx(base_x, base_y, maze.width);
+    maze.to = util::coords_to_idx(size_t(base_x), size_t(base_y), maze.width);
   }
 }
 

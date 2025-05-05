@@ -91,11 +91,11 @@ int main() {
 
   auto& config = combo_app_gui::get_data();
   
-  Maze maze(config.creation_data.maze_width, config.creation_data.maze_height);
+  Maze maze(size_t(config.creation_data.maze_width), size_t(config.creation_data.maze_height));
 
   auto displayWidth = al_get_display_width(display);
   auto displayHeight = al_get_display_height(display);
-  visual::Grid grid(maze, displayWidth, displayHeight);
+  visual::Grid grid(maze, float(displayWidth), float(displayHeight));
 
   auto queue = visual::EventReactor();
 
@@ -164,7 +164,7 @@ int main() {
           return node == to;
       };
       auto weight_getter = [&](const Maze::Node& from, const Maze::Node& to) {
-          float distance = 1.0f;
+          double distance = 1.0;
           if (from.x != to.x && from.y != to.y) {
             distance = 1.4142135623730951; // sqrt(2) == diagonal path
           }
@@ -297,7 +297,7 @@ int main() {
               spdlog::info("No way!. Checked {} nodes", search_log.size());
           } else {
               auto weight_getter = [&](const Maze::Node& from, const Maze::Node& to) {
-                  float distance = 1.0f;
+                  double distance = 1.0;
                   if (from.x != to.x && from.y != to.y) {
                     distance = 1.4142135623730951; // sqrt(2) == diagonal path
                   }
