@@ -213,7 +213,7 @@ int main() {
       }();
       clock_t end = clock();
       const auto timeMs = (double(end - start)) * 1000.0 / CLOCKS_PER_SEC;
-      spdlog::info("Processor time taken(ms): {}", timeMs);
+      //TODO: causes asan error spdlog::info("Processor time taken(ms): {}", timeMs);
       config.visualization_progress.processor_time_ms = timeMs;
       config.visualization_progress.finished = false;
       config.visualization_progress.display = true;
