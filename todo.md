@@ -30,6 +30,7 @@
   +   Combo app to design and pathfind in one place
   +   Sensible defaults(interesting maze, big but not huge field)
   -   Fix no touch input in web (https://allegro5.org/docs/html/refman/touch.html)
+  -   Proper controls explanation(Q, brush, RMB, future pan&zoon)
   *   Better ui & langs
   -   Pan & zoom
   -   Support saving and loading in the browser
