@@ -108,11 +108,20 @@ int main() {
   auto progress_timer = visual::Timer(1.0);
   queue.register_source(progress_timer.event_source());
 
-  auto react_to_gui = [&] {
+  auto react_to_gui = [&, prev_mode = config.m_mode] mutable {
 #ifndef __EMSCRIPTEN__
     // many potentially slow operations below, so pausing draw timer while here
     gui_update_timer.stop();
 #endif
+
+    if (prev_mode != config.m_mode) {
+      if (prev_mode == combo_app_gui::AppMode::PathFinding) {
+        grid.update(maze);
+        config.visualization_progress.display = false;
+      }
+      prev_mode = config.m_mode;
+    }
+
     if (grid.style().draw_lattice != config.creation_data.draw_grid) {
       grid.style().draw_lattice = config.creation_data.draw_grid;
       grid.request_full_redraw();
