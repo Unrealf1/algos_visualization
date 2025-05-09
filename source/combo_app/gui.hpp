@@ -31,7 +31,7 @@ namespace combo_app_gui{
     maze_generation::WhiteNoiseParameters whiteNoseGenerationParameters;
     maze_generation::BinaryTreeParameters binaryTreeParameters;
     maze_generation::SidewinderParameters sidewinderParameters;
-    RESTRAINED_PARAMETER(double, slow_tile_cost, 2.0, 0.0, 10.0);
+    RESTRAINED_PARAMETER(float, slow_tile_cost, 2.0f, 0.0f, 10.0f);
 
     bool update_visuals = false;
   };

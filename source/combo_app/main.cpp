@@ -168,7 +168,7 @@ int main() {
           if (from.x != to.x && from.y != to.y) {
             distance = 1.4142135623730951; // sqrt(2) == diagonal path
           }
-          return distance * (maze.get_cell(to) == MazeObject::slow ? config.creation_data.slow_tile_cost.value : 1.0);
+          return distance * (maze.get_cell(to) == MazeObject::slow ? double(config.creation_data.slow_tile_cost) : 1.0);
       };
 
       auto logging_estimate_getter = [&](const Maze::Node& node) {
@@ -301,7 +301,7 @@ int main() {
                   if (from.x != to.x && from.y != to.y) {
                     distance = 1.4142135623730951; // sqrt(2) == diagonal path
                   }
-                  return distance * (maze.get_cell(to) == MazeObject::slow ? config.creation_data.slow_tile_cost.value : 1.0);
+                  return distance * (maze.get_cell(to) == MazeObject::slow ? double(config.creation_data.slow_tile_cost) : 1.0);
               };
               for (size_t i = 1; i < path.size(); ++i) {
                 cost += weight_getter(path[i-1], path[i]);
