@@ -30,6 +30,15 @@ namespace util {
 
     template<typename T, const char* const Name>
     struct RestrainedParameter : public Parameter<T, Name> {
+        RestrainedParameter& operator=(const T& t) {
+            this->value = t;
+            return *this;
+        }
+
+        operator T() const {
+            return this->value;
+        }
+
         T min;
         T max;
     };

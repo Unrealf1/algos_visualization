@@ -96,7 +96,22 @@ namespace combo_app_gui {
   }
 
   static void draw_visualization_gui() {
-    visual::imgui::InputParameters(s_data.visualization_data);
+    ImGui::Text("Search algorithm");
+    visual::imgui::draw_enum_radio_buttons(s_data.visualization_data.algorithm.value, 2);
+
+    ImGui::Checkbox("Allow diagonal paths", &s_data.visualization_data.allow_diagonals.value);
+    if (s_data.visualization_data.allow_diagonals) {
+      ImGui::Checkbox("Require adjacent tiles for diagonal", &s_data.visualization_data.require_adjacent_for_diagonals.value);
+    }
+
+    {
+    auto& time = s_data.visualization_data.desireable_time_per_step;
+    ImGui::PushItemWidth(100);
+    auto proxy = static_cast<float>(time);
+    ImGui::SliderFloat("Time per step", &proxy, float(time.min), float(time.max));
+    time = static_cast<double>(proxy);
+    }
+
     auto& slowCostParam = s_data.creation_data.slow_tile_cost;
     ImGui::PushItemWidth(100);
     ImGui::SliderFloat("Slow tile cost", &slowCostParam.value, slowCostParam.min, slowCostParam.max);
