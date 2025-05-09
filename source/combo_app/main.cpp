@@ -248,6 +248,10 @@ int main() {
     if (ImGui::GetIO().WantCaptureKeyboard) {
       return;
     }
+    if (event.type == ALLEGRO_EVENT_KEY_DOWN && event.keyboard.keycode == ALLEGRO_KEY_Q) {
+      const auto isPathfinding = combo_app_gui::AppMode::PathFinding == config.m_mode;
+      config.m_mode = isPathfinding ? combo_app_gui::AppMode::Creation : combo_app_gui::AppMode::PathFinding;
+    }
   });
 
   queue.add_reaction(al_get_display_event_source(display), [&](auto event) {
