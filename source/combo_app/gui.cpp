@@ -64,6 +64,8 @@ namespace combo_app_gui {
 
     ImGui::Text("Generation algorithm");
 
+    // TODO: fix custom seed is not respected in maze generation
+    /*
     int seedCopy = static_cast<int>(data.fixed_seed);
     ImGui::PushItemWidth(90);
     ImGui::InputInt("Seed", &seedCopy, 0);
@@ -73,6 +75,7 @@ namespace combo_app_gui {
       auto& rengine = get_rengine();
       s_data.creation_data.fixed_seed.value = std::uniform_int_distribution<size_t>(1)(rengine);
     }
+    */
 
     visual::imgui::draw_enum_radio_buttons(data.generation_algorithm.value, 2);
 
