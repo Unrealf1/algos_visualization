@@ -13,6 +13,17 @@ namespace combo_app_gui {
     return s_data;
   }
 
+  static void draw_controls() {
+    ImGui::Separator();
+    ImGui::Text("Controls");
+
+    ImGui::Text("Q  : change app mode");
+    if (s_data.m_mode == AppMode::Creation) {
+      ImGui::Text("LMB: draw maze tile");
+      ImGui::Text("RMB: clear maze tile");
+    }
+  }
+
   static void draw_creation_gui() {
     auto& data = s_data.creation_data;
 
@@ -141,6 +152,7 @@ namespace combo_app_gui {
     } else {
       draw_visualization_gui();
     }
+    draw_controls();
 
     ImGui::End();
 
