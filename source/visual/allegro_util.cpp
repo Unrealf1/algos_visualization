@@ -26,17 +26,16 @@ namespace visual {
               user_events.wait_and_react();
             }
 
-            if (system_events.empty()) {
-                continue;
-            }
             ALLEGRO_EVENT event;
-            system_events.get(event);
-            if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
-                break;
-            } else if (event.type == ALLEGRO_EVENT_DISPLAY_RESIZE) {
-                ImGui_ImplAllegro5_InvalidateDeviceObjects();
-                al_acknowledge_resize(event.display.source);
-                ImGui_ImplAllegro5_CreateDeviceObjects();
+            while(!system_events.empty()) {
+              system_events.get(event);
+              if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+                  return;
+              } else if (event.type == ALLEGRO_EVENT_DISPLAY_RESIZE) {
+                  ImGui_ImplAllegro5_InvalidateDeviceObjects();
+                  al_acknowledge_resize(event.display.source);
+                  ImGui_ImplAllegro5_CreateDeviceObjects();
+              }
             }
             user_events.wait_and_react();
         }
