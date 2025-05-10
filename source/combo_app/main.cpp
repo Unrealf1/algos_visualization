@@ -336,10 +336,23 @@ int main() {
       return MazeObject::space;
     }();
     if (!shouldChangeMaze) {
+      last_mouse_pos = std::pair{-1, -1};
       return;
     }
         
-    apply_brush_to_grid(state, maze, grid, type_to_set, config.scale, config.panDx, config.panDy);
+    auto cur = std::pair{state.x, state.y};
+    if (last_mouse_pos == std::pair{-1, -1}) {
+      apply_brush_to_grid(cur.first, cur.second, maze, grid, type_to_set, config.scale, config.panDx, config.panDy);
+    }
+    while (cur != last_mouse_pos && last_mouse_pos != std::pair{-1, -1}) {
+      apply_brush_to_grid(cur.first, cur.second, maze, grid, type_to_set, config.scale, config.panDx, config.panDy);
+      if (cur.first != last_mouse_pos.first) {
+        cur.first += cur.first < last_mouse_pos.first ? 1 : -1;
+      }
+      if (cur.second != last_mouse_pos.second) {
+        cur.second += cur.second < last_mouse_pos.second ? 1 : -1;
+      }
+    }
     last_mouse_pos = std::pair{state.x, state.y};
   });
 
