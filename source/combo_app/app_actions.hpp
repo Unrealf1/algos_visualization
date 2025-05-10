@@ -8,7 +8,8 @@
 void apply_brush_to_grid(const ALLEGRO_MOUSE_STATE& state,
                          Maze& maze,
                          visual::Grid& grid,
-                         MazeObject type_to_set);
+                         MazeObject type_to_set,
+                         float scale, float dx, float dy);
 
 Maze create_maze(const combo_app_gui::CreationData& gui_data);
 

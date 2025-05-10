@@ -95,7 +95,7 @@ void Grid::request_full_redraw() {
     m_need_full_redraw = true;
 }
 
-void Grid::draw(ALLEGRO_DISPLAY* display) {
+void Grid::draw(ALLEGRO_DISPLAY* display, float scale, float dx, float dy) {
     al_set_target_bitmap(m_bitmap.get_raw());
     if (m_need_full_redraw) {
         al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -129,7 +129,10 @@ void Grid::draw(ALLEGRO_DISPLAY* display) {
     m_dirty_cells.clear();
     m_need_full_redraw = false;
     al_set_target_bitmap(al_get_backbuffer(display));
-    al_draw_bitmap(m_bitmap.get_raw(), 0, 0, 0);
+    al_draw_scaled_bitmap(m_bitmap.get_raw(),
+      0.0f, 0.0f, m_visual_screen_width, m_visual_screen_height,
+      dx, dy, m_visual_screen_width * scale, m_visual_screen_height * scale,
+      0);
 }
 
 std::pair<size_t, size_t> Grid::get_cell_under_cursor_coords(int mouse_x, int mouse_y) const {

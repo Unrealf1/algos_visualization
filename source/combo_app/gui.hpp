@@ -67,6 +67,11 @@ namespace combo_app_gui{
 
   struct Data {
     AppMode m_mode = AppMode::Creation;
+    float scale = 1.0f;
+    float panDx = 0.0f;
+    float panDy = 0.0f;
+    bool is_dragging = false;
+
     CreationData creation_data{}; 
     VisualizationData visualization_data{};
     VisualizationProgress visualization_progress{};

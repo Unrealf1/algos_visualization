@@ -8,10 +8,13 @@ namespace rng = std::ranges;
 void apply_brush_to_grid(const ALLEGRO_MOUSE_STATE& state,
                          Maze& maze,
                          visual::Grid& grid,
-                         MazeObject type_to_set) {
+                         MazeObject type_to_set,
+                         float scale, float dx, float dy) {
   auto& config = combo_app_gui::get_data();
 
-  auto [coords_x, coords_y] = grid.get_cell_under_cursor_coords(state.x, state.y);
+  auto modifiedX = (state.x - dx) / scale;
+  auto modifiedY = (state.y - dy) / scale;
+  auto [coords_x, coords_y] = grid.get_cell_under_cursor_coords(modifiedX, modifiedY);
   const auto brush_size = config.creation_data.brush_size;
   const auto offset = -brush_size / 2;
   const int base_x = offset + int(coords_x);

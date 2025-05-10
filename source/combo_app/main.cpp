@@ -230,7 +230,7 @@ int main() {
     react_to_gui();
 
     al_clear_to_color(al_map_rgb(0, 0, 0));
-    grid.draw(display);
+    grid.draw(display, config.scale, config.panDx, config.panDy);
     combo_app_gui::draw();
 
     al_flip_display();
@@ -265,6 +265,36 @@ int main() {
     if (ImGui::GetIO().WantCaptureMouse) {
       return;
     }
+
+    // pan and zoom
+    if (event.type == ALLEGRO_EVENT_MOUSE_AXES) {
+      const auto zoomStep = 1.1f;
+      const auto minZoom = 0.01f;
+      const auto maxZoom = 100.0f;
+      const auto oldScale = config.scale;
+      if (event.mouse.dz > 0) {
+        config.scale *= zoomStep;
+        config.scale = std::clamp(config.scale, minZoom, maxZoom);
+      } else if (event.mouse.dz < 0) {
+        config.scale /= zoomStep;
+        config.scale = std::clamp(config.scale, minZoom, maxZoom);
+      }
+      if (oldScale != config.scale) {
+        // recenter
+        // TODO: recenter to the center of the screen or to the mouse position
+        auto [gridW, gridH] = grid.get_dimentions();
+        config.panDx -= (config.scale - oldScale) * gridW * 0.5f;
+        config.panDy -= (config.scale - oldScale) * gridH * 0.5f;
+      }
+
+      ALLEGRO_KEYBOARD_STATE keyboardState;
+      al_get_keyboard_state(&keyboardState);
+      if (al_key_down(&keyboardState, ALLEGRO_KEY_LCTRL)) {
+        config.panDx += float(event.mouse.dx);
+        config.panDy += float(event.mouse.dy);
+      }
+    }
+
     if (config.m_mode != combo_app_gui::AppMode::Creation) {
       return;
     }
@@ -289,7 +319,7 @@ int main() {
       return;
     }
         
-    apply_brush_to_grid(state, maze, grid, type_to_set);
+    apply_brush_to_grid(state, maze, grid, type_to_set, config.scale, config.panDx, config.panDy);
     last_mouse_pos = std::pair{state.x, state.y};
   });
 

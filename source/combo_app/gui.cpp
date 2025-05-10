@@ -18,9 +18,31 @@ namespace combo_app_gui {
     ImGui::Text("Controls");
 
     ImGui::Text("Q  : change app mode");
+    ImGui::Text("Mouse wheel: zoom");
+    ImGui::Text("Hold CTRL  : pan");
     if (s_data.m_mode == AppMode::Creation) {
       ImGui::Text("LMB: draw maze tile");
       ImGui::Text("RMB: clear maze tile");
+    }
+  }
+
+  static void draw_location() {
+    float pan[] = {s_data.panDx, s_data.panDy};
+    ImGui::PushItemWidth(120);
+    ImGui::InputFloat2("Offset", pan);
+    s_data.panDx = pan[0];
+    s_data.panDy = pan[1];
+    ImGui::SameLine();
+    if (ImGui::Button("Reset##OFFSET>")) {
+      s_data.panDx = 0.0f;
+      s_data.panDy = 0.0f;
+    }
+
+    ImGui::PushItemWidth(60);
+    ImGui::InputFloat("Scale", &s_data.scale);
+    ImGui::SameLine();
+    if (ImGui::Button("Reset##SCALE>")) {
+      s_data.scale = 1.0f;
     }
   }
 
@@ -141,6 +163,9 @@ namespace combo_app_gui {
 
     ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
     ImGui::Begin("Menu");
+
+    draw_location();
+    ImGui::Separator();
 
     visual::imgui::draw_enum_radio_buttons(s_data.m_mode);
     ImGui::Checkbox("Show grid", &s_data.creation_data.draw_grid.value);

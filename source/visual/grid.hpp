@@ -67,7 +67,7 @@ namespace visual {
         void set_cell(size_t w, size_t h, Cell new_value);
         Cell* cell_under_cursor(int mouse_x, int mouse_y);
         const std::vector<Cell>& get_cells() const;
-        void draw(ALLEGRO_DISPLAY* display);
+        void draw(ALLEGRO_DISPLAY* display, float scale = 1.0f, float dx = 0.0f, float dy = 0.0f);
         void request_full_redraw();
         std::pair<size_t, size_t> get_cell_under_cursor_coords(int mouse_x, int mouse_y) const;
     private:
