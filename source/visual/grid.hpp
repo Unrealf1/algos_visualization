@@ -53,6 +53,8 @@ namespace visual {
         Style m_style;
 
     public:
+        std::pair<float, float> get_visual_dims() const;
+        std::pair<float, float> get_visual_offset() const;
 
         Grid(const Maze& maze, float vis_width, float vis_height, Style style = s_default_style);
 

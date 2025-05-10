@@ -32,17 +32,14 @@ namespace combo_app_gui {
     ImGui::InputFloat2("Offset", pan);
     s_data.panDx = pan[0];
     s_data.panDy = pan[1];
-    ImGui::SameLine();
-    if (ImGui::Button("Reset##OFFSET>")) {
-      s_data.panDx = 0.0f;
-      s_data.panDy = 0.0f;
-    }
 
     ImGui::PushItemWidth(60);
     ImGui::InputFloat("Scale", &s_data.scale);
     ImGui::SameLine();
     if (ImGui::Button("Reset##SCALE>")) {
       s_data.scale = 1.0f;
+      s_data.panDx = 0.0f;
+      s_data.panDy = 0.0f;
     }
   }
 

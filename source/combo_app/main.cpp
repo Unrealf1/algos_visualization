@@ -222,6 +222,25 @@ int main() {
       progress_timer.change_rate(timePerStep);
       progress_timer.start();
     }
+
+    {
+    // Make sure maze is on the screen
+
+    auto [gridInternalDx, gridInternalDy] = grid.get_visual_offset();
+    gridInternalDx *= config.scale;
+    gridInternalDy *= config.scale;
+
+    auto [gridW, gridH] = grid.get_visual_dims();
+    auto mazeW = gridW * config.scale;
+    auto mazeH = gridH * config.scale;
+
+    float displayW = al_get_display_width(display);
+    float displayH = al_get_display_height(display);
+    const auto minVisiblePixels = 20;
+    config.panDx = std::clamp(config.panDx, -mazeW + gridInternalDx + minVisiblePixels, displayW - gridInternalDx - minVisiblePixels);
+    config.panDy = std::clamp(config.panDy, -mazeH + minVisiblePixels + gridInternalDy, displayH - minVisiblePixels - gridInternalDy);
+    }
+
 #ifndef __EMSCRIPTEN__
     gui_update_timer.start();
 #endif

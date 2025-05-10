@@ -141,4 +141,11 @@ std::pair<size_t, size_t> Grid::get_cell_under_cursor_coords(int mouse_x, int mo
     return { x, y };
 }
 
+std::pair<float, float> Grid::get_visual_dims() const {
+  return {m_visual_screen_width, m_visual_screen_height};
+}
+
+std::pair<float, float> Grid::get_visual_offset() const {
+  return {m_visual_offset_x, m_visual_offset_y};
+}
 }
