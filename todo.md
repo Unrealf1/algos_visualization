@@ -29,10 +29,10 @@
 * Publish to web
   +   Combo app to design and pathfind in one place
   +   Sensible defaults(interesting maze, big but not huge field)
-  -   Fix no touch input in web (https://allegro5.org/docs/html/refman/touch.html)
   +   Proper controls explanation(Q, brush, RMB, future pan&zoon)
-  *   Better ui & langs
+  +   Better ui & langs
   +   Pan & zoom
+  -   Fix no touch input in web (https://allegro5.org/docs/html/refman/touch.html)
   -   Support saving and loading in the browser
 - Prove all the algorithms
 - Algorithm descriptions
