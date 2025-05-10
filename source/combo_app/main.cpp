@@ -22,6 +22,7 @@ struct LoopArgs{
     visual::EventReactor& user_events;
     visual::EventReactor& system_events;
     frame_process_t* frame_processor;
+    visual::Grid* grid;
 };
 
 #endif
@@ -399,7 +400,7 @@ int main() {
         system_events.register_source(al_get_display_event_source(display));
 
         using process_frame_t = decltype(process_frame);
-        LoopArgs<process_frame_t> args{queue, system_events, &process_frame};
+        LoopArgs<process_frame_t> args{queue, system_events, &process_frame, &grid};
         emscripten_set_main_loop_arg([](void* void_arg){
             auto* arg = static_cast<LoopArgs<process_frame_t>*>(void_arg);
             while (!(*arg).user_events.empty()) {
@@ -415,6 +416,11 @@ int main() {
             (*arg).system_events.get(event);
             if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
                 emscripten_cancel_main_loop();
+            } else if (event.type == ALLEGRO_EVENT_DISPLAY_RESIZE) {
+                ImGui_ImplAllegro5_InvalidateDeviceObjects();
+                al_acknowledge_resize(event.display.source);
+                ImGui_ImplAllegro5_CreateDeviceObjects();
+                (*arg).grid->request_full_redraw();
             }
         }, &args, 0, 1);
 #else
