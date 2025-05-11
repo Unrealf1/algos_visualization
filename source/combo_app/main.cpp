@@ -309,7 +309,7 @@ int main() {
 
       ALLEGRO_KEYBOARD_STATE keyboardState;
       al_get_keyboard_state(&keyboardState);
-      if (al_key_down(&keyboardState, ALLEGRO_KEY_LCTRL)) {
+      if (al_key_down(&keyboardState, ALLEGRO_KEY_LCTRL) || al_key_down(&keyboardState, ALLEGRO_KEY_RCTRL)) {
         config.panDx += float(event.mouse.dx);
         config.panDy += float(event.mouse.dy);
       }
