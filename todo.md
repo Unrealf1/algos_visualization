@@ -32,8 +32,8 @@
   +   Proper controls explanation(Q, brush, RMB, future pan&zoon)
   +   Better ui & langs
   +   Pan & zoom
+  +   Support saving and loading in the browser
   -   Fix no touch input in web (https://allegro5.org/docs/html/refman/touch.html)
-  -   Support saving and loading in the browser
 - Prove all the algorithms
 - Algorithm descriptions
 - Options to guarantee path for every algorithm?

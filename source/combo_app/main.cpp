@@ -25,6 +25,14 @@ struct LoopArgs{
     visual::Grid* grid;
 };
 
+const char* s_read_maze_from_file = nullptr;
+extern "C" {
+int EMSCRIPTEN_KEEPALIVE load_maze_from_file(char* file_path) {
+    s_read_maze_from_file = file_path;
+    return 0;
+}
+}
+
 #endif
 
 
@@ -122,6 +130,34 @@ int main() {
       }
       prev_mode = config.m_mode;
     }
+
+    if (config.creation_data.do_save) {
+      config.creation_data.do_save = false;
+      maze.save("last.maze");
+      spdlog::info("Saved maze to \"last.maze\"");
+#ifdef __EMSCRIPTEN__
+      emscripten_run_script("offerFileAsDownload('last.maze', 'mine/type');");
+#endif
+    }
+
+    if (config.creation_data.do_load) {
+      config.creation_data.do_load = false;
+#ifdef __EMSCRIPTEN__
+      emscripten_run_script("triggerFileUpload();");
+// TODO: #else -> open file dialogue on native
+#endif
+    }
+
+#ifdef __EMSCRIPTEN__
+    if (s_read_maze_from_file != nullptr) {
+      maze = Maze::load(s_read_maze_from_file);
+      grid.update(maze);
+      config.creation_data.maze_width = int(maze.width);
+      config.creation_data.maze_height = int(maze.height);
+      spdlog::info("Loaded maze from \"{}\"", s_read_maze_from_file);
+      s_read_maze_from_file = nullptr;
+    }
+#endif
 
     if (grid.style().draw_lattice != config.creation_data.draw_grid) {
       grid.style().draw_lattice = config.creation_data.draw_grid;

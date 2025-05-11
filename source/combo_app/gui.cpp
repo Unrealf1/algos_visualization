@@ -106,8 +106,13 @@ namespace combo_app_gui {
     if (ImGui::Button("Generate")) {
       s_data.creation_data.generate_maze = true;
     }
-    // TODO: 'SAVE' button
-    // TODO: 'LOAD' button
+    if (ImGui::Button("Save")) {
+      s_data.creation_data.do_save = true;
+    }
+    ImGui::SameLine();
+    if (ImGui::Button("Load")) {
+      s_data.creation_data.do_load = true;
+    }
   }
 
   static void draw_visualization_progress() {

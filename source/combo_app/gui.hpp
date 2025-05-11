@@ -34,6 +34,8 @@ namespace combo_app_gui{
     RESTRAINED_PARAMETER(float, slow_tile_cost, 2.0f, 0.0f, 10.0f);
 
     bool update_visuals = false;
+    bool do_save = false;
+    bool do_load = false;
   };
 
   enum class EAlgorithm {
