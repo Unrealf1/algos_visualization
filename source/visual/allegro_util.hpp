@@ -2,9 +2,13 @@
 
 #include <stdexcept>
 #include <functional>
+#include <util/util.hpp>
+
+#ifdef __EMSCRIPTEN__
+#define ALLEGRO_UNSTABLE
+#endif
 #include <allegro5/allegro5.h>
 #include <allegro5/allegro_primitives.h>
-#include <util/util.hpp>
 
 
 inline bool operator==(const ALLEGRO_COLOR& lhs, const ALLEGRO_COLOR& rhs) {

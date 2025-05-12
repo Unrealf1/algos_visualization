@@ -299,6 +299,10 @@ int main() {
   queue.register_source(al_get_keyboard_event_source());
   queue.register_source(al_get_display_event_source(display));
 
+#ifdef __EMSCRIPTEN__
+  queue.register_source(al_get_touch_input_mouse_emulation_event_source());
+#endif
+
   queue.add_reaction(al_get_keyboard_event_source(), [&](auto event) mutable {
     ImGui_ImplAllegro5_ProcessEvent(&event);
     if (ImGui::GetIO().WantCaptureKeyboard) {
@@ -316,7 +320,7 @@ int main() {
     }
   });
 
-  queue.add_reaction(al_get_mouse_event_source(), [&, last_mouse_pos = std::pair{-1, -1}](auto event) mutable {
+  auto mouseReaction = [&, last_mouse_pos = std::pair{-1, -1}](auto event) mutable {
     ImGui_ImplAllegro5_ProcessEvent(&event);
     if (ImGui::GetIO().WantCaptureMouse) {
       return;
@@ -390,7 +394,11 @@ int main() {
       }
     }
     last_mouse_pos = std::pair{state.x, state.y};
-  });
+  };
+  queue.add_reaction(al_get_mouse_event_source(), mouseReaction);
+#ifdef __EMSCRIPTEN__
+  queue.add_reaction(al_get_touch_input_mouse_emulation_event_source(), mouseReaction);
+#endif
 
   queue.add_reaction(progress_timer.event_source(), [&] (const auto&) mutable {
       if (config.m_mode != combo_app_gui::AppMode::PathFinding) {

@@ -12,6 +12,11 @@ namespace visual {
         al_init();
         al_install_keyboard();
         al_install_mouse();
+#ifdef __EMSCRIPTEN__
+        al_install_touch_input();
+        // for some reason works better than "modern" modes(but still bad)
+        al_set_mouse_emulation_mode(ALLEGRO_MOUSE_EMULATION_5_0_x);
+#endif
         al_init_primitives_addon();
         IMGUI_CHECKVERSION();
         ImGui::CreateContext();

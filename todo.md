@@ -33,7 +33,7 @@
   +   Better ui & langs
   +   Pan & zoom
   +   Support saving and loading in the browser
-  -   Fix no touch input in web (https://allegro5.org/docs/html/refman/touch.html)
+  *   Fix no touch input in web (https://allegro5.org/docs/html/refman/touch.html) -- done, but controls are awful
   -   Save maze as a picture/pathfinding as a gif
 - Prove all the algorithms
 - Algorithm descriptions
