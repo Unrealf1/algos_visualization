@@ -400,6 +400,13 @@ int main() {
   queue.add_reaction(al_get_touch_input_mouse_emulation_event_source(), mouseReaction);
 #endif
 
+  auto setGridIfNotImportant = [&](size_t x, size_t y, auto color) {
+    auto cur = maze.get_cell({x, y});
+    if (cur == MazeObject::finish || cur == MazeObject::start) {
+      return;
+    }
+    grid.set_cell(x, y, {.color = color});
+  };
   queue.add_reaction(progress_timer.event_source(), [&] (const auto&) mutable {
       if (config.m_mode != combo_app_gui::AppMode::PathFinding) {
         progress_timer.stop();
@@ -429,24 +436,25 @@ int main() {
               spdlog::info("Path length: {}. Checked {} nodes", path.size(), search_log.size());
           }
           for (const auto& node : path) {
-              grid.set_cell(node.x, node.y, {.color = grid.style().path_color});
+              setGridIfNotImportant(node.x, node.y, grid.style().path_color);
           }
           queue.drop_all();
           return;
       }
       if (cur_idx > 0) {
           auto last = search_log[cur_idx - 1];
-          grid.set_cell(last.x, last.y, {.color = grid.style().used_color});
+
+          setGridIfNotImportant(last.x, last.y, grid.style().used_color);
           for (; discover_idx < discover_log.size() && discover_log[discover_idx].second <= cur_idx + 1; ++discover_idx) {
               const auto& discovered = discover_log[discover_idx].first;
               const auto& cell = grid.get_cell(discovered.x, discovered.y);
               if (cell.color != grid.style().used_color) {
-                  grid.set_cell(discovered.x, discovered.y, {.color = grid.style().discovered_color});
+                  setGridIfNotImportant(discovered.x, discovered.y, grid.style().discovered_color);
               }
           }
       }
       auto checked_cell = search_log[cur_idx];
-      grid.set_cell(checked_cell.x, checked_cell.y, {.color = grid.style().last_used_color});
+      setGridIfNotImportant(checked_cell.x, checked_cell.y, grid.style().last_used_color);
 
       ++cur_idx;
   });
