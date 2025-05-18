@@ -320,7 +320,12 @@ int main() {
     }
   });
 
-  auto mouseReaction = [&, last_mouse_pos = std::pair{-1, -1}](auto event) mutable {
+  auto mouseReaction = [&, last_mouse_pos = std::pair{-1, -1}, last_hover_highlight = std::vector<std::pair<int, int>>()](auto event) mutable {
+    for (auto pos : last_hover_highlight) {
+      grid.set_cell(pos.first, pos.second, {.color = grid.style().color_map[maze.get_cell({size_t(pos.first), size_t(pos.second)})]});
+    }
+    last_hover_highlight.clear();
+
     ImGui_ImplAllegro5_ProcessEvent(&event);
     if (ImGui::GetIO().WantCaptureMouse) {
       return;
@@ -377,6 +382,10 @@ int main() {
     }();
     if (!shouldChangeMaze) {
       last_mouse_pos = std::pair{-1, -1};
+      for_each_brush_affected_tile(state.x, state.y, maze, grid, config.scale, config.panDx, config.panDy, [&](int x, int y) {
+        grid.set_cell(size_t(x), size_t(y), {.color = grid.style().brush_hover_color});
+        last_hover_highlight.push_back({x, y});
+      });
       return;
     }
         

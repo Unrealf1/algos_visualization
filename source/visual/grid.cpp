@@ -19,7 +19,8 @@ const Grid::Style Grid::s_default_style = {
     .path_color = al_map_rgb(182, 102, 142),
     .used_color = al_map_rgb(0, 200, 200),
     .discovered_color = al_map_rgb(0, 100, 100),
-    .last_used_color = al_map_rgb(200, 0, 0)
+    .last_used_color = al_map_rgb(200, 0, 0),
+    .brush_hover_color = al_map_rgb(50, 200, 200)
 };
 
 Grid::Grid(const Maze& maze, float vis_width, float vis_height, Style style)

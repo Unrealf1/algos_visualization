@@ -23,6 +23,7 @@ namespace visual {
             ALLEGRO_COLOR used_color;
             ALLEGRO_COLOR discovered_color;
             ALLEGRO_COLOR last_used_color;
+            ALLEGRO_COLOR brush_hover_color;
         };
 
         const static ColorMap s_default_color_map;
