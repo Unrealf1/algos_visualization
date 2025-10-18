@@ -117,6 +117,13 @@ int main() {
   auto progress_timer = visual::Timer(1.0);
   queue.register_source(progress_timer.event_source());
 
+  auto setGridIfNotImportant = [&](size_t x, size_t y, auto color) {
+    auto cur = maze.get_cell({x, y});
+    if (cur == MazeObject::finish || cur == MazeObject::start) {
+      return;
+    }
+    grid.set_cell(x, y, {.color = color});
+  };
   auto react_to_gui = [&, prev_mode = config.m_mode] mutable {
 #ifndef __EMSCRIPTEN__
     // many potentially slow operations below, so pausing draw timer while here
@@ -179,6 +186,33 @@ int main() {
       progress_timer.stop();
       maze = create_maze(config.creation_data);
       grid.update(maze);
+    }
+
+    if (config.visualization_progress.finished
+        && config.visualization_progress.nodes_checked_want_show != config.visualization_progress.nodes_checked
+	&& config.m_mode == combo_app_gui::AppMode::PathFinding) {
+	if (config.visualization_progress.nodes_checked_want_show >= search_log.size()) {
+	  spdlog::error("Incorrect index can't show {} nodes of {} searched", config.visualization_progress.nodes_checked_want_show, search_log.size());
+	} else {
+          grid.update(maze);
+          for (int i = 0; i < config.visualization_progress.nodes_checked_want_show; ++i) {
+            if (i > 0) {
+                auto last = search_log[i - 1];
+
+                setGridIfNotImportant(last.x, last.y, grid.style().used_color);
+                for (; discover_idx < discover_log.size() && discover_log[discover_idx].second <= cur_idx + 1; ++discover_idx) {
+                    const auto& discovered = discover_log[discover_idx].first;
+                    const auto& cell = grid.get_cell(discovered.x, discovered.y);
+                    if (cell.color != grid.style().used_color) {
+                        setGridIfNotImportant(discovered.x, discovered.y, grid.style().discovered_color);
+                    }
+                }
+            }
+            auto checked_cell = search_log[i];
+            setGridIfNotImportant(checked_cell.x, checked_cell.y, grid.style().last_used_color);
+          }
+	}
+	config.visualization_progress.nodes_checked = config.visualization_progress.nodes_checked_want_show;
     }
 
     if (config.visualization_data.runPathfinding) {
@@ -409,19 +443,14 @@ int main() {
   queue.add_reaction(al_get_touch_input_mouse_emulation_event_source(), mouseReaction);
 #endif
 
-  auto setGridIfNotImportant = [&](size_t x, size_t y, auto color) {
-    auto cur = maze.get_cell({x, y});
-    if (cur == MazeObject::finish || cur == MazeObject::start) {
-      return;
-    }
-    grid.set_cell(x, y, {.color = color});
-  };
   queue.add_reaction(progress_timer.event_source(), [&] (const auto&) mutable {
       if (config.m_mode != combo_app_gui::AppMode::PathFinding) {
         progress_timer.stop();
         return;
       }
       config.visualization_progress.nodes_checked = cur_idx;
+      config.visualization_progress.total_nodes_checked = search_log.size();
+      config.visualization_progress.nodes_checked_want_show = search_log.size();
       if (cur_idx == search_log.size()) {
           config.visualization_progress.finished = true;
           config.visualization_progress.path_found = !path.empty();

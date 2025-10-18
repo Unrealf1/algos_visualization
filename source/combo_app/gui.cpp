@@ -116,9 +116,15 @@ namespace combo_app_gui {
   }
 
   static void draw_visualization_progress() {
-    ImGui::Text("Nodes checked: %lu", s_data.visualization_progress.nodes_checked);
+    ImGui::Text("Nodes checked: %lu/%lu",
+		s_data.visualization_progress.nodes_checked,
+		s_data.visualization_progress.total_nodes_checked
+    );
 
     if (s_data.visualization_progress.finished) {
+      int wantToShow = s_data.visualization_progress.nodes_checked_want_show + 1;
+      ImGui::SliderInt("Progress", &wantToShow, 1, s_data.visualization_progress.total_nodes_checked);
+      s_data.visualization_progress.nodes_checked_want_show = wantToShow - 1;
       if (s_data.visualization_progress.path_found) {
         ImGui::Text("Path found! Length = %lu. Cost = %.2f",
                     s_data.visualization_progress.path_length,

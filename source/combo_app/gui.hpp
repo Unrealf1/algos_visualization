@@ -58,6 +58,8 @@ namespace combo_app_gui{
     bool finished = false;
     bool display = false;
     uint64_t nodes_checked;
+    uint64_t total_nodes_checked;
+    uint64_t nodes_checked_want_show;
     uint64_t path_length;
     double processor_time_ms;
     double path_cost;
