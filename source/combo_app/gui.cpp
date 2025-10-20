@@ -175,10 +175,11 @@ namespace combo_app_gui {
     ImGui::SetNextWindowPos(ImVec2(0.0f, 0.0f));
     ImGui::Begin("Menu");
 
-    draw_location();
+    visual::imgui::draw_enum_radio_buttons(s_data.m_mode);
+    draw_controls();
     ImGui::Separator();
 
-    visual::imgui::draw_enum_radio_buttons(s_data.m_mode);
+    draw_location();
     ImGui::Checkbox("Show grid", &s_data.creation_data.draw_grid.value);
 
     ImGui::Separator();
@@ -188,7 +189,6 @@ namespace combo_app_gui {
     } else {
       draw_visualization_gui();
     }
-    draw_controls();
 
     ImGui::End();
 

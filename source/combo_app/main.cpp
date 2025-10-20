@@ -51,6 +51,7 @@ auto init_display() {
     w = int(float(monitorInfo.x2 - monitorInfo.x1) * 0.7f);
     h = int(float(monitorInfo.y2 - monitorInfo.x1) * 0.7f);
   }
+  al_set_new_window_title("Mazes");
   auto display = al_create_display(w, h);
 #endif
 
