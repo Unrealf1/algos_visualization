@@ -317,7 +317,31 @@ int main() {
     gui_update_timer.start();
 #endif
   };
+
+
+#ifndef __EMSCRIPTEN__
+  int64_t frameNumber = 0;
+  const int64_t maxSkippedFramesInRow = 10;
+  int64_t skippedFramesInRow = 0;
+#endif
+
   auto process_frame = [&] (const auto&) {
+#ifndef __EMSCRIPTEN__
+    frameNumber += 1;
+    // catch up to the timer
+    if (frameNumber < al_get_timer_count(gui_update_timer.get_raw()) && skippedFramesInRow < maxSkippedFramesInRow) {
+      if (skippedFramesInRow == 0) {
+        gui_update_timer.stop();
+      }
+      ++skippedFramesInRow;
+      return;
+    }
+    if (skippedFramesInRow > 0) {
+      gui_update_timer.start();
+    }
+    skippedFramesInRow = 0;
+#endif
+
     react_to_gui();
 
     al_clear_to_color(al_map_rgb(0, 0, 0));
