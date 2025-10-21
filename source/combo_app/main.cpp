@@ -192,26 +192,26 @@ int main() {
     if (config.visualization_progress.finished
         && config.visualization_progress.nodes_checked_want_show != config.visualization_progress.nodes_checked
 	&& config.m_mode == combo_app_gui::AppMode::PathFinding) {
-	if (config.visualization_progress.nodes_checked_want_show >= search_log.size()) {
-	  spdlog::error("Incorrect index can't show {} nodes of {} searched", config.visualization_progress.nodes_checked_want_show, search_log.size());
-	} else {
-    grid.update(maze);
-    for (uint64_t d_idx = 0; d_idx < discover_log.size() && discover_log[d_idx].second <= config.visualization_progress.nodes_checked_want_show + 1; ++d_idx) {
-      const auto& discovered = discover_log[d_idx].first;
-      const auto& cell = grid.get_cell(discovered.x, discovered.y);
-      if (cell.color != grid.style().used_color) {
-        setGridIfNotImportant(discovered.x, discovered.y, grid.style().discovered_color);
+      if (config.visualization_progress.nodes_checked_want_show > search_log.size()) {
+        spdlog::error("Incorrect index can't show {} nodes of {} searched", config.visualization_progress.nodes_checked_want_show, search_log.size());
+      } else {
+        grid.update(maze);
+        for (uint64_t d_idx = 0; d_idx < discover_log.size() && discover_log[d_idx].second <= config.visualization_progress.nodes_checked_want_show; ++d_idx) {
+          const auto& discovered = discover_log[d_idx].first;
+          const auto& cell = grid.get_cell(discovered.x, discovered.y);
+          if (cell.color != grid.style().used_color) {
+            setGridIfNotImportant(discovered.x, discovered.y, grid.style().discovered_color);
+          }
+        }
+        for (uint64_t i = 0; i < search_log.size() && i < config.visualization_progress.nodes_checked_want_show; ++i) {
+          if (i > 0) {
+            auto last = search_log[i - 1];
+            setGridIfNotImportant(last.x, last.y, grid.style().used_color);
+          }
+          auto checked_cell = search_log[i];
+          setGridIfNotImportant(checked_cell.x, checked_cell.y, grid.style().last_used_color);
+        }
       }
-    }
-    for (uint64_t i = 0; i < config.visualization_progress.nodes_checked_want_show; ++i) {
-      if (i > 0) {
-        auto last = search_log[i - 1];
-        setGridIfNotImportant(last.x, last.y, grid.style().used_color);
-      }
-      auto checked_cell = search_log[i];
-      setGridIfNotImportant(checked_cell.x, checked_cell.y, grid.style().last_used_color);
-    }
-	}
 	config.visualization_progress.nodes_checked = config.visualization_progress.nodes_checked_want_show;
     }
 

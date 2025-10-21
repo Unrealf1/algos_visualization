@@ -122,9 +122,20 @@ namespace combo_app_gui {
     );
 
     if (s_data.visualization_progress.finished) {
-      int wantToShow = s_data.visualization_progress.nodes_checked_want_show + 1;
-      ImGui::SliderInt("Progress", &wantToShow, 1, s_data.visualization_progress.total_nodes_checked);
-      s_data.visualization_progress.nodes_checked_want_show = wantToShow - 1;
+      const int totalNodesChecked = int(s_data.visualization_progress.total_nodes_checked);
+      int wantToShow = int(s_data.visualization_progress.nodes_checked_want_show);
+      if (ImGui::Button("-##pathdinding_want_show_minus")) {
+        --wantToShow;
+      }
+      ImGui::SameLine();
+      if (ImGui::Button("+##pathdinding_want_show_plus")) {
+        ++wantToShow;
+      }
+      ImGui::SameLine();
+      ImGui::SliderInt("Progress", &wantToShow, 0, totalNodesChecked);
+      wantToShow = std::clamp(wantToShow, 0, totalNodesChecked);
+
+      s_data.visualization_progress.nodes_checked_want_show = wantToShow;
       if (s_data.visualization_progress.path_found) {
         ImGui::Text("Path found! Length = %lu. Cost = %.2f",
                     s_data.visualization_progress.path_length,
