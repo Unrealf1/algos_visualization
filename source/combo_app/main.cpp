@@ -6,6 +6,8 @@
 #include <gui.hpp>
 #include <app_actions.hpp>
 #include <algorithm>
+#include <chrono>
+#include <thread>
 
 #include "algos/BFS.hpp"
 #include "algos/DFS.hpp"
@@ -110,9 +112,7 @@ int main() {
   auto queue = visual::EventReactor();
 
 #ifndef __EMSCRIPTEN__
-  auto gui_update_timer = visual::Timer(1.0 / 60.0);
-  gui_update_timer.start();
-  queue.register_source(gui_update_timer.event_source());
+  bool shouldAppStop = false;
 #endif
 
   auto progress_timer = visual::Timer(1.0);
@@ -126,11 +126,6 @@ int main() {
     grid.set_cell(x, y, {.color = color});
   };
   auto react_to_gui = [&, prev_mode = config.m_mode] mutable {
-#ifndef __EMSCRIPTEN__
-    // many potentially slow operations below, so pausing draw timer while here
-    gui_update_timer.stop();
-#endif
-
     if (prev_mode != config.m_mode) {
       if (prev_mode == combo_app_gui::AppMode::PathFinding) {
         grid.update(maze);
@@ -311,36 +306,9 @@ int main() {
     config.panDx = std::clamp(config.panDx, -mazeW + gridInternalDx + minVisiblePixels, displayW - gridInternalDx - minVisiblePixels);
     config.panDy = std::clamp(config.panDy, -mazeH + minVisiblePixels + gridInternalDy, displayH - minVisiblePixels - gridInternalDy);
     }
-
-#ifndef __EMSCRIPTEN__
-    gui_update_timer.start();
-#endif
   };
 
-
-#ifndef __EMSCRIPTEN__
-  int64_t frameNumber = 0;
-  const int64_t maxSkippedFramesInRow = 10;
-  int64_t skippedFramesInRow = 0;
-#endif
-
   auto process_frame = [&] (const auto&) {
-#ifndef __EMSCRIPTEN__
-    frameNumber += 1;
-    // catch up to the timer
-    if (frameNumber < al_get_timer_count(gui_update_timer.get_raw()) && skippedFramesInRow < maxSkippedFramesInRow) {
-      if (skippedFramesInRow == 0) {
-        gui_update_timer.stop();
-      }
-      ++skippedFramesInRow;
-      return;
-    }
-    if (skippedFramesInRow > 0) {
-      gui_update_timer.start();
-    }
-    skippedFramesInRow = 0;
-#endif
-
     react_to_gui();
 
     al_clear_to_color(al_map_rgb(0, 0, 0));
@@ -349,9 +317,6 @@ int main() {
 
     al_flip_display();
   };
-#ifndef __EMSCRIPTEN__
-  queue.add_reaction(gui_update_timer.event_source(), process_frame);
-#endif
 
   queue.register_source(al_get_mouse_event_source());
   queue.register_source(al_get_keyboard_event_source());
@@ -374,7 +339,13 @@ int main() {
 
   queue.add_reaction(al_get_display_event_source(display), [&](auto event) {
     if (event.type == ALLEGRO_EVENT_DISPLAY_RESIZE) {
+      ImGui_ImplAllegro5_InvalidateDeviceObjects();
+      al_acknowledge_resize(event.display.source);
+      ImGui_ImplAllegro5_CreateDeviceObjects();
       grid.set_dimentions(float(event.display.width), float(event.display.height));
+    }
+    else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
+      shouldAppStop = true;
     }
   });
 
@@ -551,7 +522,19 @@ int main() {
             }
         }, &args, 0, 1);
 #else
-  main_visual_loop(queue, display);
+      auto desiredFrameDuration = std::chrono::milliseconds(16);
+      while (!shouldAppStop) {
+          auto frameStart = std::chrono::steady_clock::now();
+          while(!queue.empty()) {
+            queue.wait_and_react();
+          }
+          process_frame(0);
+          auto frameEnd = std::chrono::steady_clock::now();
+          auto frameDuration = frameEnd - frameStart;
+          if (frameDuration < desiredFrameDuration) {
+            std::this_thread::sleep_for(desiredFrameDuration - frameDuration);
+          }
+      }
 #endif
 
   al_destroy_display(display);

@@ -74,6 +74,10 @@ namespace visual {
         al_start_timer(al_pointer);
     }
 
+    void Timer::resume() {
+        al_resume_timer(al_pointer);
+    }
+
     void Timer::stop() {
         al_stop_timer(al_pointer);
     }

@@ -76,6 +76,7 @@ namespace visual {
         static void destroy(Raw*);
 
         void start();
+        void resume();
         void stop();
         void change_rate(double new_rate);
         double get_rate() const;
