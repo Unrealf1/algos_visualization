@@ -137,8 +137,11 @@ void Grid::draw(ALLEGRO_DISPLAY* display, float scale, float dx, float dy) {
 }
 
 std::pair<size_t, size_t> Grid::get_cell_under_cursor_coords(int mouse_x, int mouse_y) const {
-    const auto x = std::min(size_t((float(mouse_x) - m_visual_offset_x) * float(m_width) / m_visual_grid_width), m_width - 1);
-    const auto y = std::min(size_t((float(mouse_y) - m_visual_offset_y) * float(m_height) / m_visual_grid_height), m_height - 1);
+    const auto wantX = std::max(0.0f, (float(mouse_x) - m_visual_offset_x) * float(m_width) / m_visual_grid_width);
+    const auto x = std::min(size_t(wantX), m_width - 1);
+
+    const auto wantY = std::max(0.0f, (float(mouse_y) - m_visual_offset_y) * float(m_height) / m_visual_grid_height);
+    const auto y = std::min(size_t(wantY), m_height - 1);
     return { x, y };
 }
 
