@@ -11,8 +11,8 @@ void for_each_brush_affected_tile(int mouse_x, int mouse_y,
                                   auto callback){
   auto& config = combo_app_gui::get_data();
 
-  auto modifiedX = (mouse_x - dx) / scale;
-  auto modifiedY = (mouse_y - dy) / scale;
+  auto modifiedX = int((float(mouse_x) - dx) / scale);
+  auto modifiedY = int((float(mouse_y) - dy) / scale);
   auto [coords_x, coords_y] = grid.get_cell_under_cursor_coords(modifiedX, modifiedY);
   const auto brush_size = config.creation_data.brush_size;
   const auto offset = -brush_size / 2;

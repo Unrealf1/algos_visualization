@@ -196,7 +196,7 @@ int main() {
 	  spdlog::error("Incorrect index can't show {} nodes of {} searched", config.visualization_progress.nodes_checked_want_show, search_log.size());
 	} else {
           grid.update(maze);
-          for (int i = 0; i < config.visualization_progress.nodes_checked_want_show; ++i) {
+          for (uint64_t i = 0; i < config.visualization_progress.nodes_checked_want_show; ++i) {
             if (i > 0) {
                 auto last = search_log[i - 1];
 
@@ -381,7 +381,7 @@ int main() {
 
   auto mouseReaction = [&, last_mouse_pos = std::pair{-1, -1}, last_hover_highlight = std::vector<std::pair<int, int>>()](auto event) mutable {
     for (auto pos : last_hover_highlight) {
-      grid.set_cell(pos.first, pos.second, {.color = grid.style().color_map[maze.get_cell({size_t(pos.first), size_t(pos.second)})]});
+      grid.set_cell(uint64_t(pos.first), uint64_t(pos.second), {.color = grid.style().color_map[maze.get_cell({size_t(pos.first), size_t(pos.second)})]});
     }
     last_hover_highlight.clear();
 
