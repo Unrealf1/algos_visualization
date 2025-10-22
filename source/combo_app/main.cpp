@@ -206,6 +206,11 @@ int main() {
           auto checked_cell = search_log[i];
           setGridIfNotImportant(checked_cell.x, checked_cell.y, grid.style().last_used_color);
         }
+        if (config.visualization_progress.nodes_checked_want_show == search_log.size()) {
+          for (const auto& node : path) {
+            setGridIfNotImportant(node.x, node.y, grid.style().path_color);
+          }
+        }
       }
 	config.visualization_progress.nodes_checked = config.visualization_progress.nodes_checked_want_show;
     }
