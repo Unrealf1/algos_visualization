@@ -135,7 +135,7 @@ namespace combo_app_gui {
       ImGui::SliderInt("Progress", &wantToShow, 0, totalNodesChecked);
       wantToShow = std::clamp(wantToShow, 0, totalNodesChecked);
 
-      s_data.visualization_progress.nodes_checked_want_show = wantToShow;
+      s_data.visualization_progress.nodes_checked_want_show = uint64_t(wantToShow);
       if (s_data.visualization_progress.path_found) {
         ImGui::Text("Path found! Length = %lu. Cost = %.2f",
                     s_data.visualization_progress.path_length,

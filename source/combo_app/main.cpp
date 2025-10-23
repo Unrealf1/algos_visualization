@@ -305,8 +305,8 @@ int main() {
     auto mazeW = gridW * config.scale;
     auto mazeH = gridH * config.scale;
 
-    float displayW = al_get_display_width(display);
-    float displayH = al_get_display_height(display);
+    float displayW = float(al_get_display_width(display));
+    float displayH = float(al_get_display_height(display));
     const auto minVisiblePixels = 20;
     config.panDx = std::clamp(config.panDx, -mazeW + gridInternalDx + minVisiblePixels, displayW - gridInternalDx - minVisiblePixels);
     config.panDy = std::clamp(config.panDy, -mazeH + minVisiblePixels + gridInternalDy, displayH - minVisiblePixels - gridInternalDy);
