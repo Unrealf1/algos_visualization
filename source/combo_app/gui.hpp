@@ -39,7 +39,7 @@ namespace combo_app_gui{
   };
 
   enum class EAlgorithm {
-      BFS, DFS, RandomDFS, Dijkstra, AStar
+      BFS, DFS, RandomDFS, Dijkstra, AStar, VGA
   };
 
   struct VisualizationData {

@@ -6,6 +6,11 @@
 * Add more algorithms
     +   Add option to allow diagonals (with or without surrounding free paths)
     +   Random DFS
+    *   Bidirectional algos
+        *   Alternating fronts (basically bidir dijkstra)
+            *   Sometimes finds suboptimal paths, need to debug...
+        -   BHPA
+        -   BHFFA
     -   ARA
     -   Another one from AI :)
     -   https://en.wikipedia.org/wiki/Poisson%27s_equation

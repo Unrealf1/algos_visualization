@@ -13,6 +13,7 @@
 #include "algos/DFS.hpp"
 #include "algos/dijkstra.hpp"
 #include "algos/a_star.hpp"
+#include "algos/general_bidirectional.hpp"
 
 namespace rng = std::ranges;
 
@@ -233,6 +234,14 @@ int main() {
           });
           return neighboors;
       };
+      auto logging_edge_getter_2 = [&](const Maze::Node& node) {
+          auto neighboors = edge_getter(maze, node);
+          search_log.push_back(node);
+          rng::transform(neighboors, std::back_inserter(discover_log), [&](const Maze::Node& n) {
+              return std::pair{n, search_log.size()};
+          });
+          return neighboors;
+      };
       auto random_logging_edge_getter = [&](const Maze::Node& node) {
           auto neighboors = logging_edge_getter(node);
           auto& rengine = get_rengine();
@@ -277,6 +286,19 @@ int main() {
               }
               case combo_app_gui::EAlgorithm::AStar: {
                   return AStarFindPath(from, logging_searcher, logging_edge_getter, weight_getter, logging_estimate_getter);
+              }
+              case combo_app_gui::EAlgorithm::VGA: {
+                  return VGAFindPath(from, to, logging_edge_getter_2, weight_getter, [](auto& first, auto& second) {
+                 if (first.unvisited_indices.empty()) {
+                   return true;
+                 }
+                 if (second.unvisited_indices.empty()) {
+                   return false;
+                 }
+                 static bool last = true;
+                 last = !last;
+                 return last;
+              });
               }
           }
           // should not be reachable. Kept here for now because of gcc warning(end of non-void finction)
