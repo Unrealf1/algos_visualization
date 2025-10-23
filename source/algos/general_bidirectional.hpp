@@ -24,11 +24,17 @@ static NodePath<Node> VGAFindPath(
         const FrontSelector& front_selector,
         const Reconstructor& reconstructor = reconstruct_path<Node>
 ) {
+  struct Solution {
+    double estimatedCost;
+    size_t centralNodeIdxActiveFront;
+    size_t centralNodeIdxInactiveFront;
+  };
   struct PathLengthEstimate {
       Node node;
       double best_path_length;
       size_t parent;
       size_t my_index;
+      bool is_closed;
   };
 
   struct Front {
@@ -36,12 +42,12 @@ static NodePath<Node> VGAFindPath(
     std::vector<size_t> unvisited_indices;
   };
   Front startFront = {
-    .estimates = { {from, 0.0, 0, 0} },
+    .estimates = { {from, 0.0, 0, 0, true} },
     .unvisited_indices = { 0 }
   };
 
   Front endFront = {
-    .estimates = { {to, 0.0, 0, 0} },
+    .estimates = { {to, 0.0, 0, 0, true} },
     .unvisited_indices = { 0 }
   };
 
@@ -67,16 +73,13 @@ static NodePath<Node> VGAFindPath(
     }
 
     std::vector<size_t> newUnvisitedIndices; // TODO: reserve something?
-    struct Solution {
-      double estimatedCost;
-      size_t centralNodeIdxActiveFront;
-      size_t centralNodeIdxInactiveFront;
-    };
     std::vector<Solution> solutionsFound;
+    bool shouldCheckSolutions = false;
     for (int i = minElementIdxIters.size() - 1; i >= 0 ; --i) {
       auto minElementIdxIter = minElementIdxIters[i];
       auto minElementIdx = *minElementIdxIter;
       auto current = front.estimates[minElementIdx];
+      front.estimates[minElementIdx].is_closed = true;
 
       for (const auto& otherEstimate : inactiveFront.estimates) {
         if (otherEstimate.node == current.node) {
@@ -84,10 +87,11 @@ static NodePath<Node> VGAFindPath(
               current.best_path_length + otherEstimate.best_path_length,
               current.my_index,
               otherEstimate.my_index);
+          shouldCheckSolutions |= otherEstimate.is_closed;
         }
       }
 
-      if (!solutionsFound.empty()) {
+      if (shouldCheckSolutions) {
         auto bestSolutionIt = rng::min_element(
           solutionsFound,
           {},
@@ -132,7 +136,7 @@ static NodePath<Node> VGAFindPath(
         const auto edge_path_weight = current.best_path_length + get_weight(current.node, neighboor);
         if (it == front.estimates.end()) {
           newUnvisitedIndices.push_back(front.estimates.size());
-          front.estimates.emplace_back(neighboor, edge_path_weight, current.my_index, front.estimates.size());
+          front.estimates.emplace_back(neighboor, edge_path_weight, current.my_index, front.estimates.size(), false);
         } else {
           if (edge_path_weight < it->best_path_length) {
             it->best_path_length = edge_path_weight;

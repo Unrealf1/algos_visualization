@@ -7,8 +7,8 @@
     +   Add option to allow diagonals (with or without surrounding free paths)
     +   Random DFS
     *   Bidirectional algos
-        *   Alternating fronts (basically bidir dijkstra)
-            *   Sometimes finds suboptimal paths, need to debug...
+        +   Alternating fronts (basically bidir dijkstra)
+            +   Sometimes finds suboptimal paths, need to debug...
         -   BHPA
         -   BHFFA
     -   ARA
