@@ -6,6 +6,7 @@
 * Add more algorithms
     +   Add option to allow diagonals (with or without surrounding free paths)
     +   Random DFS
+        -   Add option to add random "shortcuts" so maze is more interesting
     *   Bidirectional algos
         +   Alternating fronts (basically bidir dijkstra)
             +   Sometimes finds suboptimal paths, need to debug...
