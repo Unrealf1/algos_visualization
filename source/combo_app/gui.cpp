@@ -21,8 +21,11 @@ namespace combo_app_gui {
     ImGui::Text("Mouse wheel: zoom");
     ImGui::Text("Hold CTRL  : pan");
     if (s_data.m_mode == AppMode::Creation) {
+      ImGui::Text("Enter      : generate maze");
       ImGui::Text("LMB: draw maze tile");
       ImGui::Text("RMB: clear maze tile");
+    } else if (s_data.m_mode == AppMode::PathFinding) {
+      ImGui::Text("Enter      : pathfind");
     }
   }
 

@@ -358,9 +358,17 @@ int main() {
     if (ImGui::GetIO().WantCaptureKeyboard) {
       return;
     }
-    if (event.type == ALLEGRO_EVENT_KEY_DOWN && event.keyboard.keycode == ALLEGRO_KEY_Q) {
-      const auto isPathfinding = combo_app_gui::AppMode::PathFinding == config.m_mode;
-      config.m_mode = isPathfinding ? combo_app_gui::AppMode::Creation : combo_app_gui::AppMode::PathFinding;
+    if (event.type == ALLEGRO_EVENT_KEY_DOWN) {
+      if (event.keyboard.keycode == ALLEGRO_KEY_Q) {
+        const auto isPathfinding = combo_app_gui::AppMode::PathFinding == config.m_mode;
+        config.m_mode = isPathfinding ? combo_app_gui::AppMode::Creation : combo_app_gui::AppMode::PathFinding;
+      } else if (event.keyboard.keycode == ALLEGRO_KEY_ENTER) {
+        if (config.m_mode == combo_app_gui::AppMode::PathFinding) {
+          config.visualization_data.runPathfinding = true;
+        } else if (config.m_mode == combo_app_gui::AppMode::Creation) {
+          config.creation_data.generate_maze = true;
+        }
+      }
     }
   });
 
