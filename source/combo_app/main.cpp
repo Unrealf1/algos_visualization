@@ -371,9 +371,11 @@ int main() {
       ImGui_ImplAllegro5_CreateDeviceObjects();
       grid.set_dimentions(float(event.display.width), float(event.display.height));
     }
+#ifndef __EMSCRIPTEN__
     else if (event.type == ALLEGRO_EVENT_DISPLAY_CLOSE) {
       shouldAppStop = true;
     }
+#endif
   });
 
   auto mouseReaction = [&, last_mouse_pos = std::pair{-1, -1}, last_hover_highlight = std::vector<std::pair<int, int>>()](auto event) mutable {
