@@ -37,7 +37,7 @@ Maze create_maze(const combo_app_gui::CreationData& gui_data) {
         }
         case EMazeGenerationAlgorithm::random_dfs: {
             const auto& params = gui_data.randomDfsGenerationParameters;
-            Maze maze = generate_random_dfs(width, height);
+            Maze maze = generate_random_dfs(width, height, params.random_wall_break_prob);
             maze.add_slow_tiles(double(params.slow_prob));
             return maze;
         }

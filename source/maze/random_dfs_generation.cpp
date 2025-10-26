@@ -12,7 +12,7 @@ namespace rng = std::ranges;
 
 using Node = Maze::Node;
 
-Maze generate_random_dfs(size_t width, size_t height) {
+Maze generate_random_dfs(size_t width, size_t height, float random_wall_break_prob) {
     Maze maze(width, height);
 
     Node from(0, 0);
@@ -65,6 +65,30 @@ Maze generate_random_dfs(size_t width, size_t height) {
     };
 
     algos::DFSFindPath<Maze::Node>(from, searcher, edge_getter, reconstructor);
+
+    if (random_wall_break_prob > 0.0f) {
+      for (size_t x = 0; x < width - 2; x += 2) {
+        for (size_t y = 0; y < height - 2; y += 2) {
+          auto cur = maze.get_cell({x, y});
+          auto& right1 = maze.get_cell({x + 1, y});
+          auto right2 = maze.get_cell({x + 2, y});
+          if (Maze::is_walkable(cur)
+              && !Maze::is_walkable(right1)
+              && Maze::is_walkable(right2)
+              && chance(random_wall_break_prob)) {
+            right1 = MazeObject::space;
+          }
+          auto& bot1 = maze.get_cell({x, y + 1});
+          auto bot2 = maze.get_cell({x, y + 2});
+          if (Maze::is_walkable(cur)
+              && !Maze::is_walkable(bot1)
+              && Maze::is_walkable(bot2)
+              && chance(random_wall_break_prob)) {
+            bot1 = MazeObject::space;
+          }
+        }
+      }
+    }
 
     return maze;
 }

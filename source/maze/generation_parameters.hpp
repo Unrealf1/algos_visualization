@@ -9,6 +9,7 @@ namespace maze_generation {
 
     struct RandomDfsParameters {
         RESTRAINED_PARAMETER(float, slow_prob, 0.0f, 1.0f);
+        RESTRAINED_PARAMETER(float, random_wall_break_prob, 0.025f, 0.0f, 1.0f);
     };
 
     struct WhiteNoiseParameters {

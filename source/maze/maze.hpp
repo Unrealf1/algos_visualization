@@ -37,6 +37,10 @@ struct Maze {
     
     static Maze load(const std::filesystem::path&);
     static void add_random_start_finish(Maze&);
+    static bool is_walkable(MazeObject obj) {
+      return obj != MazeObject::wall;
+    }
+
     void add_slow_tiles(double change_probability);
     void resize(size_t new_width, size_t new_height);
 
